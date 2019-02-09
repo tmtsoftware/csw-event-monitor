@@ -11,6 +11,7 @@ import csw.params.core.formats.JsonSupport
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext
+import csw.eventmon.server.twirl.Implicits._
 
 class Routes(
     eventMonitor: EventMonitor
@@ -22,6 +23,13 @@ class Routes(
 
   val route: Route = cors() {
     RouteExceptionHandler.route {
+      pathSingleSlash {
+        get {
+          complete {
+            csw.eventmon.server.html.index.render()
+          }
+        }
+      } ~
       get {
         pathPrefix("events") {
           path("subscribe" / Segment) { subsystem =>

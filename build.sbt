@@ -2,7 +2,7 @@ import sbt.Keys.{libraryDependencies, resolvers}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmDependencies
 
 lazy val `csw-event-monitor-server` = project
-  .enablePlugins(DeployApp, SbtWeb, SbtTwirl)
+  .enablePlugins(DeployApp, SbtWeb, SbtTwirl, WebScalaJSBundlerPlugin)
   .settings(
     scalaJSProjects := Seq(`csw-event-monitor-client`),
     pipelineStages in Assets := Seq(scalaJSPipeline),
@@ -40,13 +40,15 @@ lazy val `csw-event-monitor-client` = project
     ),
     version in webpack := "4.8.1",
     version in startWebpackDevServer := "3.1.4",
-//    webpackResources := webpackResources.value +++
-//    PathFinder(Seq(baseDirectory.value / "index.html")) ** "*.*",
-//    webpackDevServerExtraArgs in fastOptJS ++= Seq(
-//      "--content-base",
-//      baseDirectory.value.getAbsolutePath
-//    )
+    webpackResources := webpackResources.value +++
+    PathFinder(Seq(baseDirectory.value / "index.html")) ** "*.*",
+    webpackDevServerExtraArgs in fastOptJS ++= Seq(
+      "--content-base",
+      baseDirectory.value.getAbsolutePath
+    )
   )
 
 // loads the server project at sbt startup
-onLoad in Global := (onLoad in Global).value andThen {s: State => "project csw-event-monitor-server" :: s}
+//onLoad in Global := (onLoad in Global).value andThen {s: State => "project csw-event-monitor-server" :: s}
+
+
