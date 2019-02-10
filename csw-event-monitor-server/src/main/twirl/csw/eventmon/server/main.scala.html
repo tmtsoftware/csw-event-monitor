@@ -25,6 +25,13 @@
                     var instances = M.Collapsible.init(elems, {});
                 });
 
+                // Required for Materialize modal elements
+                document.addEventListener('DOMContentLoaded', function() {
+                    var elems = document.querySelectorAll('.modal');
+                    var instances = M.Modal.init(elems, {});
+                });
+
+
         </script>
         @content
         @scalajs.html.scripts("csw-event-monitor-client", name => s"/assets/$name", name => getClass.getResource(s"/public/$name") != null)

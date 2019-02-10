@@ -1,6 +1,8 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.EventSelector.EventSelection
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object MainComponent {
@@ -25,13 +27,17 @@ case class MainComponent() extends Component[NoEmit] {
 //  }
 
   override def render(get: Get): Element = {
-    val eventSelector = Component(EventSelector)
+    val eventSelector = Component(EventSelector).withHandler(e => addEvent(e))
 
     E.div(
       A.className("container"),
       title,
       eventSelector
     )
+  }
+
+  private def addEvent(e: EventSelection): Unit = {
+    println(s"XXX Add event: $e")
   }
 
 }

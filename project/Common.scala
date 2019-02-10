@@ -44,6 +44,7 @@ object Common extends AutoPlugin {
 
   private def formatOnCompile = sys.props.get("format.on.compile") match {
     case Some("false") ⇒ false
-    case _             ⇒ true
+//    case _             ⇒ true
+    case _             ⇒ false
   }
 }

@@ -1,26 +1,20 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.react4s.facade.M
-
-import scala.scalajs.js
+import EventSelector._
 
 object EventSelector {
   // materialize icon for adding an event
   val iconName      = "playlist_add"
   val subsystemList = List("TCS", "NFIRAOS", "IRIS")
+
+  case class EventSelection(subsystem: String, component: Option[String], name: Option[String])
 }
 
-/**
- */
-case class EventSelector() extends Component[String] {
-
-  import EventSelector._
-
+case class EventSelector() extends Component[EventSelection] {
   private val selectedSubsystem = State("")
   private val selectedComponent = State("")
   private val selectedEventName = State("")
-  private var collapsibleElem   = E.ul()
 
   private def makeSubsystemItem(): Element = {
     val defaultItem =
@@ -54,74 +48,36 @@ case class EventSelector() extends Component[String] {
     )
   }
 
-  private def makeButtons(): Element = {
+  private def makeButtons(get: Get): Element = {
     E.div(
-      A.className("row"),
-      E.div(
-        A.className("col s2 offset-s4"),
-        E.button(A.className("btn waves-effect waves-light"), A.onClick(cancelButtonClicked), Text("Cancel")),
-        Text(" "),
-        E.button(A.className("btn waves-effect waves-light"), A.onClick(okButtonClicked), Text("OK"))
-      )
+      A.className("modal-footer"),
+      E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("Cancel")),
+      E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), A.onClick(okButtonClicked(get)), Text("OK"))
     )
   }
 
-  private def makeDialogBody(): Element = {
-    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeButtons())
+  private def makeDialogBody(get: Get): Element = {
+    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeButtons(get))
   }
 
   override def render(get: Get): Element = {
-    val icon = E.i(A.className("material-icons"), Text(iconName))
-    val collapsible = E.ul(
-      A.className("collapsible popout"),
-      E.li(
-        E.div(A.className("collapsible-header col s6"), icon, Text("Add Event")),
-        E.div(A.className("collapsible-body col s6"), makeDialogBody())
-      )
-    )
-    collapsibleElem = collapsible
-    E.div(collapsible)
-
-//    val labelItem  = Text(label)
-//    val labelDiv   = E.div(A.className("col s1"), labelItem)
-//    val items      = choiceList.map(s => E.option(A.value(s), Text(s)))
-//    val selectItem = E.select(A.className("input-field"), A.onChangeText(itemSelected), Tags(items))
-//    val selectDiv  = E.div(A.className("col s3"), selectItem)
-//
-//    val i = choiceList.indexOf(currentValue)
-//    val (iconName, iconLabel, iconColor) = get(commandResponse) match {
-//      case Accepted(_) =>
-//        (if (i == 0) "filter_none" else s"filter_$i", currentValue, normalColor)
-//      case Completed(_)      => ("done", "", normalColor)
-//      case Error(_, msg)     => ("error_outline", msg, errorColor)
-//      case Invalid(_, issue) => ("error_outline", issue.reason, errorColor)
-//      case x                 => ("error_outline", s"unexpected command response: $x", errorColor)
-//    }
-//
-//    val selectStateIcon  = E.i(A.className(s"material-icons $iconColor"), Text(iconName))
-//    val selectStateLabel = Text(s" $iconLabel")
-//    val selectStateDiv = E.div(A.className("col s8"), selectStateIcon, selectStateLabel)
-//
-//    E.div(A.className("row valign-wrapper"), labelDiv, selectDiv, selectStateDiv)
+    val trigger = E.a(A.className("waves-effect waves-light btn modal-trigger"), A.href("#addEvent"), Text("Add Event"))
+    val body    = E.div(A.id("addEvent"), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
+    E.div(trigger, body)
   }
 
-  // called when a subsystem item is selected XXXXXXXXXXXXXX
+  // called when a subsystem item is selected
   private def subsystemSelected(subsystem: String): Unit = {
     println(s"Select subsystem: $subsystem")
     selectedSubsystem.set(subsystem)
   }
 
-  private def okButtonClicked(ev: MouseEvent): Unit = {
-    println("OK")
-    val M = js.Dynamic.global.M
-    M.Collapsible.getInstance(collapsibleElem).close()
-
-    emit("XXX")
+  private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
+    val subsystem    = get(selectedSubsystem)
+    val component    = get(selectedComponent)
+    val componentOpt = if (component.isEmpty) None else Some(component)
+    val name         = get(selectedEventName)
+    val nameOpt      = if (name.isEmpty) None else Some(name)
+    emit(EventSelection(subsystem, componentOpt, nameOpt))
   }
-
-  private def cancelButtonClicked(ev: MouseEvent): Unit = {
-    println("cancel")
-//    M.Collapsible.getInstance(collapsibleElem).close()
-  }
-
 }
