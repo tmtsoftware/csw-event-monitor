@@ -6,9 +6,9 @@ import EventSelector._
 object EventSelector {
   // materialize icon for adding an event
   val iconName      = "playlist_add"
-  val subsystemList = List("TCS", "NFIRAOS", "IRIS")
+  val subsystemList = List("TCS", "NFIRAOS", "IRIS", "TEST")
 
-  case class EventSelection(subsystem: String, component: Option[String], name: Option[String])
+  case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String])
 }
 
 case class EventSelector() extends Component[EventSelection] {
