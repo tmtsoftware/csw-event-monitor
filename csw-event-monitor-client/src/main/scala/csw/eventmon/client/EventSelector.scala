@@ -1,6 +1,9 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.react4s.facade.M
+
+import scala.scalajs.js
 
 object EventSelector {
   // materialize icon for adding an event
@@ -8,58 +11,75 @@ object EventSelector {
   val subsystemList = List("TCS", "NFIRAOS", "IRIS")
 }
 
-//    <ul class="collapsible">
-//      <li>
-//        <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-//        <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-//      </li>
-//      <li>
-//        <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
-//        <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-//      </li>
-//      <li>
-//        <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
-//        <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-//      </li>
-//    </ul>
-
 /**
  */
 case class EventSelector() extends Component[String] {
 
   import EventSelector._
 
-  val targetState = State("")
+  private val selectedSubsystem = State("")
+  private val selectedComponent = State("")
+  private val selectedEventName = State("")
+  private var collapsibleElem   = E.ul()
 
   private def makeSubsystemItem(): Element = {
-    val defaultItem = E.option(A.value(""), A.disabled(), A.value(), Text("Subsystem that publishes the event"))
-    val items       = defaultItem :: subsystemList.map(s => E.option(A.value(s), Text(s)))
-    E.div(E.select(A.className("input-field"), A.onChangeText(subsystemSelected), Tags(items)))
+    val defaultItem =
+      E.option(A.value("BAD"), A.disabled(), Text("Select subsystem that publishes the event"))
+    val items = defaultItem :: subsystemList.map(s => E.option(A.value(s), Text(s)))
+    E.div(A.className("row"),
+          E.div(A.className("input-field col s6"), E.select(A.onChangeText(subsystemSelected), A.value("BAD"), Tags(items))))
   }
 
   private def makeComponentItem(): Element = {
-    E.div(A.className("input-field"),
-          E.input(A.id("component"), A.`type`("text")),
-          E.label(A.`for`("component"), Text("Component")))
+    E.div(
+      A.className("row"),
+      E.div(
+        A.className("input-field col s6"),
+        A.onChangeText(selectedComponent.set),
+        E.input(A.id("component"), A.`type`("text")),
+        E.label(A.`for`("component"), Text("Component"))
+      )
+    )
   }
 
   private def makeEventNameItem(): Element = {
-    E.div(A.className("input-field"),
-          E.input(A.id("eventName"), A.`type`("text")),
-          E.label(A.`for`("eventName"), Text("Event Name")))
+    E.div(
+      A.className("row"),
+      E.div(
+        A.className("input-field col s6"),
+        A.onChangeText(selectedEventName.set),
+        E.input(A.id("eventName"), A.`type`("text")),
+        E.label(A.`for`("eventName"), Text("Event Name"))
+      )
+    )
+  }
+
+  private def makeButtons(): Element = {
+    E.div(
+      A.className("row"),
+      E.div(
+        A.className("col s2 offset-s4"),
+        E.button(A.className("btn waves-effect waves-light"), A.onClick(cancelButtonClicked), Text("Cancel")),
+        Text(" "),
+        E.button(A.className("btn waves-effect waves-light"), A.onClick(okButtonClicked), Text("OK"))
+      )
+    )
+  }
+
+  private def makeDialogBody(): Element = {
+    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeButtons())
   }
 
   override def render(get: Get): Element = {
-
-    //A.className("row"),
-    val body = E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem())
-//    val body = E.span(Text("Hi there"))
     val icon = E.i(A.className("material-icons"), Text(iconName))
-    val collapsible = E.ul(A.className("collapsible popout"),
-                           E.li(
-                             E.div(A.className("collapsible-header"), icon, Text("Add Event")),
-                             E.div(A.className("collapsible-body"), body)
-                           ))
+    val collapsible = E.ul(
+      A.className("collapsible popout"),
+      E.li(
+        E.div(A.className("collapsible-header col s6"), icon, Text("Add Event")),
+        E.div(A.className("collapsible-body col s6"), makeDialogBody())
+      )
+    )
+    collapsibleElem = collapsible
     E.div(collapsible)
 
 //    val labelItem  = Text(label)
@@ -85,12 +105,23 @@ case class EventSelector() extends Component[String] {
 //    E.div(A.className("row valign-wrapper"), labelDiv, selectDiv, selectStateDiv)
   }
 
-  // called when a subsystem item is selected
-  private def subsystemSelected(value: String): Unit = {
-//    targetState.set(value)
-//
-//    // This allows the main component to be notified when an item is selected
-//    emit(value)
+  // called when a subsystem item is selected XXXXXXXXXXXXXX
+  private def subsystemSelected(subsystem: String): Unit = {
+    println(s"Select subsystem: $subsystem")
+    selectedSubsystem.set(subsystem)
+  }
+
+  private def okButtonClicked(ev: MouseEvent): Unit = {
+    println("OK")
+    val M = js.Dynamic.global.M
+    M.Collapsible.getInstance(collapsibleElem).close()
+
+    emit("XXX")
+  }
+
+  private def cancelButtonClicked(ev: MouseEvent): Unit = {
+    println("cancel")
+//    M.Collapsible.getInstance(collapsibleElem).close()
   }
 
 }

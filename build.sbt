@@ -49,6 +49,4 @@ lazy val `csw-event-monitor-client` = project
   )
 
 // loads the server project at sbt startup
-//onLoad in Global := (onLoad in Global).value andThen {s: State => "project csw-event-monitor-server" :: s}
-
-
+onLoad in Global := (onLoad in Global).value andThen {s: State => "project csw-event-monitor-server" :: s}

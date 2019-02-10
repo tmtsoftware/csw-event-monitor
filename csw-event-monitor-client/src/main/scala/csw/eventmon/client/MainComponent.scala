@@ -1,7 +1,6 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.params.events.SystemEvent
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object MainComponent {
