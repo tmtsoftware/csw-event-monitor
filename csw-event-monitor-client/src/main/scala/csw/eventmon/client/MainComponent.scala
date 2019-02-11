@@ -18,7 +18,9 @@ case class MainComponent() extends Component[NoEmit] {
   private val title       = E.div(A.className("row"), E.div(A.className("col s6  teal lighten-2"), Text(titleStr)))
   private val gateway     = new WebGateway()
   private val eventClient = new EventJsClient(gateway)
+  private val eventSelections = State[Set[EventSelection]](Set.empty)
   private val eventStreams = State[List[EventStreamInfo]](Nil)
+  private val events = State[Map[EventSelection, List[SystemEvent]]](Map.empty)
 
   override def render(get: Get): Element = {
     val eventSelector = Component(EventSelector).withHandler(e => addEvent(get)(e))
@@ -32,16 +34,23 @@ case class MainComponent() extends Component[NoEmit] {
 
   // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
-    println(s"XXX Add event: $eventSelection")
-    val eventStream = eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
-    val eventStreamInfo = EventStreamInfo(eventSelection, eventStream)
-    eventStreams.set(eventStreamInfo :: get(eventStreams))
-    // Handle events
-    eventStream.onNext = {
-      case event: SystemEvent =>
-        println(s"Received system event: $event")
-      case event =>
-        println(s"Received unexpected event: $event")
+    val oldSelections = get(eventSelections)
+    if (!oldSelections.contains(eventSelection)) {
+      println(s"XXX Add event: $eventSelection")
+      eventSelections.set(get(eventSelections) + eventSelection)
+      val eventStream = eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
+      val eventStreamInfo = EventStreamInfo(eventSelection, eventStream)
+      eventStreams.set(eventStreamInfo :: get(eventStreams))
+
+      // Handle events
+      eventStream.onNext = {
+        case event: SystemEvent =>
+          println(s"Received system event: $event")
+          val map = get(events)
+          val list = event :: map.getOrElse(eventSelection, Nil)
+          events.set(map + (eventSelection -> list))
+        case _ =>
+      }
     }
   }
 
