@@ -36,7 +36,8 @@ lazy val `csw-event-monitor-client` = project
       Utils.`play-json`.value,
       Utils.`enumeratum`.value,
       Utils.`enumeratum-play-json`.value,
-      Csw.`csw-params`.value,
+      Utils.`paths-scala-js`.value,
+      Csw.`csw-params`.value
     ),
     version in webpack := "4.8.1",
     version in startWebpackDevServer := "3.1.4",

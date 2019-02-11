@@ -30,6 +30,7 @@ case class MainComponent() extends Component[NoEmit] {
     )
   }
 
+  // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
     println(s"XXX Add event: $eventSelection")
     val eventStream = eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)

@@ -2,15 +2,18 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import EventSelector._
+import csw.params.core.models.Subsystem
 
 object EventSelector {
   // materialize icon for adding an event
-  val iconName      = "playlist_add"
-  val subsystemList = List("TCS", "NFIRAOS", "IRIS", "TEST")
+  private val iconName      = "playlist_add"
+  private val subsystemList = Subsystem.values.map(_.name).toList
+  private val id = "addEvent"
 
   case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String])
 }
 
+// A modal dialog for adding events to subscribe to
 case class EventSelector() extends Component[EventSelection] {
   private val selectedSubsystem = State("")
   private val selectedComponent = State("")
@@ -61,8 +64,8 @@ case class EventSelector() extends Component[EventSelection] {
   }
 
   override def render(get: Get): Element = {
-    val trigger = E.a(A.className("waves-effect waves-light btn modal-trigger"), A.href("#addEvent"), Text("Add Event"))
-    val body    = E.div(A.id("addEvent"), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
+    val trigger = E.a(A.className("waves-effect waves-light btn modal-trigger"), A.href(s"#$id"), Text("Add Event"))
+    val body    = E.div(A.id(id), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
     E.div(trigger, body)
   }
 
