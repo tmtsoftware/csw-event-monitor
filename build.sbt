@@ -27,7 +27,8 @@ lazy val `csw-event-monitor-client` = project
     resolvers += Resolver.sonatypeRepo("snapshots"),
     npmDependencies in Compile ++= Seq(
       "react"     -> "16.4.1",
-      "react-dom" -> "16.4.2"
+      "react-dom" -> "16.4.2",
+      "echarts" -> "4.1.0"
     ),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
@@ -36,7 +37,6 @@ lazy val `csw-event-monitor-client` = project
       Utils.`play-json`.value,
       Utils.`enumeratum`.value,
       Utils.`enumeratum-play-json`.value,
-      Utils.`paths-scala-js`.value,
       Csw.`csw-params`.value
     ),
     version in webpack := "4.8.1",

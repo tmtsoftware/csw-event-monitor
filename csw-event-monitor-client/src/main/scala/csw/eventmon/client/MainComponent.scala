@@ -20,15 +20,17 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventClient = new EventJsClient(gateway)
   private val eventSelections = State[Set[EventSelection]](Set.empty)
   private val eventStreams = State[List[EventStreamInfo]](Nil)
-  private val events = State[Map[EventSelection, List[SystemEvent]]](Map.empty)
+  private val eventMap = State[Map[EventSelection, List[SystemEvent]]](Map.empty)
 
   override def render(get: Get): Element = {
     val eventSelector = Component(EventSelector).withHandler(e => addEvent(get)(e))
+    val stripChart = Component(StripChart, get(eventStreams), get(eventMap))
 
     E.div(
       A.className("container"),
       title,
-      eventSelector
+      eventSelector,
+      stripChart
     )
   }
 
@@ -46,9 +48,9 @@ case class MainComponent() extends Component[NoEmit] {
       eventStream.onNext = {
         case event: SystemEvent =>
           println(s"Received system event: $event")
-          val map = get(events)
+          val map = get(eventMap)
           val list = event :: map.getOrElse(eventSelection, Nil)
-          events.set(map + (eventSelection -> list))
+          eventMap.set(map + (eventSelection -> list))
         case _ =>
       }
     }

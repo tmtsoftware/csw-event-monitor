@@ -1,99 +1,97 @@
-//package csw.eventmon.client
-//
-//import com.github.ahnfelt.react4s._
-//import csw.eventmon.client.EventSelector.EventSelection
-//import csw.eventmon.client.MainComponent.EventStreamInfo
-//import csw.params.events.SystemEvent
-//import paths.high.Stock
-//
-//import scala.scalajs.js
-////import japgolly.scalajs.react._
-////import japgolly.scalajs.react.vdom.all.key
-////import japgolly.scalajs.react.vdom.svg.all._
-////import paths.high.Stock
-////
-////import demo.colors._
-////
-////
-////object line {
-////  case class Event(date: String, value: Double)
-////
-////  private val palette = mix(Color(130, 140, 210), Color(180, 205, 150))
-////  private val months = List("Jan", "Feb", "Mar", "Apr", "May",
-////    "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec")
-////
-////  private def parseDate(event: Event) = {
-////    val date = new js.Date
-////    val Array(month, year) = event.date split ' '
-////    date.setFullYear(year.toInt)
-////    date.setMonth(months.indexOf(month))
-////
-////    date.getTime
-////  }
-////
-////  val LineChart = ReactComponentB[Seq[Seq[Event]]]("Stock chart")
-////    .render(events => {
-////      val stock = Stock[Event](
-////        data = events,
-////        xaccessor = parseDate,
-////        yaccessor = _.value,
-////        width = 420,
-////        height = 360,
-////        closed = true
-////      )
-////      val lines = stock.curves map { curve =>
-////        g(transform := "translate(50,0)",
-////          path(d := curve.area.path.print, fill := string(transparent(palette(curve.index))), stroke := "none"),
-////          path(d := curve.line.path.print, fill := "none", stroke := string(palette(curve.index)))
-////        )
-////      }
-////
-////      svg(width := 480, height := 400,
-////        lines
-////      )
-////    })
-////    .build
-////}
-//
-//class StripChart(eventStreams: P[List[EventStreamInfo]], eventMap: P[Map[EventSelection, List[SystemEvent]]])
-//    extends Component[NoEmit] {
-//
-//  private def parseDate(event: SystemEvent): Int = {
-//    // XXX FIXME
-//    0
+package csw.eventmon.client
+
+import com.github.ahnfelt.react4s._
+import csw.eventmon.client.EventSelector.EventSelection
+import csw.eventmon.client.MainComponent.EventStreamInfo
+import csw.params.core.generics.KeyType
+import csw.params.core.generics.KeyType._
+import csw.params.events.SystemEvent
+import org.scalajs.dom
+
+import scala.scalajs.js
+import js.JSConverters._
+
+object StripChart {
+  case class ChartInfo(chart: ECharts, div: Element)
+}
+
+case class StripChart(eventStreams: P[List[EventStreamInfo]], eventMap: P[Map[EventSelection, List[SystemEvent]]])
+    extends Component[NoEmit] {
+
+  import StripChart._
+
+  private val chartInfoMap = State[Map[EventSelection, ChartInfo]](Map.empty)
+
+
+  private def isNumericKey(keyType: KeyType[_]): Boolean = {
+    keyType == IntKey || keyType == DoubleKey || keyType == FloatKey || keyType == ShortKey || keyType == ByteKey
+  }
+
+//  private def getParameterValue(p: Parameter[_]): Double = {
+//    p.keyType match {
+//      case IntKey => p.
+//    }
 //  }
-//  private def eventValue(event: SystemEvent): Int = {
-//    // XXX FIXME
-//    0
-//  }
-//
-//  private def makeChart(info: EventSelection, events: Seq[SystemEvent]): Element = {
-//    val stock = Stock[SystemEvent](
-//      data = Seq(events),
-//          xaccessor = parseDate,
-//          yaccessor = eventValue,
-//          width = 420,
-//          height = 260,
-//          closed = true
-//        )
-//
-//        val lines = stock.curves map { curve =>
-//          g(
-//            transform := "translate(50,0)",
-//            path(d := curve.area.path.print, fill := string(transparent(palette(curve.index))), stroke := "none"),
-//            path(d := curve.line.path.print, fill := "none", stroke := string(palette(curve.index)))
-//          )
-//        }
-//
-//        svg(width := 480, height := 400, lines)
-//
-//    E.div()
-//  }
-//
-//  override def render(get: Get): Element = {
-//    val charts = get(eventStreams).map(s =>
-//      makeChart(s.eventSelection, get(eventMap)(s.eventSelection)))
-//
-//  }
-//
-//}
+
+  private def makeChart(id: String, info: EventSelection, events: Seq[SystemEvent]): ECharts = {
+    val options = events.flatMap { e =>
+      val eventTime = e.eventTime.value.toString
+      val maybeParam = if (info.maybeName.nonEmpty) {
+        e.paramSet.find(_.keyName == info.maybeName.get)
+      } else {
+        e.paramSet.find(p => isNumericKey(p.keyType))
+      }
+      val maybeEventValue = maybeParam.map(_.head.toString)
+      println(s"XXX maybeParam = $maybeParam, eventValue = $maybeEventValue")
+      maybeEventValue.map{ ev =>
+        println(s"XXX Adding event value: name = $eventTime, value = $ev")
+        js.Dynamic.literal(name = eventTime, value = ev)
+      }
+    }.toJSArray
+
+    echarts.init(dom.document.getElementById(id), "light", options)
+  }
+
+  private def updateChart(chartInfo: ChartInfo, info: EventSelection, events: Seq[SystemEvent]): ChartInfo = {
+    val options = events.flatMap { e =>
+      val eventTime = e.eventTime.value.toString
+      val maybeParam = if (info.maybeName.nonEmpty) {
+        e.paramSet.find(_.keyName == info.maybeName.get)
+      } else {
+        e.paramSet.find(p => isNumericKey(p.keyType))
+      }
+      val eventValue = maybeParam.map(_.head.toString)
+      eventValue.map(ev => js.Dynamic.literal(name = eventTime, value = ev))
+    }.toJSArray
+
+    chartInfo.chart.setOption(options)
+    chartInfo
+  }
+
+  private def makeId(es: EventSelection): String = {
+    s"${es.subsystem}.${es.maybeComponent.getOrElse("")}.${es.maybeName.getOrElse("")}}"
+  }
+
+  override def render(get: Get): Element = {
+    val charts = get(eventStreams).map { info =>
+      val ciMap = get(chartInfoMap)
+      val evMap = get(eventMap)
+      val events = evMap.getOrElse(info.eventSelection, Nil)
+      val chartInfo = if (ciMap.contains(info.eventSelection)) {
+        val ci = ciMap(info.eventSelection)
+        updateChart(ci, info.eventSelection, events)
+      } else {
+        val id = makeId(info.eventSelection)
+        println(s"XXX make chart with id $id")
+        val div = E.div(A.id(id), A.className("row"))
+        // FIXME XXX won't work, since div not in document yet?
+        val chart = makeChart(id, info.eventSelection, events)
+        ChartInfo(chart, div)
+      }
+      chartInfo.div
+    }
+    println(s"charts = $charts")
+    E.div(Tags(charts))
+  }
+
+}
