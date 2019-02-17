@@ -7,7 +7,8 @@ import csw.params.core.models.Subsystem
 object EventSelector {
   // materialize icon for adding an event
   private val iconName      = "playlist_add"
-  private val subsystemList = Subsystem.values.map(_.name).toList
+//  private val subsystemList = Subsystem.values.map(_.name).toList
+  private val subsystemList = List("tcs", "test")
   private val id = "addEvent"
 
   case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String])
