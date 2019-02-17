@@ -2,7 +2,8 @@ package csw.eventmon.client
 
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
-import scala.scalajs.js.annotation.{JSGlobal, JSName}
+import scala.scalajs.js.annotation.{JSGlobal, JSImport, JSName}
+
 @js.native
 trait ChartDataset extends js.Object {
   def label: String          = js.native
@@ -78,25 +79,14 @@ object ChartConfiguration {
   }
 }
 
-// define a class to access the Chart.js component
 @js.native
-trait Chart extends js.Object {
+@JSImport("chart.js", JSImport.Namespace)
+class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
   def update(): Unit  = js.native
   def data: ChartData = js.native
 }
 
-//@js.native
-//@JSGlobal
-//class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
-//  def update(): Unit  = js.native
-//  def data: ChartData = js.native
-//}
-
 object Chart {
-  def apply(ctx: String, config: ChartConfiguration): Chart = {
-    js.Dynamic.newInstance(js.Dynamic.global.Chart)(ctx, config).asInstanceOf[Chart]
-  }
-
   def addData(chart: Chart, label: String, data: Double): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))

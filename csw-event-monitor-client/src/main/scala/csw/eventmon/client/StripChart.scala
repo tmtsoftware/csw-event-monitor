@@ -64,10 +64,11 @@ case class StripChart(eventStreams: P[List[EventStreamInfo]], eventMap: P[Map[Ev
 
   //noinspection TypeAnnotation
   private def makeChart(id: String, info: EventSelection, events: Seq[SystemEvent]): Chart = {
+    // XXX TODO FIXME
     val chartData = ChartData(List("XXX"), List(ChartDataset(Nil, "xxx")))
     val options   = ChartOptions()
     val config    = ChartConfiguration("line", chartData, options)
-    val chart     = Chart(id, config)
+    val chart     = new Chart(id, config)
     println(s"XXX chart elem for $id = $chart")
     chart
   }
