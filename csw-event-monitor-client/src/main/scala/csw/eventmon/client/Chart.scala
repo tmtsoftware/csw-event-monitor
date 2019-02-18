@@ -2,7 +2,7 @@ package csw.eventmon.client
 
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
-import scala.scalajs.js.annotation.{JSGlobal, JSImport, JSName}
+import scala.scalajs.js.annotation.JSImport
 
 @js.native
 trait ChartDataset extends js.Object {
@@ -87,15 +87,19 @@ class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
 }
 
 object Chart {
-  def addData(chart: Chart, label: String, data: Double): Unit = {
+  def addData(chart: Chart, label: String, data: Double, keep: Int = 20): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))
+    if (chart.data.labels.size > keep) {
+      chart.data.labels.pop()
+      chart.data.datasets.foreach(_.data.pop())
+    }
     chart.update()
   }
 
-  def removeData(chart: Chart): Unit = {
-    chart.data.labels.pop()
-    chart.data.datasets.foreach(_.data.pop())
-    chart.update()
-  }
+//  def removeData(chart: Chart): Unit = {
+//    chart.data.labels.pop()
+//    chart.data.datasets.foreach(_.data.pop())
+//    chart.update()
+//  }
 }

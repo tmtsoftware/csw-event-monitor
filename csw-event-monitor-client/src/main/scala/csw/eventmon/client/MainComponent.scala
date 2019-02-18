@@ -2,7 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import csw.eventmon.client.EventSelector.EventSelection
-import csw.params.events.{Event, SystemEvent}
+import csw.params.events.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -15,45 +15,45 @@ object MainComponent {
 case class MainComponent() extends Component[NoEmit] {
   import MainComponent._
 
-  private val title       = E.div(A.className("row"), E.div(A.className("col s6  teal lighten-2"), Text(titleStr)))
-  private val gateway     = new WebGateway()
-  private val eventClient = new EventJsClient(gateway)
+  private val title           = E.div(A.className("row"), E.div(A.className("col s6  teal lighten-2"), Text(titleStr)))
+  private val gateway         = new WebGateway()
+  private val eventClient     = new EventJsClient(gateway)
   private val eventSelections = State[Set[EventSelection]](Set.empty)
-  private val eventStreams = State[List[EventStreamInfo]](Nil)
-  private val eventMap = State[Map[EventSelection, List[SystemEvent]]](Map.empty)
+  private val eventStreams    = State[List[EventStreamInfo]](Nil)
+
+//  private val maybeStripChart = State[Option[ConstructorData[NoEmit]]](None)
+//
+//  override def componentWillRender(get: Get): Unit = {
+//    if (get(maybeStripChart).isEmpty) {
+//      val stripChart    = Component(StripChart, get(eventStreams))
+//      maybeStripChart.set(Some(stripChart))
+//    }
+//  }
+
+  // Call when the user adds an event subscription
+  private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
+    if (!get(eventSelections).contains(eventSelection)) {
+      println(s"XXX Add event: $eventSelection")
+      eventSelections.modify(_ + eventSelection)
+      val eventStream =
+        eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
+      val eventStreamInfo = EventStreamInfo(eventSelection, eventStream)
+      eventStreams.modify(es => eventStreamInfo :: es)
+    }
+  }
 
   override def render(get: Get): Element = {
+    println(s"XXX MainComponent render: eventStreams = ${get(eventStreams)}")
     val eventSelector = Component(EventSelector).withHandler(e => addEvent(get)(e))
-    val stripChart = Component(StripChart, get(eventStreams), get(eventMap))
+    val stripChart    = Component(StripChart, get(eventStreams))
 
     E.div(
       A.className("container"),
       title,
       eventSelector,
       stripChart
+//      get(maybeStripChart).get
     )
-  }
-
-  // Call when the user adds an event subscription
-  private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
-    val oldSelections = get(eventSelections)
-    if (!oldSelections.contains(eventSelection)) {
-      println(s"XXX Add event: $eventSelection")
-      eventSelections.set(get(eventSelections) + eventSelection)
-      val eventStream = eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
-      val eventStreamInfo = EventStreamInfo(eventSelection, eventStream)
-      eventStreams.set(eventStreamInfo :: get(eventStreams))
-
-      // Handle events
-      eventStream.onNext = {
-        case event: SystemEvent =>
-          println(s"Received system event: $event")
-          val map = get(eventMap)
-          val list = event :: map.getOrElse(eventSelection, Nil)
-          eventMap.set(map + (eventSelection -> list))
-        case _ =>
-      }
-    }
   }
 
 }
