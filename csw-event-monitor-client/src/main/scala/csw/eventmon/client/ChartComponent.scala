@@ -14,10 +14,6 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
   private var chartMap   = Map[String, Chart]()
   private val maybeEvent = State[Option[SystemEvent]](None)
 
-  private def makeId(es: EventSelection): String = {
-    s"${es.subsystem}-${es.maybeComponent.getOrElse("")}-${es.maybeName.getOrElse("")}"
-  }
-
   private def receiveEvents(get: Get): Unit = {
     get(eventStreamInfo).eventStream.onNext = {
       case event: SystemEvent =>
@@ -44,7 +40,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
   }
 
   private def updateChart(get: Get, event: SystemEvent): Unit = {
-    val id = makeId(get(eventStreamInfo).eventSelection)
+    val id = get(eventStreamInfo).eventSelection.toString
     if (chartMap.contains(id)) {
       val info = get(eventStreamInfo).eventSelection
       val maybeParam = if (info.maybeName.nonEmpty) {
@@ -61,7 +57,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   override def componentWillRender(get: Get): Unit = {
     // Note: The div has to be added to the dom first, since the chart will look for its id
-    val id = makeId(get(eventStreamInfo).eventSelection)
+    val id = get(eventStreamInfo).eventSelection.toString
     println(s"XXX componentWillRender: $id")
     if (!canvasMap.contains(id)) {
       println(s"XXX ChartComponent will render: $id")
@@ -74,7 +70,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
   }
 
   override def render(get: Get): Element = {
-    val id = makeId(get(eventStreamInfo).eventSelection)
+    val id = get(eventStreamInfo).eventSelection.toString
     canvasMap(id)
   }
 }

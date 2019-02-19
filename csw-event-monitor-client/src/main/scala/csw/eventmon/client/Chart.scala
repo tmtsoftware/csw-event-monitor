@@ -90,11 +90,9 @@ object Chart {
   def addData(chart: Chart, label: String, data: Double, keep: Int = 20): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))
-    println(s"XXX chart.data.labels.size = ${chart.data.labels.size}")
     if (chart.data.labels.size > keep) {
-      println("XXX POP")
-      chart.data.labels.pop()
-      chart.data.datasets.foreach(_.data.pop())
+      chart.data.labels.shift()
+      chart.data.datasets.foreach(_.data.shift())
     }
     chart.update()
   }

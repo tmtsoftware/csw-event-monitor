@@ -11,7 +11,9 @@ object EventSelector {
   private val subsystemList = List("tcs", "test")
   private val id = "addEvent"
 
-  case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String])
+  case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String]) {
+    override def toString: String = s"$subsystem-${maybeComponent.getOrElse("")}-${maybeName.getOrElse("")}"
+  }
 }
 
 // A modal dialog for adding events to subscribe to
