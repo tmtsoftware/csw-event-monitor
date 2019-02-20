@@ -46,15 +46,34 @@ object ChartData {
 }
 
 @js.native
+trait LegendOptions extends js.Object {
+  def display: Boolean = js.native
+  def position: String = js.native
+}
+
+object LegendOptions {
+  def apply(display: Boolean = true, position: String = "top"): LegendOptions = {
+    js.Dynamic
+      .literal(
+        display = display,
+        position = position
+      )
+      .asInstanceOf[LegendOptions]
+  }
+}
+
+@js.native
 trait ChartOptions extends js.Object {
   def responsive: Boolean = js.native
+  def legend: LegendOptions = js.native
 }
 
 object ChartOptions {
-  def apply(responsive: Boolean = true): ChartOptions = {
+  def apply(responsive: Boolean = true, legend: LegendOptions = LegendOptions()): ChartOptions = {
     js.Dynamic
       .literal(
-        responsive = responsive
+        responsive = responsive,
+        legend = legend
       )
       .asInstanceOf[ChartOptions]
   }
@@ -68,7 +87,7 @@ trait ChartConfiguration extends js.Object {
 }
 
 object ChartConfiguration {
-  def apply(`type`: String, data: ChartData, options: ChartOptions = ChartOptions(false)): ChartConfiguration = {
+  def apply(`type`: String, data: ChartData, options: ChartOptions = ChartOptions()): ChartConfiguration = {
     js.Dynamic
       .literal(
         `type` = `type`,
@@ -87,7 +106,7 @@ class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
 }
 
 object Chart {
-  def addData(chart: Chart, label: String, data: Double, keep: Int = 20): Unit = {
+  def addData(chart: Chart, label: String, data: Double, keep: Int = 50): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))
     if (chart.data.labels.size > keep) {
@@ -97,9 +116,4 @@ object Chart {
     chart.update()
   }
 
-//  def removeData(chart: Chart): Unit = {
-//    chart.data.labels.pop()
-//    chart.data.datasets.foreach(_.data.pop())
-//    chart.update()
-//  }
 }

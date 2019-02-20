@@ -1,8 +1,9 @@
 package csw.eventmon.client
 
+import java.time.ZoneId
+import java.time.format.{DateTimeFormatter, FormatStyle}
+
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.EventSelector.EventSelection
-import csw.eventmon.client.MainComponent.EventStreamInfo
 import csw.params.core.generics.KeyType
 import csw.params.core.generics.KeyType._
 import csw.params.events.SystemEvent
@@ -13,6 +14,11 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
   private var canvasMap  = Map[String, Element]()
   private var chartMap   = Map[String, Chart]()
   private val maybeEvent = State[Option[SystemEvent]](None)
+
+  //  private val timeFormatter = DateTimeFormatter.ofPattern("HHmmss")
+  private val timeFormatter = DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+    .withZone( ZoneId.of("UTC") )
+
 
   private def receiveEvents(get: Get): Unit = {
     get(eventStreamInfo).eventStream.onNext = {
@@ -27,7 +33,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   private def makeChart(id: String, info: EventSelection): Chart = {
     val chartData = ChartData(List(id), List(ChartDataset(Nil, id)))
-    val options   = ChartOptions()
+    val options   = ChartOptions(legend = LegendOptions(position = "right"))
     val config    = ChartConfiguration("line", chartData, options)
     val chart     = new Chart(id, config)
 
@@ -37,6 +43,10 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   private def isNumericKey(keyType: KeyType[_]): Boolean = {
     keyType == IntKey || keyType == DoubleKey || keyType == FloatKey || keyType == ShortKey || keyType == ByteKey
+  }
+
+  private def makeLabel(event: SystemEvent): String = {
+    timeFormatter.format(event.eventTime.value)
   }
 
   private def updateChart(get: Get, event: SystemEvent): Unit = {
@@ -50,7 +60,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
       }
       if (maybeParam.nonEmpty) {
         val eventValue = maybeParam.map(_.head.toString.toDouble)
-        eventValue.foreach(value => Chart.addData(chartMap(id), event.eventTime.toString, value))
+        eventValue.foreach(value => Chart.addData(chartMap(id), makeLabel(event), value))
       }
     }
   }
@@ -67,6 +77,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
       println(s"XXX calling makeChart with $id")
       chartMap = chartMap + (id -> makeChart(id, get(eventStreamInfo).eventSelection))
     }
+    println(s"XXX canvasMap size = ${canvasMap.size}, chartMap size = ${chartMap.size}")
   }
 
   override def render(get: Get): Element = {

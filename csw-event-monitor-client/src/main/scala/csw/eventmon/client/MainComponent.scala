@@ -1,15 +1,11 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.EventSelector.EventSelection
-import csw.params.events.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object MainComponent {
   val titleStr = "CSW Event Monitor"
-
-  case class EventStreamInfo(eventSelection: EventSelection, eventStream: EventStream[Event])
 }
 
 case class MainComponent() extends Component[NoEmit] {
@@ -21,12 +17,11 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventSelections = State[Set[EventSelection]](Set.empty)
   private val eventStreams    = State[List[EventStreamInfo]](Nil)
 
-//  private val maybeStripChart = State[Option[ConstructorData[NoEmit]]](None)
+//  private var maybeStripChart: Option[Element] = None
 //
 //  override def componentWillRender(get: Get): Unit = {
-//    if (get(maybeStripChart).isEmpty) {
-//      val stripChart    = Component(StripChart, get(eventStreams))
-//      maybeStripChart.set(Some(stripChart))
+//    if (maybeStripChart.isEmpty) {
+//      maybeStripChart = Some(E.div(A.className("row"), Component(StripChart, get(eventStreams))))
 //    }
 //  }
 
@@ -44,7 +39,7 @@ case class MainComponent() extends Component[NoEmit] {
 
   override def render(get: Get): Element = {
     println(s"XXX MainComponent render: eventStreams = ${get(eventStreams)}")
-    val eventSelector = Component(EventSelector).withHandler(e => addEvent(get)(e))
+    val eventSelector = Component(EventSelectorComponent).withHandler(e => addEvent(get)(e))
     val stripChart    = Component(StripChart, get(eventStreams))
 
     E.div(
@@ -52,7 +47,6 @@ case class MainComponent() extends Component[NoEmit] {
       title,
       eventSelector,
       stripChart
-//      get(maybeStripChart).get
     )
   }
 

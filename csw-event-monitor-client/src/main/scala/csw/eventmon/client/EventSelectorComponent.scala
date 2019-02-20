@@ -1,23 +1,19 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import EventSelector._
+import EventSelectorComponent._
 import csw.params.core.models.Subsystem
 
-object EventSelector {
+object EventSelectorComponent {
   // materialize icon for adding an event
   private val iconName      = "playlist_add"
 //  private val subsystemList = Subsystem.values.map(_.name).toList
   private val subsystemList = List("tcs", "test")
   private val id = "addEvent"
-
-  case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String]) {
-    override def toString: String = s"$subsystem-${maybeComponent.getOrElse("")}-${maybeName.getOrElse("")}"
-  }
 }
 
 // A modal dialog for adding events to subscribe to
-case class EventSelector() extends Component[EventSelection] {
+case class EventSelectorComponent() extends Component[EventSelection] {
   private val selectedSubsystem = State("")
   private val selectedComponent = State("")
   private val selectedEventName = State("")
