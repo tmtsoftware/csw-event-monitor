@@ -12,13 +12,13 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   println("XXX ChartComponent constructor")
   private var canvasMap  = Map[String, Element]()
-  private var chartMap   = Map[String, Chart]()
+  private var chartMap = Map[String, Chart]()
   private val maybeEvent = State[Option[SystemEvent]](None)
 
   //  private val timeFormatter = DateTimeFormatter.ofPattern("HHmmss")
-  private val timeFormatter = DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
-    .withZone( ZoneId.of("UTC") )
-
+  private val timeFormatter = DateTimeFormatter
+    .ofLocalizedDateTime(FormatStyle.SHORT)
+    .withZone(ZoneId.of("UTC"))
 
   private def receiveEvents(get: Get): Unit = {
     get(eventStreamInfo).eventStream.onNext = {
@@ -46,7 +46,8 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
   }
 
   private def makeLabel(event: SystemEvent): String = {
-    timeFormatter.format(event.eventTime.value)
+//    timeFormatter.format(event.eventTime.value)
+    ""s
   }
 
   private def updateChart(get: Get, event: SystemEvent): Unit = {
@@ -60,7 +61,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
       }
       if (maybeParam.nonEmpty) {
         val eventValue = maybeParam.map(_.head.toString.toDouble)
-        eventValue.foreach(value => Chart.addData(chartMap(id), makeLabel(event), value))
+        eventValue.foreach(value => ChartUtil.addData(chartMap(id), makeLabel(event), value))
       }
     }
   }

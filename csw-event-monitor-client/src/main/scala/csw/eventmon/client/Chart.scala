@@ -1,5 +1,7 @@
 package csw.eventmon.client
 
+import org.scalajs.dom.Element
+
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 import scala.scalajs.js.annotation.JSImport
@@ -103,9 +105,15 @@ object ChartConfiguration {
 class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
   def update(): Unit  = js.native
   def data: ChartData = js.native
+  def canvas: Element = js.native
 }
 
-object Chart {
+@js.native
+object Chart extends js.Object {
+  def instances: js.Dictionary[Chart] = js.native
+}
+
+object ChartUtil {
   def addData(chart: Chart, label: String, data: Double, keep: Int = 50): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))

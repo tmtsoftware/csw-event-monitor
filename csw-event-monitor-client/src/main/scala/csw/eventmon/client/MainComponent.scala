@@ -17,14 +17,6 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventSelections = State[Set[EventSelection]](Set.empty)
   private val eventStreams    = State[List[EventStreamInfo]](Nil)
 
-//  private var maybeStripChart: Option[Element] = None
-//
-//  override def componentWillRender(get: Get): Unit = {
-//    if (maybeStripChart.isEmpty) {
-//      maybeStripChart = Some(E.div(A.className("row"), Component(StripChart, get(eventStreams))))
-//    }
-//  }
-
   // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
     if (!get(eventSelections).contains(eventSelection)) {
