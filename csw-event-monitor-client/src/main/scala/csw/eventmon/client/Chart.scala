@@ -65,17 +65,34 @@ object LegendOptions {
 }
 
 @js.native
+trait TooltipOptions extends js.Object {
+  def intersect: Boolean = js.native
+}
+
+object TooltipOptions {
+  def apply(intersect: Boolean = true): TooltipOptions = {
+    js.Dynamic
+      .literal(
+        intersect = intersect,
+      )
+      .asInstanceOf[TooltipOptions]
+  }
+}
+
+@js.native
 trait ChartOptions extends js.Object {
   def responsive: Boolean = js.native
   def legend: LegendOptions = js.native
+  def tooltips: TooltipOptions = js.native
 }
 
 object ChartOptions {
-  def apply(responsive: Boolean = true, legend: LegendOptions = LegendOptions()): ChartOptions = {
+  def apply(responsive: Boolean = true, legend: LegendOptions = LegendOptions(), tooltips: TooltipOptions = TooltipOptions()): ChartOptions = {
     js.Dynamic
       .literal(
         responsive = responsive,
-        legend = legend
+        legend = legend,
+        tooltips = tooltips
       )
       .asInstanceOf[ChartOptions]
   }

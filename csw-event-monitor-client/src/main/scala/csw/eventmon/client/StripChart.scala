@@ -11,13 +11,15 @@ case class StripChart(eventStreams: P[List[EventStreamInfo]]) extends Component[
       if (!chartMap.contains(info)) {
         val id = info.eventSelection.toString
         println(s"XXX StripChart create chart for $id")
-        chartMap = chartMap + (info -> E.div(A.className("row"), Component(ChartComponent, info)))
+        chartMap = chartMap + (info -> E.div(A.className("row"),
+                                             A.id(info.eventSelection.toString + "-div"),
+                                             Component(ChartComponent, info)))
       }
     }
   }
 
   override def render(get: Get): Element = {
-    val charts = get(eventStreams).map(chartMap)
+    val charts = get(eventStreams).reverse.map(chartMap)
     E.div(Tags(charts))
   }
 }

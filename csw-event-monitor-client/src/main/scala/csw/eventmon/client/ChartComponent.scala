@@ -12,7 +12,8 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   println("XXX ChartComponent constructor")
   private var canvasMap  = Map[String, Element]()
-  private var chartMap = Map[String, Chart]()
+  private var chartMap   = Map[String, Chart]()
+  private var savedId = "" // XXX
   private val maybeEvent = State[Option[SystemEvent]](None)
 
   //  private val timeFormatter = DateTimeFormatter.ofPattern("HHmmss")
@@ -21,9 +22,11 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
     .withZone(ZoneId.of("UTC"))
 
   private def receiveEvents(get: Get): Unit = {
+    val id = get(eventStreamInfo).eventSelection.toString
+
     get(eventStreamInfo).eventStream.onNext = {
       case event: SystemEvent =>
-        println(s"XXX Received event $event")
+        println(s"XXX Received event (saved id: $savedId, id: $id) $event")
         updateChart(get, event)
         maybeEvent.set(Some(event))
 
@@ -33,8 +36,8 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   private def makeChart(id: String, info: EventSelection): Chart = {
     val chartData = ChartData(List(id), List(ChartDataset(Nil, id)))
-    val options   = ChartOptions(legend = LegendOptions(position = "right"))
-    val config    = ChartConfiguration("line", chartData, options)
+    val options   = ChartOptions(legend = LegendOptions(position = "right"), tooltips = TooltipOptions(intersect = false))
+    val config    = ChartConfiguration("LineWithLine", chartData, options)
     val chart     = new Chart(id, config)
 
     println(s"XXX chart elem for $id = $chart")
@@ -47,7 +50,7 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
 
   private def makeLabel(event: SystemEvent): String = {
 //    timeFormatter.format(event.eventTime.value)
-    ""s
+    ""
   }
 
   private def updateChart(get: Get, event: SystemEvent): Unit = {
@@ -69,6 +72,9 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
   override def componentWillRender(get: Get): Unit = {
     // Note: The div has to be added to the dom first, since the chart will look for its id
     val id = get(eventStreamInfo).eventSelection.toString
+    if (savedId.nonEmpty && savedId != id)
+      println(s"XXX Saved ID different: $savedId != $id")
+    if (savedId.isEmpty) savedId = id
     println(s"XXX componentWillRender: $id")
     if (!canvasMap.contains(id)) {
       println(s"XXX ChartComponent will render: $id")
