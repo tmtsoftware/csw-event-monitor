@@ -58,16 +58,6 @@ case class EventSelectorComponent() extends Component[EventSelection] {
     )
   }
 
-  private def makeDialogBody(get: Get): Element = {
-    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeButtons(get))
-  }
-
-  override def render(get: Get): Element = {
-    val trigger = E.a(A.className("waves-effect waves-light btn modal-trigger"), A.href(s"#$id"), Text("Add Event"))
-    val body    = E.div(A.id(id), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
-    E.div(trigger, body)
-  }
-
   // called when a subsystem item is selected
   private def subsystemSelected(subsystem: String): Unit = {
     println(s"Select subsystem: $subsystem")
@@ -82,4 +72,15 @@ case class EventSelectorComponent() extends Component[EventSelection] {
     val nameOpt      = if (name.isEmpty) None else Some(name)
     emit(EventSelection(subsystem, componentOpt, nameOpt))
   }
+
+  private def makeDialogBody(get: Get): Element = {
+    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeButtons(get))
+  }
+
+  override def render(get: Get): Node = {
+    val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Add Event"))
+    val body    = E.div(A.id(id), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
+    E.li(trigger, body)
+  }
+
 }

@@ -31,6 +31,12 @@
                     var instances = M.Modal.init(elems, {});
                 });
 
+                // Required for Materialize dropdown elements
+                document.addEventListener('DOMContentLoaded', function() {
+                    var elems = document.querySelectorAll('.dropdown-trigger');
+                    var instances = M.Dropdown.init(elems, {});
+                });
+
 
         </script>
         @content
@@ -64,6 +70,12 @@
                     }
                 });
 
+                // Global chart.js tooltip formatting (easier to do it in JS)
+                // XXX TODO FIXME: Format doubles
+                Chart.defaults.global.tooltips.callbacks.label = function(tooltipItem, data) {
+                    var dataset = data.datasets[tooltipItem.datasetIndex];
+                    return dataset.data[tooltipItem.index].toFixed(3);
+                };
         </script>
     </body>
 </html>

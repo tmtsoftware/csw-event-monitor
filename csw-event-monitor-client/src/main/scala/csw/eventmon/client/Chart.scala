@@ -17,12 +17,14 @@ trait ChartDataset extends js.Object {
 object ChartDataset {
   def apply(data: Seq[Double],
             label: String,
+            fill: Boolean = true,
             backgroundColor: String = "#8080FF",
             borderColor: String = "#404080"): ChartDataset = {
     js.Dynamic
       .literal(
-        label = label,
         data = data.toJSArray,
+        label = label,
+        fill = fill,
         backgroundColor = backgroundColor,
         borderColor = borderColor
       )
@@ -64,35 +66,119 @@ object LegendOptions {
   }
 }
 
+
+/*
+  options: {
+    tooltips: {
+      callbacks: {
+        title: function(tooltipItem, data) {
+          return "";
+        },
+        label: function(tooltipItem, data) {
+          return data['datasets'][0]['data'][tooltipItem['index']];
+        },
+        afterLabel: function(tooltipItem, data) {
+          var dataset = data['datasets'][0];
+          var percent = Math.round((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100)
+          return '(' + percent + '%)';
+        }
+      },
+      backgroundColor: '#CCC',
+      titleFontSize: 16,
+      titleFontColor: '#0066ff',
+      bodyFontColor: '#000',
+      bodyFontSize: 14,
+      displayColors: false
+    }
+
+
+datasetIndex: 0
+index: 2
+xLabel: "March"
+yLabel: 80
+
+ */
+
+//@js.native
+//trait TooltipCallbacks extends js.Object {
+//  def title: js.Function2[] = js.native
+//}
+//
+//object TooltipCallbacks {
+//  def apply(display: Boolean = true, position: String = "top"): TooltipCallbacks = {
+//    js.Dynamic
+//      .literal(
+//        display = display,
+//      )
+//      .asInstanceOf[TooltipCallbacks]
+//  }
+//}
+
 @js.native
 trait TooltipOptions extends js.Object {
   def intersect: Boolean = js.native
+//  def callbacks: TooltipCallbacks = js.native
 }
 
 object TooltipOptions {
   def apply(intersect: Boolean = true): TooltipOptions = {
     js.Dynamic
       .literal(
-        intersect = intersect,
+        intersect = intersect
+//        callbacks = callbacks
       )
       .asInstanceOf[TooltipOptions]
   }
 }
 
 @js.native
+trait TicksOptions extends js.Object {
+  def display: Boolean = js.native
+}
+
+object TicksOptions {
+  def apply(display: Boolean = true): TicksOptions = {
+    js.Dynamic
+      .literal(
+        display = display,
+      )
+      .asInstanceOf[TicksOptions]
+  }
+}
+
+@js.native
+trait ScalesOptions extends js.Object {
+  def xAxes: js.Array[TicksOptions] = js.native
+}
+
+object ScalesOptions {
+  def apply(xAxes: Array[TicksOptions] = Array(TicksOptions())): ScalesOptions = {
+    js.Dynamic
+      .literal(
+        xAxes = xAxes.toJSArray,
+      )
+      .asInstanceOf[ScalesOptions]
+  }
+}
+@js.native
 trait ChartOptions extends js.Object {
-  def responsive: Boolean = js.native
-  def legend: LegendOptions = js.native
+  def responsive: Boolean      = js.native
+  def legend: LegendOptions    = js.native
   def tooltips: TooltipOptions = js.native
+  def scales: ScalesOptions    = js.native
 }
 
 object ChartOptions {
-  def apply(responsive: Boolean = true, legend: LegendOptions = LegendOptions(), tooltips: TooltipOptions = TooltipOptions()): ChartOptions = {
+  def apply(responsive: Boolean = true,
+            legend: LegendOptions = LegendOptions(),
+            tooltips: TooltipOptions = TooltipOptions(),
+            scales: ScalesOptions = ScalesOptions()): ChartOptions = {
     js.Dynamic
       .literal(
         responsive = responsive,
         legend = legend,
-        tooltips = tooltips
+        tooltips = tooltips,
+        scales = scales
       )
       .asInstanceOf[ChartOptions]
   }
@@ -131,7 +217,7 @@ object Chart extends js.Object {
 }
 
 object ChartUtil {
-  def addData(chart: Chart, label: String, data: Double, keep: Int = 50): Unit = {
+  def addData(chart: Chart, label: String, data: Double, keep: Int = 60): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))
     if (chart.data.labels.size > keep) {

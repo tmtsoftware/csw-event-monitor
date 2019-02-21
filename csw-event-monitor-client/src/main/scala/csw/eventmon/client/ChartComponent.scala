@@ -1,19 +1,26 @@
 package csw.eventmon.client
 
-import java.time.ZoneId
-import java.time.format.{DateTimeFormatter, FormatStyle}
+//import java.time.ZoneId
+//import java.time.format.{DateTimeFormatter, FormatStyle}
 
 import com.github.ahnfelt.react4s._
 import csw.params.core.generics.KeyType
 import csw.params.core.generics.KeyType._
 import csw.params.events.SystemEvent
+import ChartComponent._
 
-case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component[NoEmit] {
+object ChartComponent {
+  private val maxDatasetSize = 60
+  private val defaultData = (0 until maxDatasetSize).map(_ => 0.0)
+  private val defaultLabels = (0 until maxDatasetSize).map(_ => "")
+}
+
+case class ChartComponent(eventStreamInfo: P[EventStreamInfo], showXLabels: P[Boolean]) extends Component[NoEmit] {
 
   private val maybeChart = State[Option[Chart]](None)
   private val maybeEvent = State[Option[SystemEvent]](None)
 
-  //  private val timeFormatter = DateTimeFormatter.ofPattern("HHmmss")
+//    private val timeFormatter = DateTimeFormatter.ofPattern("mm:ss")
 //  private val timeFormatter = DateTimeFormatter
 //    .ofLocalizedDateTime(FormatStyle.SHORT)
 //    .withZone(ZoneId.of("UTC"))
@@ -30,9 +37,15 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
     }
   }
 
-  private def makeChart(id: String, info: EventSelection): Chart = {
-    val chartData = ChartData(List(id), List(ChartDataset(Nil, id)))
-    val options   = ChartOptions(legend = LegendOptions(position = "right"), tooltips = TooltipOptions(intersect = false))
+  private def makeChart(get: Get, id: String, info: EventSelection): Chart = {
+    val legend   = LegendOptions(position = "bottom")
+    val tooltips = TooltipOptions(intersect = false)
+    // XXX TODO: How to keep grid lines but hide x labels?
+//    val scales   = ScalesOptions(xAxes = Array(TicksOptions(display = get(showXLabels))))
+    val scales   = ScalesOptions()
+    // XXX TODO: Add prop for color, different for each chart
+    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
+    val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales)
     val config    = ChartConfiguration("LineWithLine", chartData, options)
     new Chart(id, config)
   }
@@ -41,13 +54,11 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
     keyType == IntKey || keyType == DoubleKey || keyType == FloatKey || keyType == ShortKey || keyType == ByteKey
   }
 
-  private def makeLabel(event: SystemEvent): String = {
-//    timeFormatter.format(event.eventTime.value)
-    ""
+  private def makeLabel(get: Get, event: SystemEvent): String = {
+    (event.eventTime.value.getEpochSecond % maxDatasetSize).toString
   }
 
   private def updateChart(get: Get, event: SystemEvent): Unit = {
-    val id = get(eventStreamInfo).eventSelection.toString
     get(maybeChart).foreach { chart =>
       val info = get(eventStreamInfo).eventSelection
       val maybeParam = if (info.maybeName.nonEmpty) {
@@ -57,16 +68,16 @@ case class ChartComponent(eventStreamInfo: P[EventStreamInfo]) extends Component
       }
       if (maybeParam.nonEmpty) {
         val eventValue = maybeParam.map(_.head.toString.toDouble)
-        eventValue.foreach(value => ChartUtil.addData(chart, makeLabel(event), value))
+        eventValue.foreach(value => ChartUtil.addData(chart, makeLabel(get, event), value))
       }
     }
   }
 
-  override def render(get: Get): Element = {
+  override def render(get: Get): Node = {
     val id = get(eventStreamInfo).eventSelection.toString
     E.canvas(A.id(id), A.width("400"), A.height("50")).withRef { _ =>
       if (get(maybeChart).isEmpty)
-        maybeChart.set(Some(makeChart(id, get(eventStreamInfo).eventSelection)))
+        maybeChart.set(Some(makeChart(get, id, get(eventStreamInfo).eventSelection)))
       receiveEvents(get)
     }
   }

@@ -1,17 +1,12 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.Navbar.{AddEventSelection, NavbarCommand}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object MainComponent {
-  val titleStr = "CSW Event Monitor"
-}
-
 case class MainComponent() extends Component[NoEmit] {
-  import MainComponent._
 
-  private val title           = E.div(A.className("row"), E.div(A.className("col s6  teal lighten-2"), Text(titleStr)))
   private val gateway         = new WebGateway()
   private val eventClient     = new EventJsClient(gateway)
   private val eventSelections = State[Set[EventSelection]](Set.empty)
@@ -28,15 +23,18 @@ case class MainComponent() extends Component[NoEmit] {
     }
   }
 
-  override def render(get: Get): Element = {
-    val eventSelector = Component(EventSelectorComponent).withHandler(e => addEvent(get)(e))
-    val stripChart    = Component(StripChart, get(eventStreams))
+  private def navbarHandler(get: Get)(cmd: NavbarCommand): Unit = {
+    cmd match {
+      case AddEventSelection(es) => addEvent(get)(es)
+    }
+  }
 
+  override def render(get: Get): Node = {
     E.div(
       A.className("container"),
-      title,
-      eventSelector,
-      stripChart
+      Component(Navbar).withHandler(navbarHandler(get)),
+      E.p(),
+      Component(StripChart, get(eventStreams))
     )
   }
 
