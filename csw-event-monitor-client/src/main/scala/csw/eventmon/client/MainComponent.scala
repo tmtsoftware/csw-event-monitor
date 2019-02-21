@@ -20,7 +20,6 @@ case class MainComponent() extends Component[NoEmit] {
   // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
     if (!get(eventSelections).contains(eventSelection)) {
-      println(s"XXX Add event: $eventSelection")
       eventSelections.modify(_ + eventSelection)
       val eventStream =
         eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
@@ -30,7 +29,6 @@ case class MainComponent() extends Component[NoEmit] {
   }
 
   override def render(get: Get): Element = {
-    println(s"XXX MainComponent render: eventStreams = ${get(eventStreams)}")
     val eventSelector = Component(EventSelectorComponent).withHandler(e => addEvent(get)(e))
     val stripChart    = Component(StripChart, get(eventStreams))
 
