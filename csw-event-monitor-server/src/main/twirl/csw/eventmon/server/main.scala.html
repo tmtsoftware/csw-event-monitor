@@ -71,10 +71,12 @@
                 });
 
                 // Global chart.js tooltip formatting (easier to do it in JS)
-                // XXX TODO FIXME: Format doubles
                 Chart.defaults.global.tooltips.callbacks.label = function(tooltipItem, data) {
                     var dataset = data.datasets[tooltipItem.datasetIndex];
-                    return dataset.data[tooltipItem.index].toFixed(3);
+                    var n = dataset.data[tooltipItem.index];
+                    if (Number.isInteger(n))
+                        return n;
+                    return n.toFixed(3);
                 };
         </script>
     </body>
