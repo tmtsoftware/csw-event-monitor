@@ -1,9 +1,17 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.Navbar.{AddEventSelection, NavbarCommand}
+import csw.eventmon.client.Navbar.{AddEventSelection, NavbarCommand, SaveConfig}
+import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToConfigService, SaveToFile, SaveToLocalStorage}
+import org.scalajs.dom.ext.LocalStorage
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import MainComponent._
+
+object MainComponent {
+  val localStorageKey = "csw-event-monitor"
+
+}
 
 case class MainComponent() extends Component[NoEmit] {
 
@@ -23,9 +31,32 @@ case class MainComponent() extends Component[NoEmit] {
     }
   }
 
+  private def saveToLocalStorage(get: Get, name: String): Unit = {
+    import upickle.default._
+    val map = LocalStorage(localStorageKey) match {
+      case Some(json) =>
+        read[Map[String, Set[EventSelection]]](json) + (name -> get(eventSelections))
+      case None =>
+        Map(name -> get(eventSelections))
+    }
+    LocalStorage(localStorageKey) = write(map)
+    println(s"XXX Saving to local storage: $map")
+  }
+
+  // Call when the user clicks Save and selects and name and type of save (file, config service, etc.)
+  private def saveConfig(get: Get)(settings: SaveSettings): Unit = {
+    settings.saveType match {
+      case SaveToLocalStorage => saveToLocalStorage(get, settings.name)
+      case SaveToFile =>
+      case SaveToConfigService =>
+    }
+  }
+
   private def navbarHandler(get: Get)(cmd: NavbarCommand): Unit = {
     cmd match {
-      case AddEventSelection(es) => addEvent(get)(es)
+      case AddEventSelection(eventSelection) => addEvent(get)(eventSelection)
+      case SaveConfig(settings) => saveConfig(get)(settings)
+      case x => println(s"XXX Not implemented: $x")
     }
   }
 

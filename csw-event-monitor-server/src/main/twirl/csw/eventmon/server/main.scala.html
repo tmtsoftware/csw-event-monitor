@@ -5,80 +5,18 @@
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+        <link rel="stylesheet" href="/assets/css/layout.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="shortcut icon" href="/assets/images/favicon.ico">
         <title>@title</title>
     </head>
     <body>
         <div id="main"></div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-
-        <script>
-                // Required for Materialize select elements
-                document.addEventListener('DOMContentLoaded', function() {
-                    var elems = document.querySelectorAll('select');
-                    var instances = M.FormSelect.init(elems, {});
-                });
-
-                // Required for Materialize collapsible elements
-                document.addEventListener('DOMContentLoaded', function() {
-                    var elems = document.querySelectorAll('.collapsible');
-                    var instances = M.Collapsible.init(elems, {});
-                });
-
-                // Required for Materialize modal elements
-                document.addEventListener('DOMContentLoaded', function() {
-                    var elems = document.querySelectorAll('.modal');
-                    var instances = M.Modal.init(elems, {});
-                });
-
-                // Required for Materialize dropdown elements
-                document.addEventListener('DOMContentLoaded', function() {
-                    var elems = document.querySelectorAll('.dropdown-trigger');
-                    var instances = M.Dropdown.init(elems, {});
-                });
-
-
-        </script>
+        <script src="/assets/js/materializeInit.js"></script>
         @content
         @scalajs.html.scripts("csw-event-monitor-client", name => s"/assets/$name", name => getClass.getResource(s"/public/$name") != null)
-
-        <script>
-                // Support for dragging a line to show chart value:
-                // https://stackoverflow.com/questions/45159895/moving-vertical-line-when-hovering-over-the-chart-using-chart-js
-                Chart.defaults.LineWithLine = Chart.defaults.line;
-                Chart.controllers.LineWithLine = Chart.controllers.line.extend({
-                    draw: function(ease) {
-                        Chart.controllers.line.prototype.draw.call(this, ease);
-
-                        if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
-                            var activePoint = this.chart.tooltip._active[0],
-                                    ctx = this.chart.ctx,
-                                    x = activePoint.tooltipPosition().x,
-                                    topY = this.chart.scales['y-axis-0'].top,
-                                    bottomY = this.chart.scales['y-axis-0'].bottom;
-
-                            // draw line
-                            ctx.save();
-                            ctx.beginPath();
-                            ctx.moveTo(x, topY);
-                            ctx.lineTo(x, bottomY);
-                            ctx.lineWidth = 2;
-                            ctx.strokeStyle = '#07C';
-                            ctx.stroke();
-                            ctx.restore();
-                        }
-                    }
-                });
-
-                // Global chart.js tooltip formatting (easier to do it in JS)
-                Chart.defaults.global.tooltips.callbacks.label = function(tooltipItem, data) {
-                    var dataset = data.datasets[tooltipItem.datasetIndex];
-                    var n = dataset.data[tooltipItem.index];
-                    if (Number.isInteger(n))
-                        return n;
-                    return n.toFixed(3);
-                };
-        </script>
+        <script src="/assets/js/chartSettings.js"></script>
     </body>
 </html>
 

@@ -40,4 +40,5 @@ object Utils {
   val `enumeratum`           = dep("com.beachape" %%% "enumeratum" % "1.5.13")
   val `enumeratum-play-json` = dep("com.beachape" %%% "enumeratum-play-json" % "1.5.14")
   val `scala-java-time`      = dep("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1")
+  val `upickle`              = dep("com.lihaoyi" %%% "upickle" % "0.7.1")
 }
