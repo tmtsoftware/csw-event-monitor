@@ -33,13 +33,12 @@ case class LoadComponent() extends Component[LoadSettings] {
   private def makeNameItem(get: Get): Element = {
     val map   = get(savedConfigs)
     val names = map.keySet.toList
-    val defaultItem =
-      E.option(A.value("-"), A.disabled(), Text("Choose ..."))
-    val items = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
+//    val names = if (map.nonEmpty) map.keySet.toList else List("A", "B", "C")
+    val defaultItem = E.option(A.value("-"), A.disabled(), Text("Choose ..."))
+    val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
     println(s"XXX get savedConfigs: $map, names = $names, items = $items")
     E.div(A.className("row"),
-          E.div(A.className("input-field col s6"),
-            E.select(A.onChangeText(nameSelected), A.value("-"), Tags(items))))
+          E.div(A.className("input-field col s6"), E.select(A.onChangeText(nameSelected), A.value("-"), Tags(items))))
   }
 
   private def nameSelected(name: String): Unit = {
@@ -63,8 +62,7 @@ case class LoadComponent() extends Component[LoadSettings] {
       E.option(A.value("-"), A.disabled(), Text("Load from ..."))
     val items = defaultItem :: loadTypes.map(t => E.option(A.value(t.displayName), Text(t.displayName)))
     E.div(A.className("row"),
-          E.div(A.className("input-field col s6"),
-            E.select(A.onChangeText(loadTypeSelected), A.value("-"), Tags(items))))
+          E.div(A.className("input-field col s6"), E.select(A.onChangeText(loadTypeSelected), A.value("-"), Tags(items))))
   }
 
   private def makeButtons(get: Get): Element = {
@@ -88,13 +86,17 @@ case class LoadComponent() extends Component[LoadSettings] {
   }
 
   private def makeDialogBody(get: Get): Element = {
-    E.div(makeLoadtypeItem(), makeNameItem(get), makeButtons(get))
+    E.div(makeLoadtypeItem(), makeNameItem(get))
   }
 
   override def render(get: Get): Node = {
     val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Load"))
-    val body    = E.div(A.id(id), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
+    val body = E.div(
+      A.id(id),
+      A.className("modal modal-fixed-footer"),
+      E.div(A.className("model-content"), makeDialogBody(get)),
+      E.div(A.className("modal-footer"), makeButtons(get))
+    )
     E.li(trigger, body)
   }
-
 }

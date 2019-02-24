@@ -72,13 +72,15 @@ case class EventSelectorComponent() extends Component[EventSelection] {
   }
 
   private def makeDialogBody(get: Get): Element = {
-    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeButtons(get))
+    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem())
   }
 
   override def render(get: Get): Node = {
     val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Add Event"))
-    val body    = E.div(A.id(id), A.className("modal"), E.div(A.className("model-content"), makeDialogBody(get)))
+    val body    = E.div(A.id(id), A.className("modal modal-fixed-footer"),
+      E.div(A.className("model-content"), makeDialogBody(get)),
+      E.div(A.className("modal-footer"), makeButtons(get))
+    )
     E.li(trigger, body)
   }
-
 }
