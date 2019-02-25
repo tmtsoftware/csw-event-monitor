@@ -27,17 +27,24 @@ object LoadComponent {
 // A modal dialog for adding events to subscribe to
 case class LoadComponent() extends Component[LoadSettings] {
   private val selectedName     = State("")
-  private val selectedLoadType = State[Option[LoadType]](Some(LoadFromLocalStorage))
+  private val selectedLoadType = State[Option[LoadType]](None)
   private val savedConfigs     = State[Map[String, Set[EventSelection]]](Map.empty)
 
   private def makeNameItem(get: Get): Element = {
-    val map         = get(savedConfigs)
-    val names       = map.keySet.toList
-    val defaultItem = E.option(A.value("-"), A.disabled(), Text("Choose ..."))
-    val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
-    println(s"XXX get savedConfigs: $map, names = $names, items = $items")
-    E.div(A.className("row"),
-          E.div(A.className("input-field col s6"), E.select(A.onChangeText(nameSelected), A.value("-"), Tags(items))))
+    val map           = get(savedConfigs)
+    val maybeLoadType = get(selectedLoadType)
+    if (map.isEmpty || maybeLoadType.isEmpty) {
+      E.div()
+    } else {
+      val names    = map.keySet.toList
+      val loadType = maybeLoadType.get
+      val items    = names.map(name => E.option(A.value(name), Text(name)))
+      println(s"XXX get savedConfigs: $map, names = $names, items = $items")
+      E.div(
+        A.className("row"),
+        E.div(A.className("input-field col s6"), E.select(A.onChangeText(nameSelected), A.value(names.head), Tags(items)))
+      )
+    }
   }
 
   private def nameSelected(name: String): Unit = {
@@ -81,10 +88,15 @@ case class LoadComponent() extends Component[LoadSettings] {
   }
 
   private def makeButtons(get: Get): Element = {
+    val disabled = get(savedConfigs).isEmpty.toString
     E.div(
       A.className("modal-footer"),
       E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("Cancel")),
-      E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), A.onClick(okButtonClicked(get)), Text("OK"))
+      E.a(A.href("#!"),
+          A.className("modal-close waves-effect waves-green btn-flat"),
+          A.disabled(disabled),
+          A.onClick(okButtonClicked(get)),
+          Text("OK"))
     )
   }
 
@@ -104,9 +116,9 @@ case class LoadComponent() extends Component[LoadSettings] {
     E.div(makeLoadtypeItem(), makeNameItem(get))
   }
 
-  override def componentWillRender(get: Get): Unit = {
-    loadSavedConfigsForLoadType(get(selectedLoadType))
-  }
+//  override def componentWillRender(get: Get): Unit = {
+//    loadSavedConfigsForLoadType(get(selectedLoadType))
+//  }
 
   override def render(get: Get): Node = {
     val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Load"))
@@ -116,6 +128,6 @@ case class LoadComponent() extends Component[LoadSettings] {
       E.div(A.className("model-content"), makeDialogBody(get)),
       E.div(A.className("modal-footer"), makeButtons(get))
     )
-    E.li(trigger, body)
+    E.li(body, trigger)
   }
 }
