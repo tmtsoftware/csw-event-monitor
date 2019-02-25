@@ -20,20 +20,19 @@ object LoadComponent {
   case object LoadFromConfigService extends LoadType {
     override val displayName = "Load from Config Service"
   }
-  val loadTypes = List(LoadFromLocalStorage, LoadFromFile, LoadFromConfigService)
+  val loadTypes: List[LoadType] = List(LoadFromLocalStorage, LoadFromFile, LoadFromConfigService)
   case class LoadSettings(name: String, loadType: LoadType)
 }
 
 // A modal dialog for adding events to subscribe to
 case class LoadComponent() extends Component[LoadSettings] {
   private val selectedName     = State("")
-  private val selectedLoadType = State[Option[LoadType]](None)
+  private val selectedLoadType = State[Option[LoadType]](Some(LoadFromLocalStorage))
   private val savedConfigs     = State[Map[String, Set[EventSelection]]](Map.empty)
 
   private def makeNameItem(get: Get): Element = {
-    val map   = get(savedConfigs)
-    val names = map.keySet.toList
-//    val names = if (map.nonEmpty) map.keySet.toList else List("A", "B", "C")
+    val map         = get(savedConfigs)
+    val names       = map.keySet.toList
     val defaultItem = E.option(A.value("-"), A.disabled(), Text("Choose ..."))
     val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
     println(s"XXX get savedConfigs: $map, names = $names, items = $items")
@@ -45,16 +44,32 @@ case class LoadComponent() extends Component[LoadSettings] {
     selectedName.set(name)
   }
 
-  private def loadTypeSelected(loadType: String): Unit = {
-    import upickle.default._
-    val maybeLoadType = loadTypes.find(_.displayName == loadType)
+  private def loadTypeSelected(loadTypeStr: String): Unit = {
+    val maybeLoadType = loadTypes.find(_.displayName == loadTypeStr)
     selectedLoadType.set(maybeLoadType)
-    val configs: Map[String, Set[EventSelection]] = LocalStorage(localStorageKey) match {
+    loadSavedConfigsForLoadType(maybeLoadType)
+  }
+
+  private def loadFromLocalStorage(): Map[String, Set[EventSelection]] = {
+    import upickle.default._
+    LocalStorage(localStorageKey) match {
       case Some(json) => read[Map[String, Set[EventSelection]]](json)
       case None       => Map.empty
     }
-    savedConfigs.set(configs)
-    println(s"XXX set savedConfigs to $configs")
+  }
+
+  private def loadSavedConfigsForLoadType(maybeLoadType: Option[LoadType]): Unit = {
+    val map = maybeLoadType match {
+      case Some(loadType) =>
+        loadType match {
+          case LoadFromLocalStorage => loadFromLocalStorage()
+          // XXX TODO
+          case x => Map.empty[String, Set[EventSelection]]
+        }
+      case None => Map.empty[String, Set[EventSelection]]
+    }
+    println(s"XXX set savedConfigs to $map")
+    savedConfigs.set(map)
   }
 
   private def makeLoadtypeItem(): Element = {
@@ -87,6 +102,10 @@ case class LoadComponent() extends Component[LoadSettings] {
 
   private def makeDialogBody(get: Get): Element = {
     E.div(makeLoadtypeItem(), makeNameItem(get))
+  }
+
+  override def componentWillRender(get: Get): Unit = {
+    loadSavedConfigsForLoadType(get(selectedLoadType))
   }
 
   override def render(get: Get): Node = {
