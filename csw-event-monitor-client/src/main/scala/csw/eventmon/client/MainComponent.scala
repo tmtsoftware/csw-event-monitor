@@ -1,7 +1,7 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.Navbar.{AddEventSelection, NavbarCommand, SaveConfig}
+import csw.eventmon.client.Navbar.{AddEventSelection, LoadConfig, NavbarCommand, SaveConfig}
 import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToConfigService, SaveToFile, SaveToLocalStorage}
 import org.scalajs.dom.ext.LocalStorage
 
@@ -10,7 +10,6 @@ import MainComponent._
 
 object MainComponent {
   val localStorageKey = "csw-event-monitor"
-
 }
 
 case class MainComponent() extends Component[NoEmit] {
@@ -40,11 +39,10 @@ case class MainComponent() extends Component[NoEmit] {
         Map(name -> get(eventSelections))
     }
     LocalStorage(localStorageKey) = write(map)
-    println(s"XXX Saving to local storage: $map")
   }
 
   // Call when the user clicks Save and selects and name and type of save (file, config service, etc.)
-  private def saveConfig(get: Get)(settings: SaveSettings): Unit = {
+  private def saveConfig(get: Get, settings: SaveSettings): Unit = {
     settings.saveType match {
       case SaveToLocalStorage => saveToLocalStorage(get, settings.name)
       case SaveToFile =>
@@ -52,10 +50,20 @@ case class MainComponent() extends Component[NoEmit] {
     }
   }
 
+  // Called when the user selects a previously saved configuration (list of events) to load.
+  // Unsubscribe to all current events and subscribe to the new ones.
+  private def loadConfig(get: Get, events: Set[EventSelection]): Unit = {
+    get(eventStreams).foreach(_.eventStream.close())
+    eventStreams.set(Nil)
+    eventSelections.set(Set.empty)
+    events.foreach(addEvent(get))
+  }
+
   private def navbarHandler(get: Get)(cmd: NavbarCommand): Unit = {
     cmd match {
       case AddEventSelection(eventSelection) => addEvent(get)(eventSelection)
-      case SaveConfig(settings) => saveConfig(get)(settings)
+      case SaveConfig(settings) => saveConfig(get, settings)
+      case LoadConfig(events) => loadConfig(get, events)
       case x => println(s"XXX Not implemented: $x")
     }
   }

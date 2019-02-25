@@ -24,11 +24,11 @@ object LoadComponent {
     override val displayName = "Load from Config Service"
   }
   val loadTypes: List[LoadType] = List(LoadFromLocalStorage, LoadFromFile, LoadFromConfigService)
-  case class LoadSettings(name: String, loadType: LoadType)
+//  case class LoadSettings(name: String, loadType: LoadType)
 }
 
 // A modal dialog for adding events to subscribe to
-case class LoadComponent() extends Component[LoadSettings] {
+case class LoadComponent() extends Component[Set[EventSelection]] {
   private val selectedName     = State("")
   private val selectedLoadType = State[Option[LoadType]](None)
   private val savedConfigs     = State[Map[String, Set[EventSelection]]](Map.empty)
@@ -96,13 +96,13 @@ case class LoadComponent() extends Component[LoadSettings] {
   }
 
   private def makeButtons(get: Get): Element = {
-    val disabled = get(savedConfigs).isEmpty.toString
+//    val disabled = get(selectedName).isEmpty.toString
     E.div(
       A.className("modal-footer"),
       E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("Cancel")),
       E.a(A.href("#!"),
           A.className("modal-close waves-effect waves-green btn-flat"),
-          A.disabled(disabled),
+//          A.disabled(disabled),
           A.onClick(okButtonClicked(get)),
           Text("OK"))
     )
@@ -111,9 +111,10 @@ case class LoadComponent() extends Component[LoadSettings] {
   private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
     val name     = get(selectedName)
     val loadType = get(selectedLoadType)
-    if (name.nonEmpty && loadType.nonEmpty)
-      emit(LoadSettings(name, loadType.get))
-    else {
+    val map = get(savedConfigs)
+    if (name.nonEmpty && loadType.nonEmpty && map.contains(name)) {
+       emit(map(name))
+    } else {
       // XXX TODO: display error message
       val msg = if (name.isEmpty || name.equals("-")) "Please choose a name to load" else "Please select where to load from"
       println(msg)
