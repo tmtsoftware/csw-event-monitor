@@ -38,6 +38,7 @@ lazy val `csw-event-monitor-client` = project
       Utils.`enumeratum`.value,
       Utils.`enumeratum-play-json`.value,
       Utils.`upickle`.value,
+//      Utils.`scala-js-materializecss`.value,
 //      Utils.`scala-java-time`.value,
       Csw.`csw-params`.value
     ),

@@ -36,9 +36,10 @@ object React4s {
 }
 
 object Utils {
-  val `play-json`            = dep("com.typesafe.play" %%% "play-json" % "2.6.10") //Apache 2.0
-  val `enumeratum`           = dep("com.beachape" %%% "enumeratum" % "1.5.13")
-  val `enumeratum-play-json` = dep("com.beachape" %%% "enumeratum-play-json" % "1.5.14")
-  val `scala-java-time`      = dep("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1")
-  val `upickle`              = dep("com.lihaoyi" %%% "upickle" % "0.7.1")
+  val `play-json`               = dep("com.typesafe.play" %%% "play-json"               % "2.6.10") //Apache 2.0
+  val `enumeratum`              = dep("com.beachape"      %%% "enumeratum"              % "1.5.13")
+  val `enumeratum-play-json`    = dep("com.beachape"      %%% "enumeratum-play-json"    % "1.5.14")
+  val `scala-java-time`         = dep("io.github.cquiroz" %%% "scala-java-time"         % "2.0.0-RC1")
+  val `upickle`                 = dep("com.lihaoyi"       %%% "upickle"                 % "0.7.1")
+//  val `scala-js-materializecss` = dep("ch.randm"          %%% "scala-js-materializecss" % "0.1.0")
 }

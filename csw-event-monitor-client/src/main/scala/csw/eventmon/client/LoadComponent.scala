@@ -5,8 +5,11 @@ import LoadComponent._
 import csw.eventmon.client.MainComponent.localStorageKey
 import org.scalajs.dom.ext.LocalStorage
 
+import scala.scalajs.js
+
 object LoadComponent {
   private val id = "loadConfig"
+  private val nameSelectId = "loadNameSelect"
 
   sealed trait LoadType {
     val displayName: String
@@ -39,10 +42,15 @@ case class LoadComponent() extends Component[LoadSettings] {
       val names    = map.keySet.toList
       val loadType = maybeLoadType.get
       val items    = names.map(name => E.option(A.value(name), Text(name)))
-      println(s"XXX get savedConfigs: $map, names = $names, items = $items")
+      // Note: M.FormSelect.init() is called from main.scala.html once, but needs to be called again for dynamic <select> updates!
+      val select = E.select(A.id(nameSelectId), A.onChangeText(nameSelected), A.value(names.head), Tags(items)).withRef { _ =>
+        val document = js.Dynamic.global.document
+        val elem = document.getElementById(nameSelectId).asInstanceOf[org.scalajs.dom.Element]
+        M.FormSelect.init(elem, js.Object())
+      }
       E.div(
         A.className("row"),
-        E.div(A.className("input-field col s6"), E.select(A.onChangeText(nameSelected), A.value(names.head), Tags(items)))
+        E.div(A.className("input-field col s6"), select)
       )
     }
   }
@@ -115,10 +123,6 @@ case class LoadComponent() extends Component[LoadSettings] {
   private def makeDialogBody(get: Get): Element = {
     E.div(makeLoadtypeItem(), makeNameItem(get))
   }
-
-//  override def componentWillRender(get: Get): Unit = {
-//    loadSavedConfigsForLoadType(get(selectedLoadType))
-//  }
 
   override def render(get: Get): Node = {
     val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Load"))

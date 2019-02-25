@@ -67,57 +67,10 @@ object LegendOptions {
 }
 
 
-/*
-  options: {
-    tooltips: {
-      callbacks: {
-        title: function(tooltipItem, data) {
-          return "";
-        },
-        label: function(tooltipItem, data) {
-          return data['datasets'][0]['data'][tooltipItem['index']];
-        },
-        afterLabel: function(tooltipItem, data) {
-          var dataset = data['datasets'][0];
-          var percent = Math.round((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100)
-          return '(' + percent + '%)';
-        }
-      },
-      backgroundColor: '#CCC',
-      titleFontSize: 16,
-      titleFontColor: '#0066ff',
-      bodyFontColor: '#000',
-      bodyFontSize: 14,
-      displayColors: false
-    }
-
-
-datasetIndex: 0
-index: 2
-xLabel: "March"
-yLabel: 80
-
- */
-
-//@js.native
-//trait TooltipCallbacks extends js.Object {
-//  def title: js.Function2[] = js.native
-//}
-//
-//object TooltipCallbacks {
-//  def apply(display: Boolean = true, position: String = "top"): TooltipCallbacks = {
-//    js.Dynamic
-//      .literal(
-//        display = display,
-//      )
-//      .asInstanceOf[TooltipCallbacks]
-//  }
-//}
 
 @js.native
 trait TooltipOptions extends js.Object {
   def intersect: Boolean = js.native
-//  def callbacks: TooltipCallbacks = js.native
 }
 
 object TooltipOptions {
@@ -125,7 +78,6 @@ object TooltipOptions {
     js.Dynamic
       .literal(
         intersect = intersect
-//        callbacks = callbacks
       )
       .asInstanceOf[TooltipOptions]
   }
