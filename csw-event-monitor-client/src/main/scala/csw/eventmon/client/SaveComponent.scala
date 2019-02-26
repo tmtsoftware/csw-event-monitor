@@ -15,10 +15,7 @@ object SaveComponent {
   case object SaveToFile          extends SaveType {
     override val displayName = "Save to File"
   }
-  case object SaveToConfigService extends SaveType {
-    override val displayName = "Save to Config Service"
-  }
-  val saveTypes = List(SaveToLocalStorage, SaveToFile, SaveToConfigService)
+  val saveTypes = List(SaveToLocalStorage, SaveToFile)
   case class SaveSettings(name: String, saveType: SaveType)
 }
 

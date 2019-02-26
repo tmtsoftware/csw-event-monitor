@@ -2,7 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import csw.eventmon.client.Navbar.{AddEventSelection, LoadConfig, NavbarCommand, SaveConfig}
-import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToConfigService, SaveToFile, SaveToLocalStorage}
+import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToFile, SaveToLocalStorage}
 import org.scalajs.dom.ext.LocalStorage
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,7 +46,6 @@ case class MainComponent() extends Component[NoEmit] {
     settings.saveType match {
       case SaveToLocalStorage => saveToLocalStorage(get, settings.name)
       case SaveToFile =>
-      case SaveToConfigService =>
     }
   }
 
