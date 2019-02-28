@@ -11,10 +11,11 @@ object EventSelectorComponent {
 }
 
 // A modal dialog for adding events to subscribe to
-case class EventSelectorComponent() extends Component[EventSelection] {
+case class EventSelectorComponent() extends Component[EventFieldSelection] {
   private val selectedSubsystem = State("")
   private val selectedComponent = State("")
   private val selectedEventName = State("")
+  private val selectedEventField = State("")
 
   private def makeSubsystemItem(): Element = {
     val defaultItem =
@@ -48,6 +49,18 @@ case class EventSelectorComponent() extends Component[EventSelection] {
     )
   }
 
+  private def makeEventFieldItem(): Element = {
+    E.div(
+      A.className("row"),
+      E.div(
+        A.className("input-field col s6"),
+        A.onChangeText(selectedEventField.set),
+        E.input(A.id("eventField"), A.`type`("text")),
+        E.label(A.`for`("eventField"), Text("Event Field"))
+      )
+    )
+  }
+
   private def makeButtons(get: Get): Element = {
     E.div(
       A.className("modal-footer"),
@@ -68,11 +81,14 @@ case class EventSelectorComponent() extends Component[EventSelection] {
     val componentOpt = if (component.isEmpty) None else Some(component)
     val name         = get(selectedEventName)
     val nameOpt      = if (name.isEmpty) None else Some(name)
-    emit(EventSelection(subsystem, componentOpt, nameOpt))
+    val field         = get(selectedEventField)
+    val fieldOpt      = if (field.isEmpty) None else Some(field)
+    emit(EventFieldSelection(EventSelection(subsystem, componentOpt, nameOpt), fieldOpt))
   }
 
   private def makeDialogBody(get: Get): Element = {
-    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem())
+    // XXX TODO: Add event value key!
+    E.div(makeSubsystemItem(), makeComponentItem(), makeEventNameItem(), makeEventFieldItem())
   }
 
   override def render(get: Get): Node = {

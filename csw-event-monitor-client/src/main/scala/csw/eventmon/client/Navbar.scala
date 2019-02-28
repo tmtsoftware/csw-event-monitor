@@ -6,9 +6,9 @@ import csw.eventmon.client.SaveComponent.SaveSettings
 object Navbar {
   // The navbar emits commands that are handled in the main component
   sealed trait NavbarCommand
-  case class AddEventSelection(eventSelection: EventSelection) extends NavbarCommand
-  case class SaveConfig(settings: SaveSettings)                extends NavbarCommand
-  case class LoadConfig(events: Set[EventSelection])           extends NavbarCommand
+  case class AddEventFieldSelection(eventFieldSelection: EventFieldSelection) extends NavbarCommand
+  case class SaveConfig(settings: SaveSettings)                               extends NavbarCommand
+  case class LoadConfig(events: Set[EventFieldSelection])                     extends NavbarCommand
 }
 
 case class Navbar() extends Component[NavbarCommand] {
@@ -20,7 +20,7 @@ case class Navbar() extends Component[NavbarCommand] {
         E.a(A.href("#!"), A.className("brand-logo"), Text("CSW Event Monitor")),
         E.ul(
           A.className("right"),
-          Component(EventSelectorComponent).withHandler(es => emit(AddEventSelection(es))),
+          Component(EventSelectorComponent).withHandler(es => emit(AddEventFieldSelection(es))),
           Component(SaveComponent).withHandler(s => emit(SaveConfig(s))),
           Component(LoadComponent).withHandler(s => emit(LoadConfig(s)))
         )

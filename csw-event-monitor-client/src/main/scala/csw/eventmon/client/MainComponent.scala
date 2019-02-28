@@ -1,12 +1,13 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.Navbar.{AddEventSelection, LoadConfig, NavbarCommand, SaveConfig}
+import csw.eventmon.client.Navbar.{AddEventFieldSelection, LoadConfig, NavbarCommand, SaveConfig}
 import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToFile, SaveToLocalStorage}
 import org.scalajs.dom.ext.LocalStorage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import MainComponent._
+import csw.params.events.Event
 
 object MainComponent {
   val localStorageKey = "csw-event-monitor"
@@ -14,19 +15,28 @@ object MainComponent {
 
 case class MainComponent() extends Component[NoEmit] {
 
-  private val gateway         = new WebGateway()
-  private val eventClient     = new EventJsClient(gateway)
-  private val eventSelections = State[Set[EventSelection]](Set.empty)
-  private val eventStreams    = State[List[EventStreamInfo]](Nil)
+  private val gateway              = new WebGateway()
+  private val eventClient          = new EventJsClient(gateway)
+  private val eventFieldSelections = State[Set[EventFieldSelection]](Set.empty)
+  private val eventStreamMap       = State[Map[EventSelection, EventStream[Event]]](Map.empty)
+  private val eventSelectionMap    = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)
 
   // Call when the user adds an event subscription
-  private def addEvent(get: Get)(eventSelection: EventSelection): Unit = {
-    if (!get(eventSelections).contains(eventSelection)) {
-      eventSelections.modify(_ + eventSelection)
-      val eventStream =
-        eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
-      val eventStreamInfo = EventStreamInfo(eventSelection, eventStream)
-      eventStreams.modify(es => eventStreamInfo :: es)
+  private def addEvent(get: Get)(eventFieldSelection: EventFieldSelection): Unit = {
+    if (!get(eventFieldSelections).contains(eventFieldSelection)) {
+      val eventSelection = eventFieldSelection.eventSelection
+      val eventStream = if (!get(eventStreamMap).contains(eventSelection)) {
+        val es =
+          eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
+        eventStreamMap.modify(_ + (eventSelection    -> es))
+        eventSelectionMap.modify(_ + (eventSelection -> Set(eventFieldSelection)))
+        es
+      } else {
+        get(eventStreamMap)(eventFieldSelection.eventSelection)
+      }
+      val fields = get(eventSelectionMap)(eventSelection) + eventFieldSelection
+      eventSelectionMap.modify(_ + (eventSelection -> fields))
+      eventFieldSelections.modify(_ + eventFieldSelection)
     }
   }
 
@@ -34,9 +44,9 @@ case class MainComponent() extends Component[NoEmit] {
     import upickle.default._
     val map = LocalStorage(localStorageKey) match {
       case Some(json) =>
-        read[Map[String, Set[EventSelection]]](json) + (name -> get(eventSelections))
+        read[Map[String, Set[EventFieldSelection]]](json) + (name -> get(eventFieldSelections))
       case None =>
-        Map(name -> get(eventSelections))
+        Map(name -> get(eventFieldSelections))
     }
     LocalStorage(localStorageKey) = write(map)
   }
@@ -45,34 +55,41 @@ case class MainComponent() extends Component[NoEmit] {
   private def saveConfig(get: Get, settings: SaveSettings): Unit = {
     settings.saveType match {
       case SaveToLocalStorage => saveToLocalStorage(get, settings.name)
-      case SaveToFile =>
+      case SaveToFile         => // XXX FIXME TODO
     }
   }
 
   // Called when the user selects a previously saved configuration (list of events) to load.
   // Unsubscribe to all current events and subscribe to the new ones.
-  private def loadConfig(get: Get, events: Set[EventSelection]): Unit = {
-    get(eventStreams).foreach(_.eventStream.close())
-    eventStreams.set(Nil)
-    eventSelections.set(Set.empty)
+  private def loadConfig(get: Get, events: Set[EventFieldSelection]): Unit = {
+    get(eventStreamMap).values.foreach(_.close())
+    eventStreamMap.set(Map.empty)
+    eventSelectionMap.set(Map.empty)
+    eventFieldSelections.set(Set.empty)
     events.foreach(addEvent(get))
   }
 
   private def navbarHandler(get: Get)(cmd: NavbarCommand): Unit = {
     cmd match {
-      case AddEventSelection(eventSelection) => addEvent(get)(eventSelection)
-      case SaveConfig(settings) => saveConfig(get, settings)
-      case LoadConfig(events) => loadConfig(get, events)
-      case x => println(s"XXX Not implemented: $x")
+      case AddEventFieldSelection(eventFieldSelection) => addEvent(get)(eventFieldSelection)
+      case SaveConfig(settings)                        => saveConfig(get, settings)
+      case LoadConfig(events)                          => loadConfig(get, events)
+      case x                                           => println(s"XXX Not implemented: $x")
     }
   }
 
   override def render(get: Get): Node = {
+    val charts = get(eventSelectionMap).keySet.toList.map { eventSelection =>
+      val eventSelections = get(eventSelectionMap)(eventSelection).toList
+      val eventStream     = get(eventStreamMap)(eventSelection)
+      Component(SingleEventStreamChart, eventSelections, eventStream)
+    }
     E.div(
       A.className("container"),
       Component(Navbar).withHandler(navbarHandler(get)),
       E.p(),
-      Component(StripChart, get(eventStreams))
+//      Component(StripChart, get(eventStreamInfoList))
+      Tags(charts)
     )
   }
 

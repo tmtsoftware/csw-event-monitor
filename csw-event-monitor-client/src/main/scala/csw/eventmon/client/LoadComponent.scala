@@ -28,10 +28,10 @@ object LoadComponent {
 }
 
 // A modal dialog for adding events to subscribe to
-case class LoadComponent() extends Component[Set[EventSelection]] {
+case class LoadComponent() extends Component[Set[EventFieldSelection]] {
   private val selectedName     = State("")
   private val selectedLoadType = State[Option[LoadType]](None)
-  private val savedConfigs     = State[Map[String, Set[EventSelection]]](Map.empty)
+  private val savedConfigs     = State[Map[String, Set[EventFieldSelection]]](Map.empty)
 
   private def makeNameItem(get: Get): Element = {
     val map           = get(savedConfigs)
@@ -56,6 +56,7 @@ case class LoadComponent() extends Component[Set[EventSelection]] {
   }
 
   private def nameSelected(name: String): Unit = {
+    println(s"XXX selected $name")
     selectedName.set(name)
   }
 
@@ -65,10 +66,10 @@ case class LoadComponent() extends Component[Set[EventSelection]] {
     loadSavedConfigsForLoadType(maybeLoadType)
   }
 
-  private def loadFromLocalStorage(): Map[String, Set[EventSelection]] = {
+  private def loadFromLocalStorage(): Map[String, Set[EventFieldSelection]] = {
     import upickle.default._
     LocalStorage(localStorageKey) match {
-      case Some(json) => read[Map[String, Set[EventSelection]]](json)
+      case Some(json) => read[Map[String, Set[EventFieldSelection]]](json)
       case None       => Map.empty
     }
   }
@@ -79,9 +80,9 @@ case class LoadComponent() extends Component[Set[EventSelection]] {
         loadType match {
           case LoadFromLocalStorage => loadFromLocalStorage()
           // XXX TODO
-          case x => Map.empty[String, Set[EventSelection]]
+          case x => Map.empty[String, Set[EventFieldSelection]]
         }
-      case None => Map.empty[String, Set[EventSelection]]
+      case None => Map.empty[String, Set[EventFieldSelection]]
     }
     println(s"XXX set savedConfigs to $map")
     savedConfigs.set(map)
@@ -109,6 +110,7 @@ case class LoadComponent() extends Component[Set[EventSelection]] {
   }
 
   private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
+    // XXX TODO FIXME: Test bug when only one name in list (one saved config)
     val name     = get(selectedName)
     val loadType = get(selectedLoadType)
     val map = get(savedConfigs)
