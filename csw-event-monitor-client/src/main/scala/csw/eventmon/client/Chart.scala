@@ -6,6 +6,8 @@ import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 import scala.scalajs.js.annotation.JSImport
 
+// A partial scala.js facade for Chart.js
+
 @js.native
 trait ChartDataset extends js.Object {
   def label: String          = js.native
@@ -34,7 +36,7 @@ object ChartDataset {
 
 @js.native
 trait ChartData extends js.Object {
-  def labels: js.Array[String]         = js.native
+  def labels: js.Array[js.Date]        = js.native
   def datasets: js.Array[ChartDataset] = js.native
 }
 
@@ -65,9 +67,6 @@ object LegendOptions {
       .asInstanceOf[LegendOptions]
   }
 }
-
-
-
 @js.native
 trait TooltipOptions extends js.Object {
   def intersect: Boolean = js.native
@@ -84,27 +83,29 @@ object TooltipOptions {
 }
 
 @js.native
-trait TicksOptions extends js.Object {
+trait AxisOptions extends js.Object {
   def display: Boolean = js.native
+  def `type`: String   = js.native
 }
 
-object TicksOptions {
-  def apply(display: Boolean = true): TicksOptions = {
+object AxisOptions {
+  def apply(display: Boolean = true, `type`: String = "time"): AxisOptions = {
     js.Dynamic
       .literal(
         display = display,
+        `type` = `type`
       )
-      .asInstanceOf[TicksOptions]
+      .asInstanceOf[AxisOptions]
   }
 }
 
 @js.native
 trait ScalesOptions extends js.Object {
-  def xAxes: js.Array[TicksOptions] = js.native
+  def xAxes: js.Array[AxisOptions] = js.native
 }
 
 object ScalesOptions {
-  def apply(xAxes: Array[TicksOptions] = Array(TicksOptions())): ScalesOptions = {
+  def apply(xAxes: Array[AxisOptions] = Array(AxisOptions())): ScalesOptions = {
     js.Dynamic
       .literal(
         xAxes = xAxes.toJSArray,
@@ -169,7 +170,7 @@ object Chart extends js.Object {
 }
 
 object ChartUtil {
-  def addData(chart: Chart, label: String, data: Double, keep: Int = 60): Unit = {
+  def addData(chart: Chart, label: js.Date, data: Double, keep: Int = 60): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))
     if (chart.data.labels.size > keep) {

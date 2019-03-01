@@ -3,14 +3,18 @@ package csw.eventmon.client
 //import java.time.ZoneId
 //import java.time.format.{DateTimeFormatter, FormatStyle}
 
+import java.time.temporal.ChronoField
+
 import com.github.ahnfelt.react4s._
 import csw.params.events.SystemEvent
 import ChartComponent._
 
+import scala.scalajs.js
+
 object ChartComponent {
-  private val maxDatasetSize = 60
-  private val defaultData    = (0 until maxDatasetSize).map(_ => 0.0)
-  private val defaultLabels  = (0 until maxDatasetSize).map(_ => "")
+//  private val maxDatasetSize = 60
+//  private val defaultData    = (0 until maxDatasetSize).map(_ => 0.0)
+//  private val defaultLabels  = (0 until maxDatasetSize).map(_ => "")
 }
 
 case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
@@ -32,7 +36,8 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
 //    val scales   = ScalesOptions(xAxes = Array(TicksOptions(display = get(showXLabels))))
     val scales = ScalesOptions()
     // XXX TODO: Add prop for color, different for each chart
-    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
+//    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
+    val chartData = ChartData(Nil, List(ChartDataset(Nil, id, fill = false, borderColor = "#404080")))
     val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales)
     val config    = ChartConfiguration("LineWithLine", chartData, options)
     new Chart(id, config)
@@ -40,8 +45,11 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
 
   // Makes the label for the X-axis
   // XXX TODO FIXME: sync X axis between all charts
-  private def makeLabel(get: Get, event: SystemEvent): String = {
-    (event.eventTime.value.getEpochSecond % maxDatasetSize).toString
+  private def makeLabel(get: Get, event: SystemEvent): js.Date = {
+    val instant = event.eventTime.value
+    new js.Date(instant.getEpochSecond * 1000 + instant.getNano / 1000000)
+
+//    (event.eventTime.value.getEpochSecond % maxDatasetSize).toString
   }
 
   private def updateChart(get: Get): Unit = {
