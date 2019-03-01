@@ -41,9 +41,10 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
     } else {
       val names    = map.keySet.toList
       val loadType = maybeLoadType.get
-      val items    = names.map(name => E.option(A.value(name), Text(name)))
+      val defaultItem    = E.option(A.value("-"), A.disabled("true"), A.hidden("true"), Text(""))
+      val items    = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
       // Note: M.FormSelect.init() is called from main.scala.html once, but needs to be called again for dynamic <select> updates!
-      val select = E.select(A.id(nameSelectId), A.onChangeText(nameSelected), Tags(items)).withRef { _ =>
+      val select = E.select(A.id(nameSelectId), A.onChangeText(nameSelected), Tags(items), A.value("-")).withRef { _ =>
         val document = js.Dynamic.global.document
         val elem = document.getElementById(nameSelectId).asInstanceOf[org.scalajs.dom.Element]
         M.FormSelect.init(elem, js.Object())
