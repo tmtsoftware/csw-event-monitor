@@ -41,10 +41,10 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
     } else {
       val names    = map.keySet.toList
       val loadType = maybeLoadType.get
-      val defaultItem    = E.option(A.value("-"), A.disabled("true"), A.hidden("true"), Text(""))
+      val defaultItem    = E.option(A.value(""), A.disabled(), A.hidden(), Text("Choose one"))
       val items    = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
       // Note: M.FormSelect.init() is called from main.scala.html once, but needs to be called again for dynamic <select> updates!
-      val select = E.select(A.id(nameSelectId), A.onChangeText(nameSelected), Tags(items), A.value("-")).withRef { _ =>
+      val select = E.select(A.id(nameSelectId), A.onChangeText(nameSelected), Attribute("defaultValue", ""), Tags(items)).withRef { _ =>
         val document = js.Dynamic.global.document
         val elem = document.getElementById(nameSelectId).asInstanceOf[org.scalajs.dom.Element]
         M.FormSelect.init(elem, js.Object())
@@ -98,20 +98,18 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
   }
 
   private def makeButtons(get: Get): Element = {
-//    val disabled = get(selectedName).isEmpty.toString
+    val disabled = if (get(selectedName).isEmpty) "disabled" else ""
     E.div(
       A.className("modal-footer"),
       E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("Cancel")),
       E.a(A.href("#!"),
-          A.className("modal-close waves-effect waves-green btn-flat"),
-//          A.disabled(disabled),
+          A.className(s"modal-close waves-effect waves-green btn-flat $disabled"),
           A.onClick(okButtonClicked(get)),
           Text("OK"))
     )
   }
 
   private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
-    // XXX TODO FIXME: Test bug when only one name in list (one saved config)
     val name     = get(selectedName)
     val loadType = get(selectedLoadType)
     val map = get(savedConfigs)
