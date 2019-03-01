@@ -11,7 +11,7 @@ object Navbar {
   case class LoadConfig(events: Set[EventFieldSelection])                     extends NavbarCommand
 }
 
-case class Navbar() extends Component[NavbarCommand] {
+case class Navbar(eventClient: P[EventJsClient]) extends Component[NavbarCommand] {
 
   override def render(get: Get): Node = {
     E.nav(
@@ -20,7 +20,7 @@ case class Navbar() extends Component[NavbarCommand] {
         E.a(A.href("#!"), A.className("brand-logo"), Text("CSW Event Monitor")),
         E.ul(
           A.className("right"),
-          Component(EventSelectorComponent).withHandler(es => emit(AddEventFieldSelection(es))),
+          Component(EventSelectorComponent, get(eventClient)).withHandler(es => emit(AddEventFieldSelection(es))),
           Component(SaveComponent).withHandler(s => emit(SaveConfig(s))),
           Component(LoadComponent).withHandler(s => emit(LoadConfig(s)))
         )

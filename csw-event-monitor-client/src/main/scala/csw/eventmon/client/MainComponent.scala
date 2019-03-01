@@ -86,9 +86,8 @@ case class MainComponent() extends Component[NoEmit] {
     }
     E.div(
       A.className("container"),
-      Component(Navbar).withHandler(navbarHandler(get)),
+      Component(Navbar, eventClient).withHandler(navbarHandler(get)),
       E.p(),
-//      Component(StripChart, get(eventStreamInfoList))
       Tags(charts)
     )
   }

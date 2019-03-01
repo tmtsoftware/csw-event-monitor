@@ -51,10 +51,6 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     new Chart(id, config)
   }
 
-  private def isNumericKey(keyType: KeyType[_]): Boolean = {
-    keyType == IntKey || keyType == DoubleKey || keyType == FloatKey || keyType == ShortKey || keyType == ByteKey
-  }
-
   private def makeLabel(get: Get, event: SystemEvent): String = {
     (event.eventTime.value.getEpochSecond % maxDatasetSize).toString
   }
@@ -66,7 +62,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
         val maybeParam = if (info.maybeEventField.nonEmpty) {
           event.paramSet.find(_.keyName == info.maybeEventField.get)
         } else {
-          event.paramSet.find(p => isNumericKey(p.keyType))
+          event.paramSet.find(p => EventSelectorComponent.isNumericKey(p.keyType))
         }
         if (maybeParam.nonEmpty) {
           val eventValue = maybeParam.map(_.head.toString.toDouble)
