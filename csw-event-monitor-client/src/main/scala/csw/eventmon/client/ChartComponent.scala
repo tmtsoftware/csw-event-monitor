@@ -18,6 +18,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     extends Component[NoEmit] {
 
   private val maybeChart = State[Option[Chart]](None)
+//  private val maybeCanvas = State[Option[Element]](None)
   var interval : Option[SetIntervalHandle] = None
 
 
@@ -29,7 +30,8 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
 //    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
     val chartData = ChartData(Nil, List(ChartDataset(Nil, id, fill = false, borderColor = "#404080")))
     val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales)
-    val config    = ChartConfiguration("LineWithLine", chartData, options)
+//    val config    = ChartConfiguration("LineWithLine", chartData, options)
+    val config    = ChartConfiguration("line", chartData, options)
     new Chart(id, config)
   }
 
