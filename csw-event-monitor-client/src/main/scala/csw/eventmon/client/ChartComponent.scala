@@ -38,6 +38,8 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     new Chart(id, config)
   }
 
+  // Makes the label for the X-axis
+  // XXX TODO FIXME: sync X axis between all charts
   private def makeLabel(get: Get, event: SystemEvent): String = {
     (event.eventTime.value.getEpochSecond % maxDatasetSize).toString
   }
