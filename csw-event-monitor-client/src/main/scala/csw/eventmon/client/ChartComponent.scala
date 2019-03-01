@@ -4,8 +4,6 @@ package csw.eventmon.client
 //import java.time.format.{DateTimeFormatter, FormatStyle}
 
 import com.github.ahnfelt.react4s._
-import csw.params.core.generics.KeyType
-import csw.params.core.generics.KeyType._
 import csw.params.events.SystemEvent
 import ChartComponent._
 
@@ -21,22 +19,11 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     extends Component[NoEmit] {
 
   private val maybeChart = State[Option[Chart]](None)
-//  private val maybeEvent = State[Option[SystemEvent]](None)
 
 //    private val timeFormatter = DateTimeFormatter.ofPattern("mm:ss")
 //  private val timeFormatter = DateTimeFormatter
 //    .ofLocalizedDateTime(FormatStyle.SHORT)
 //    .withZone(ZoneId.of("UTC"))
-
-//  private def receiveEvents(get: Get): Unit = {
-//    get(eventStreamInfo).eventStream.onNext = {
-//      case event: SystemEvent =>
-//        updateChart(get, event)
-//        maybeEvent.set(Some(event))
-//
-//      case _ =>
-//    }
-//  }
 
   private def makeChart(get: Get, id: String): Chart = {
     val legend   = LegendOptions(position = "bottom")
@@ -65,6 +52,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
           event.paramSet.find(p => EventSelectorComponent.isNumericKey(p.keyType))
         }
         if (maybeParam.nonEmpty) {
+          // XXX TODO FIXME: Don't use head: plot all values in same chart?
           val eventValue = maybeParam.map(_.head.toString.toDouble)
           eventValue.foreach(value => ChartUtil.addData(chart, makeLabel(get, event), value))
         }

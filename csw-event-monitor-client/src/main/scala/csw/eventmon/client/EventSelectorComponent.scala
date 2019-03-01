@@ -8,6 +8,7 @@ import csw.params.core.generics.KeyType
 import csw.params.core.generics.KeyType._
 
 object EventSelectorComponent {
+  // XXX TODO FIXME: Use the whole subsystem list
 //  private val subsystemList = Subsystem.values.map(_.name).toList
   private val subsystemList = List("tcs", "test")
   private val id            = "addEvent"
@@ -41,15 +42,6 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   }
 
   private def makeComponentItem(get: Get): Element = {
-//    E.div(
-//      A.className("row"),
-//      E.div(
-//        A.className("input-field col s6"),
-//        A.onChangeText(componentSelected(get)),
-//        E.input(A.id("component"), A.`type`("text")),
-//        E.label(A.`for`("component"), Text("Component"))
-//      )
-//    )
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select component that publishes the event"))
     val subsystem  = get(selectedSubsystem)
@@ -67,15 +59,6 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   }
 
   private def makeEventNameItem(get: Get): Element = {
-//    E.div(
-//      A.className("row"),
-//      E.div(
-//        A.className("input-field col s6"),
-//        A.onChangeText(eventNameSelected(get)),
-//        E.input(A.id("eventName"), A.`type`("text")),
-//        E.label(A.`for`("eventName"), Text("Event Name"))
-//      )
-//    )
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select an event name"))
     val component  = get(selectedComponent)
@@ -93,15 +76,6 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   }
 
   private def makeEventFieldItem(get: Get): Element = {
-//    E.div(
-//      A.className("row"),
-//      E.div(
-//        A.className("input-field col s6"),
-//        A.onChangeText(eventFieldSelected(get)),
-//        E.input(A.id("eventField"), A.`type`("text")),
-//        E.label(A.`for`("eventField"), Text("Event Field"))
-//      )
-//    )
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select an event field to plot"))
     val eventName   = get(selectedEventName)
@@ -116,7 +90,6 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
         E.select(A.id(id), A.onChangeText(eventFieldSelected(get)), A.value(currentValue), Tags(items)).withRef(Materialize.formSelect(id))
       )
     )
-
   }
 
   private def makeButtons(get: Get): Element = {
