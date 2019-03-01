@@ -3,6 +3,8 @@ package csw.eventmon.client
 import scala.scalajs.js
 import org.scalajs.dom.Element
 
+import scala.scalajs.js.annotation.JSGlobal
+
 // A partial Materialize facade.
 // Note: M.FormSelect.init() is called from main.scala.html once when the page loads,
 // but needs to be called again for dynamic <select> updates!
@@ -13,6 +15,7 @@ trait FormSelect extends js.Object {
 }
 
 @js.native
+@JSGlobal
 object M extends js.Object {
   var FormSelect: FormSelect = js.native
 }
@@ -22,7 +25,7 @@ object Materialize {
 
   // Calls M.FormSelect.init() on the select element with the given id
   // (Required after any dynamic update of a select element!)
-  def formSelect(id: String)(a: Any) {
+  def formSelect(id: String)(a: Any): Unit = {
     val document = js.Dynamic.global.document
     val elem = document.getElementById(id).asInstanceOf[org.scalajs.dom.Element]
     M.FormSelect.init(elem, js.Object())

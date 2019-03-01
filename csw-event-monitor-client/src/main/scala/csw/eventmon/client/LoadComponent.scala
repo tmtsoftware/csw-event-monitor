@@ -5,8 +5,6 @@ import LoadComponent._
 import csw.eventmon.client.MainComponent.localStorageKey
 import org.scalajs.dom.ext.LocalStorage
 
-import scala.scalajs.js
-
 object LoadComponent {
   private val id = "loadConfig"
 
@@ -19,11 +17,7 @@ object LoadComponent {
   case object LoadFromFile extends LoadType {
     override val displayName = "Load from File"
   }
-  case object LoadFromConfigService extends LoadType {
-    override val displayName = "Load from Config Service"
-  }
-  val loadTypes: List[LoadType] = List(LoadFromLocalStorage, LoadFromFile, LoadFromConfigService)
-//  case class LoadSettings(name: String, loadType: LoadType)
+  val loadTypes: List[LoadType] = List(LoadFromLocalStorage, LoadFromFile)
 }
 
 // A modal dialog for adding events to subscribe to
@@ -39,7 +33,6 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
       E.div()
     } else {
       val names       = map.keySet.toList
-      val loadType    = maybeLoadType.get
       val defaultItem = E.option(A.value(""), A.disabled(), A.hidden(), Text("Choose one"))
       val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
       val id          = "loadNameSelect"
@@ -78,7 +71,7 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
         loadType match {
           case LoadFromLocalStorage => loadFromLocalStorage()
           // XXX TODO
-          case x => Map.empty[String, Set[EventFieldSelection]]
+          case _ => Map.empty[String, Set[EventFieldSelection]]
         }
       case None => Map.empty[String, Set[EventFieldSelection]]
     }
@@ -112,10 +105,6 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
     val map      = get(savedConfigs)
     if (name.nonEmpty && loadType.nonEmpty && map.contains(name)) {
       emit(map(name))
-    } else {
-      // XXX TODO: display error message
-      val msg = if (name.isEmpty || name.equals("-")) "Please choose a name to load" else "Please select where to load from"
-      println(msg)
     }
   }
 

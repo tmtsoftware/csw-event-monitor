@@ -1,20 +1,15 @@
 package csw.eventmon.client
 
-//import java.time.ZoneId
-//import java.time.format.{DateTimeFormatter, FormatStyle}
-
-import java.time.temporal.ChronoField
-
 import com.github.ahnfelt.react4s._
 import csw.params.events.SystemEvent
 import ChartComponent._
 
 import scala.scalajs.js
+import scala.scalajs.js.timers.SetIntervalHandle
 
 object ChartComponent {
-//  private val maxDatasetSize = 60
-//  private val defaultData    = (0 until maxDatasetSize).map(_ => 0.0)
-//  private val defaultLabels  = (0 until maxDatasetSize).map(_ => "")
+  // Time in ms for syncing the chart x-axes
+  val updateIntervalMs = 1000
 }
 
 case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
@@ -23,17 +18,12 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     extends Component[NoEmit] {
 
   private val maybeChart = State[Option[Chart]](None)
+  var interval : Option[SetIntervalHandle] = None
 
-//    private val timeFormatter = DateTimeFormatter.ofPattern("mm:ss")
-//  private val timeFormatter = DateTimeFormatter
-//    .ofLocalizedDateTime(FormatStyle.SHORT)
-//    .withZone(ZoneId.of("UTC"))
 
   private def makeChart(get: Get, id: String): Chart = {
     val legend   = LegendOptions(position = "bottom")
     val tooltips = TooltipOptions(intersect = false)
-    // XXX TODO: How to keep grid lines but hide x labels?
-//    val scales   = ScalesOptions(xAxes = Array(TicksOptions(display = get(showXLabels))))
     val scales = ScalesOptions()
     // XXX TODO: Add prop for color, different for each chart
 //    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
@@ -44,12 +34,9 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
   }
 
   // Makes the label for the X-axis
-  // XXX TODO FIXME: sync X axis between all charts
   private def makeLabel(get: Get, event: SystemEvent): js.Date = {
     val instant = event.eventTime.value
     new js.Date(instant.getEpochSecond * 1000 + instant.getNano / 1000000)
-
-//    (event.eventTime.value.getEpochSecond % maxDatasetSize).toString
   }
 
   private def updateChart(get: Get): Unit = {
@@ -68,6 +55,16 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
         }
       }
     }
+  }
+
+  override def componentWillRender(get : Get): Unit = {
+    if(interval.isEmpty) interval = Some(js.timers.setInterval(updateIntervalMs) {
+      get(maybeChart).foreach(ChartUtil.adjustChart)
+    })
+  }
+
+  override def componentWillUnmount(get : Get): Unit = {
+    for (i <- interval) js.timers.clearInterval(i)
   }
 
   override def render(get: Get): Node = {

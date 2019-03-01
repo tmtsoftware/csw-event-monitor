@@ -1,10 +1,12 @@
 package csw.eventmon.client
 
+import java.util.Date
+
 import org.scalajs.dom.Element
 
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
-import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.annotation.{JSGlobal, JSImport}
 
 // A partial scala.js facade for Chart.js
 
@@ -70,15 +72,35 @@ object LegendOptions {
 @js.native
 trait TooltipOptions extends js.Object {
   def intersect: Boolean = js.native
+  def position: String = js.native
 }
 
 object TooltipOptions {
-  def apply(intersect: Boolean = true): TooltipOptions = {
+  def apply(intersect: Boolean = true, position: String = "average"): TooltipOptions = {
     js.Dynamic
       .literal(
-        intersect = intersect
+        intersect = intersect,
+        position = position
       )
       .asInstanceOf[TooltipOptions]
+  }
+}
+
+@js.native
+trait AxisTime extends js.Object {
+  var min: js.Date = js.native
+  var max: js.Date = js.native
+}
+
+object AxisTime {
+  // Default to min X-axis
+  def apply(min: js.Date = ChartUtil.minTime, max: js.Date = ChartUtil.maxTime): AxisTime = {
+    js.Dynamic
+      .literal(
+        min = min,
+        max = max,
+      )
+      .asInstanceOf[AxisTime]
   }
 }
 
@@ -86,14 +108,16 @@ object TooltipOptions {
 trait AxisOptions extends js.Object {
   def display: Boolean = js.native
   def `type`: String   = js.native
+  def time: AxisTime   = js.native
 }
 
 object AxisOptions {
-  def apply(display: Boolean = true, `type`: String = "time"): AxisOptions = {
+  def apply(display: Boolean = true, `type`: String = "time", time: AxisTime = AxisTime()): AxisOptions = {
     js.Dynamic
       .literal(
         display = display,
-        `type` = `type`
+        `type` = `type`,
+        time = time
       )
       .asInstanceOf[AxisOptions]
   }
@@ -161,22 +185,40 @@ object ChartConfiguration {
 class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
   def update(): Unit  = js.native
   def data: ChartData = js.native
+  def options: ChartOptions = js.native
   def canvas: Element = js.native
 }
 
 @js.native
+@JSGlobal
 object Chart extends js.Object {
   def instances: js.Dictionary[Chart] = js.native
 }
 
 object ChartUtil {
-  def addData(chart: Chart, label: js.Date, data: Double, keep: Int = 60): Unit = {
+  // Keep this many seconds of data
+  val keepSecs = 60
+  // Min time for X time axis
+  def minTime = new js.Date(new Date().getTime - keepSecs*1000)
+  // Max time for X time axis
+  def maxTime = new js.Date(new Date().getTime)
+
+  // Add a data point to the chart, keep 60 seconds worth of data
+  def addData(chart: Chart, label: js.Date, data: Double): Unit = {
     chart.data.labels.push(label)
     chart.data.datasets.foreach(_.data.push(data))
-    if (chart.data.labels.size > keep) {
+    val t = minTime
+    while(chart.data.labels.nonEmpty && chart.data.labels(0).getTime() < t.getTime()) {
       chart.data.labels.shift()
       chart.data.datasets.foreach(_.data.shift())
     }
+    adjustChart(chart)
+  }
+
+  // Adjusts the min and max values of the X-axis to keep it in sync with the other charts
+  def adjustChart(chart: Chart): Unit = {
+    chart.options.scales.xAxes(0).time.min = minTime
+    chart.options.scales.xAxes(0).time.max = maxTime
     chart.update()
   }
 

@@ -25,14 +25,11 @@ case class MainComponent() extends Component[NoEmit] {
   private def addEvent(get: Get)(eventFieldSelection: EventFieldSelection): Unit = {
     if (!get(eventFieldSelections).contains(eventFieldSelection)) {
       val eventSelection = eventFieldSelection.eventSelection
-      val eventStream = if (!get(eventStreamMap).contains(eventSelection)) {
-        val es =
+      if (!get(eventStreamMap).contains(eventSelection)) {
+        val eventStream =
           eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
-        eventStreamMap.modify(_ + (eventSelection    -> es))
+        eventStreamMap.modify(_ + (eventSelection    -> eventStream))
         eventSelectionMap.modify(_ + (eventSelection -> Set(eventFieldSelection)))
-        es
-      } else {
-        get(eventStreamMap)(eventFieldSelection.eventSelection)
       }
       val fields = get(eventSelectionMap)(eventSelection) + eventFieldSelection
       eventSelectionMap.modify(_ + (eventSelection -> fields))

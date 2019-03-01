@@ -10,14 +10,12 @@ case class SingleEventStreamChart(eventFieldSelections: P[List[EventFieldSelecti
   private def receiveEvents(get: Get): Unit = {
     get(eventStream).onNext = {
       case event: SystemEvent =>
-        println(s"XXX SingleEventStreamChart: received event")
         maybeEvent.set(Some(event))
       case _ =>
     }
   }
 
   override def render(get: Get): Node = {
-    println(s"XXX SingleEventStreamChart.render")
     val charts = get(eventFieldSelections).map { eventFieldSelection =>
       val id          = eventFieldSelection.toString
       val showXLabels = eventFieldSelection == get(eventFieldSelections).last
