@@ -9,9 +9,10 @@ object Navbar {
   case class AddEventFieldSelection(eventFieldSelection: EventFieldSelection) extends NavbarCommand
   case class SaveConfig(settings: SaveSettings)                               extends NavbarCommand
   case class LoadConfig(events: Set[EventFieldSelection])                     extends NavbarCommand
+  case class Pause(paused: Boolean)                                           extends NavbarCommand
 }
 
-case class Navbar(eventClient: P[EventJsClient]) extends Component[NavbarCommand] {
+case class Navbar(eventClient: P[EventJsClient], numPlots: P[Int]) extends Component[NavbarCommand] {
 
   override def render(get: Get): Node = {
     E.nav(
@@ -22,7 +23,8 @@ case class Navbar(eventClient: P[EventJsClient]) extends Component[NavbarCommand
           A.className("right"),
           Component(EventSelectorComponent, get(eventClient)).withHandler(es => emit(AddEventFieldSelection(es))),
           Component(SaveComponent).withHandler(s => emit(SaveConfig(s))),
-          Component(LoadComponent).withHandler(s => emit(LoadConfig(s)))
+          Component(LoadComponent).withHandler(s => emit(LoadConfig(s))),
+          Component(PauseComponent, get(numPlots) != 0).withHandler(s => emit(Pause(s))),
         )
       )
     )

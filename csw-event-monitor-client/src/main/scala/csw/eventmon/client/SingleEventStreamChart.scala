@@ -2,7 +2,9 @@ package csw.eventmon.client
 import com.github.ahnfelt.react4s._
 import csw.params.events.{Event, SystemEvent}
 
-case class SingleEventStreamChart(eventFieldSelections: P[List[EventFieldSelection]], eventStream: P[EventStream[Event]])
+case class SingleEventStreamChart(eventFieldSelections: P[List[EventFieldSelection]],
+                                  eventStream: P[EventStream[Event]],
+                                  paused: P[Boolean])
     extends Component[NoEmit] {
 
   private val maybeEvent = State[Option[SystemEvent]](None)
@@ -19,7 +21,9 @@ case class SingleEventStreamChart(eventFieldSelections: P[List[EventFieldSelecti
     val charts = get(eventFieldSelections).map { eventFieldSelection =>
       val id          = eventFieldSelection.toString
       val showXLabels = eventFieldSelection == get(eventFieldSelections).last
-      Component(ChartComponent, eventFieldSelection, get(maybeEvent), showXLabels).withKey(id).withRef(_ => receiveEvents(get))
+      Component(ChartComponent, eventFieldSelection, get(maybeEvent), showXLabels, get(paused))
+        .withKey(id)
+        .withRef(_ => receiveEvents(get))
     }
 
     E.div(Tags(charts))

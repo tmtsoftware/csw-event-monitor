@@ -1,7 +1,7 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.Navbar.{AddEventFieldSelection, LoadConfig, NavbarCommand, SaveConfig}
+import csw.eventmon.client.Navbar.{apply => _, unapply => _, _}
 import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToFile, SaveToLocalStorage}
 import org.scalajs.dom.ext.LocalStorage
 
@@ -20,6 +20,7 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventFieldSelections = State[Set[EventFieldSelection]](Set.empty)
   private val eventStreamMap       = State[Map[EventSelection, EventStream[Event]]](Map.empty)
   private val eventSelectionMap    = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)
+  private val paused               = State[Boolean](false)
 
   // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventFieldSelection: EventFieldSelection): Unit = {
@@ -71,6 +72,7 @@ case class MainComponent() extends Component[NoEmit] {
       case AddEventFieldSelection(eventFieldSelection) => addEvent(get)(eventFieldSelection)
       case SaveConfig(settings)                        => saveConfig(get, settings)
       case LoadConfig(events)                          => loadConfig(get, events)
+      case Pause(p)                                    => paused.set(p)
       case x                                           => println(s"XXX Not implemented: $x")
     }
   }
@@ -79,11 +81,11 @@ case class MainComponent() extends Component[NoEmit] {
     val charts = get(eventSelectionMap).keySet.toList.map { eventSelection =>
       val eventSelections = get(eventSelectionMap)(eventSelection).toList
       val eventStream     = get(eventStreamMap)(eventSelection)
-      Component(SingleEventStreamChart, eventSelections, eventStream)
+      Component(SingleEventStreamChart, eventSelections, eventStream, get(paused))
     }
     E.div(
       A.className("container"),
-      Component(Navbar, eventClient).withHandler(navbarHandler(get)),
+      Component(Navbar, eventClient, get(eventFieldSelections).size).withHandler(navbarHandler(get)),
       E.p(),
       Tags(charts)
     )

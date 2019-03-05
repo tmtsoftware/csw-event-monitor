@@ -118,7 +118,7 @@ trait DisplayFormats extends js.Object {
 }
 
 object DisplayFormats {
-  val fmt = "mm:ss.S"
+  val fmt = "HH:mm:ss"
   def apply(
       millisecond: String = fmt,
       second: String = fmt,
@@ -161,6 +161,7 @@ object AxisTime {
       .literal(
         min = min,
         max = max,
+        displayFormats = displayFormats
       )
       .asInstanceOf[AxisTime]
   }
@@ -257,13 +258,18 @@ object Chart extends js.Object {
   def instances: js.Dictionary[Chart] = js.native
 }
 
+/**
+  * This object is not part of the facade. It contains utility methods.
+  */
 object ChartUtil {
   // Keep this many seconds of data
   val keepSecs = 60
   // Min time for X time axis
   def minTime = new js.Date(new Date().getTime - keepSecs * 1000)
+  // Padding in ms for the right side of the x-axis, so that new items are immediately visible
+  val xAxisPaddingMs = 2000
   // Max time for X time axis
-  def maxTime = new js.Date(new Date().getTime)
+  def maxTime = new js.Date(new Date().getTime + xAxisPaddingMs)
 
   // Add a data point to the chart, keep 60 seconds worth of data
   def addData(chart: Chart, label: js.Date, data: Double): Unit = {

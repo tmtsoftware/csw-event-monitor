@@ -109,7 +109,6 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
     maybeEventStream.set(Some(get(eventClient).subscribe(subsystem.toLowerCase(), maybeComponent, maybeEvent)))
     get(maybeEventStream).get.onNext = {
       case event: SystemEvent =>
-        println(s"XXX EventSelectorComponent: received event")
         val component  = event.source.prefix.split('.').tail.head
         val eventName  = event.eventName.name
         val fields     = event.paramSet.filter(p => isNumericKey(p.keyType)).map(_.keyName)
