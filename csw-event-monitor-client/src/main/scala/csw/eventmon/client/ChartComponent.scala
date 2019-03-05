@@ -9,7 +9,8 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object ChartComponent {
   // Time in ms for syncing the chart x-axes
-  val updateIntervalMs = 1000
+//  val updateIntervalMs = 1000
+  val updateIntervalMs = 30
 }
 
 case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
@@ -24,7 +25,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
 
   private def makeChart(get: Get, id: String): Chart = {
     val legend   = LegendOptions(position = "bottom")
-    val tooltips = TooltipOptions(intersect = false)
+    val tooltips = TooltipOptions()
     val scales   = ScalesOptions()
     // XXX TODO: Add prop for color, different for each chart
 //    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))

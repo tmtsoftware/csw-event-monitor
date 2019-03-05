@@ -11,8 +11,10 @@ Chart.controllers.LineWithLine = Chart.controllers.line.extend({
             var activePoint = this.chart.tooltip._active[0],
                 ctx = this.chart.ctx,
                 x = activePoint.tooltipPosition().x,
-                topY = this.chart.scales['y-axis-0'].top,
-                bottomY = this.chart.scales['y-axis-0'].bottom;
+                // topY = this.chart.scales['y-axis-0'].top,
+                // bottomY = this.chart.scales['y-axis-0'].bottom;
+                topY = 0,
+                bottomY = this.chart.scales['y-axis-0'].bottom + 40;
 
             // draw line
             ctx.save();
@@ -20,7 +22,9 @@ Chart.controllers.LineWithLine = Chart.controllers.line.extend({
             ctx.moveTo(x, topY);
             ctx.lineTo(x, bottomY);
             ctx.lineWidth = 2;
-            ctx.strokeStyle = '#07C';
+            // ctx.strokeStyle = '#07C';
+            ctx.strokeStyle = "#333";
+            ctx.setLineDash([10, 10]);
             ctx.stroke();
             ctx.restore();
         }
@@ -29,6 +33,7 @@ Chart.controllers.LineWithLine = Chart.controllers.line.extend({
 
 Chart.defaults.global.hover.animationDuration = 0;
 Chart.defaults.global.hover.intersect = false;
+Chart.defaults.global.hover.mode = 'nearest';
 
 // Global chart.js tooltip formatting (easier to do it in JS)
 Chart.defaults.global.tooltips.callbacks.label = function(tooltipItem, data) {

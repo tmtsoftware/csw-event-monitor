@@ -88,15 +88,17 @@ object TooltipStyle {
 @js.native
 trait TooltipOptions extends js.Object {
   def intersect: Boolean = js.native
+  def mode: String = js.native
   def position: String   = js.native
   def style: String      = js.native
 }
 
 object TooltipOptions {
-  def apply(intersect: Boolean = true, position: String = "average", style: TooltipStyle = TooltipStyle()): TooltipOptions = {
+  def apply(intersect: Boolean = false, mode: String = "nearest", position: String = "average", style: TooltipStyle = TooltipStyle()): TooltipOptions = {
     js.Dynamic
       .literal(
         intersect = intersect,
+        mode = mode,
         position = position,
         style = style
       )
