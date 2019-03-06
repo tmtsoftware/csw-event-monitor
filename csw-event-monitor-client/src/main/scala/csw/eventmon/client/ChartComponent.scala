@@ -36,20 +36,19 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
   }
 
   private def updateChart(get: Get): Unit = {
-    if (!get(paused)) {
-      get(maybeChart).foreach { chart =>
-        get(maybeEvent).foreach { event =>
-          val info = get(eventFieldSelection)
-          val maybeParam = if (info.maybeEventField.nonEmpty) {
-            event.paramSet.find(_.keyName == info.maybeEventField.get)
-          } else {
-            event.paramSet.find(p => EventSelectorComponent.isNumericKey(p.keyType))
-          }
-          if (maybeParam.nonEmpty) {
-            // XXX TODO FIXME: Don't use head: plot all values in same chart?
-            val eventValue = maybeParam.map(_.head.toString.toDouble)
-            eventValue.foreach(value => ChartUtil.addData(chart, makeLabel(get, event), value))
-          }
+    get(maybeChart).foreach { chart =>
+      chart.options.scales.xAxes(0).realtime.pause = get(paused)
+      get(maybeEvent).foreach { event =>
+        val info = get(eventFieldSelection)
+        val maybeParam = if (info.maybeEventField.nonEmpty) {
+          event.paramSet.find(_.keyName == info.maybeEventField.get)
+        } else {
+          event.paramSet.find(p => EventSelectorComponent.isNumericKey(p.keyType))
+        }
+        if (maybeParam.nonEmpty) {
+          // XXX TODO FIXME: Don't use head: plot all values in same chart?
+          val eventValue = maybeParam.map(_.head.toString.toDouble)
+          eventValue.foreach(value => ChartUtil.addData(chart, makeLabel(get, event), value))
         }
       }
     }

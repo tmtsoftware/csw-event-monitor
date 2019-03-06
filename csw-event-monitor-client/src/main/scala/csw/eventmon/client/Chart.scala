@@ -190,7 +190,7 @@ object AxisTime {
 trait Realtime extends js.Object {
   def duration: Int  = js.native
   def delay: Int     = js.native
-  def pause: Boolean = js.native
+  var pause: Boolean = js.native
 }
 
 object Realtime {
