@@ -2,16 +2,9 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import csw.params.events.SystemEvent
-import ChartComponent._
 
 import scala.scalajs.js
 import scala.scalajs.js.timers.SetIntervalHandle
-
-object ChartComponent {
-  // Time in ms for syncing the chart x-axes
-//  val updateIntervalMs = 1000
-  val updateIntervalMs = 30
-}
 
 case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
                           maybeEvent: P[Option[SystemEvent]],
@@ -60,14 +53,6 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
         }
       }
     }
-  }
-
-  override def componentWillRender(get: Get): Unit = {
-    if (interval.isEmpty)
-      interval = Some(js.timers.setInterval(updateIntervalMs) {
-        if (!get(paused))
-          get(maybeChart).foreach(ChartUtil.adjustChart)
-      })
   }
 
   override def componentWillUnmount(get: Get): Unit = {

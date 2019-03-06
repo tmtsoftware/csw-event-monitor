@@ -11,15 +11,31 @@ import scala.scalajs.js.annotation.{JSGlobal, JSImport}
 // A partial scala.js facade for Chart.js
 
 @js.native
+trait DataPoint extends js.Object {
+  def x: js.Date = js.native
+  def y: Double  = js.native
+}
+
+object DataPoint {
+  def apply(x: js.Date, y: Double): DataPoint = {
+    js.Dynamic
+      .literal(
+        x = x,
+        y = y,
+      )
+      .asInstanceOf[DataPoint]
+  }
+}
+@js.native
 trait ChartDataset extends js.Object {
-  def label: String          = js.native
-  def data: js.Array[Double] = js.native
-  def fillColor: String      = js.native
-  def strokeColor: String    = js.native
+  def label: String             = js.native
+  def data: js.Array[DataPoint] = js.native
+  def fillColor: String         = js.native
+  def strokeColor: String       = js.native
 }
 
 object ChartDataset {
-  def apply(data: Seq[Double],
+  def apply(data: Seq[DataPoint],
             label: String,
             fill: Boolean = true,
             backgroundColor: String = "#8080FF",
@@ -88,13 +104,16 @@ object TooltipStyle {
 @js.native
 trait TooltipOptions extends js.Object {
   def intersect: Boolean = js.native
-  def mode: String = js.native
+  def mode: String       = js.native
   def position: String   = js.native
   def style: String      = js.native
 }
 
 object TooltipOptions {
-  def apply(intersect: Boolean = false, mode: String = "nearest", position: String = "average", style: TooltipStyle = TooltipStyle()): TooltipOptions = {
+  def apply(intersect: Boolean = false,
+            mode: String = "nearest",
+            position: String = "average",
+            style: TooltipStyle = TooltipStyle()): TooltipOptions = {
     js.Dynamic
       .literal(
         intersect = intersect,
@@ -156,13 +175,11 @@ trait AxisTime extends js.Object {
 
 object AxisTime {
   // Default to min X-axis
-  def apply(min: js.Date = ChartUtil.minTime,
-            max: js.Date = ChartUtil.maxTime,
-            displayFormats: DisplayFormats = DisplayFormats()): AxisTime = {
+  def apply(
+      displayFormats: DisplayFormats = DisplayFormats()
+  ): AxisTime = {
     js.Dynamic
       .literal(
-        min = min,
-        max = max,
         displayFormats = displayFormats
       )
       .asInstanceOf[AxisTime]
@@ -170,40 +187,115 @@ object AxisTime {
 }
 
 @js.native
-trait AxisOptions extends js.Object {
-  def display: Boolean = js.native
-  def `type`: String   = js.native
-  def time: AxisTime   = js.native
+trait Realtime extends js.Object {
+  def duration: Int  = js.native
+  def delay: Int     = js.native
+  def pause: Boolean = js.native
 }
 
-object AxisOptions {
-  def apply(display: Boolean = true, `type`: String = "time", time: AxisTime = AxisTime()): AxisOptions = {
+object Realtime {
+  def apply(duration: Int = 60000, delay: Int = 1000, pause: Boolean = false): Realtime = {
+    js.Dynamic
+      .literal(
+        duration = duration,
+        delay = delay,
+        pause = pause
+      )
+      .asInstanceOf[Realtime]
+  }
+}
+
+@js.native
+trait XAxisOptions extends js.Object {
+  def display: Boolean   = js.native
+  def `type`: String     = js.native
+  def time: AxisTime     = js.native
+  def realtime: Realtime = js.native
+}
+
+object XAxisOptions {
+  def apply(display: Boolean = true,
+            `type`: String = "realtime",
+            time: AxisTime = AxisTime(),
+            realtime: Realtime = Realtime()): XAxisOptions = {
     js.Dynamic
       .literal(
         display = display,
         `type` = `type`,
-        time = time
+        time = time,
+        realtime = realtime
       )
-      .asInstanceOf[AxisOptions]
+      .asInstanceOf[XAxisOptions]
+  }
+}
+
+@js.native
+trait YAxisOptions extends js.Object {
+  def display: Boolean = js.native
+}
+
+object YAxisOptions {
+  def apply(display: Boolean = true): YAxisOptions = {
+    js.Dynamic
+      .literal(
+        display = display
+      )
+      .asInstanceOf[YAxisOptions]
+  }
+}
+
+@js.native
+trait ScaleLabel extends js.Object {
+  def display: Boolean = js.native
+}
+
+object ScaleLabel {
+  def apply(display: Boolean = false): ScaleLabel = {
+    js.Dynamic
+      .literal(
+        display = display
+      )
+      .asInstanceOf[ScaleLabel]
   }
 }
 
 @js.native
 trait ScalesOptions extends js.Object {
-  def xAxes: js.Array[AxisOptions] = js.native
+  def xAxes: js.Array[XAxisOptions] = js.native
+  def yAxes: js.Array[YAxisOptions] = js.native
 }
 
 object ScalesOptions {
-  def apply(xAxes: Array[AxisOptions] = Array(AxisOptions())): ScalesOptions = {
+  def apply(xAxes: Array[XAxisOptions] = Array(XAxisOptions()),
+            yAxes: Array[YAxisOptions] = Array(YAxisOptions())): ScalesOptions = {
     js.Dynamic
       .literal(
         xAxes = xAxes.toJSArray,
+        yAxes = yAxes.toJSArray
       )
       .asInstanceOf[ScalesOptions]
   }
 }
+
+@js.native
+trait ChartTitle extends js.Object {
+  def display: Boolean = js.native
+  def text: String     = js.native
+}
+
+object ChartTitle {
+  def apply(display: Boolean = true, text: String = "XXX ADD TITLE HERE"): ChartTitle = {
+    js.Dynamic
+      .literal(
+        display = display,
+        text = text
+      )
+      .asInstanceOf[ChartTitle]
+  }
+}
 @js.native
 trait ChartOptions extends js.Object {
+  def title: ChartTitle        = js.native
   def responsive: Boolean      = js.native
   def legend: LegendOptions    = js.native
   def tooltips: TooltipOptions = js.native
@@ -246,12 +338,26 @@ object ChartConfiguration {
 }
 
 @js.native
+trait UpdateOptions extends js.Object {
+  def preservation: Boolean = js.native
+}
+
+object UpdateOptions {
+  def apply(preservation: Boolean = true): UpdateOptions = {
+    js.Dynamic
+      .literal(
+        preservation = preservation
+      )
+      .asInstanceOf[UpdateOptions]
+  }
+}
+@js.native
 @JSImport("chart.js", JSImport.Namespace)
 class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
-  def update(): Unit        = js.native
-  def data: ChartData       = js.native
-  def options: ChartOptions = js.native
-  def canvas: Element       = js.native
+  def update(options: UpdateOptions = UpdateOptions()): Unit = js.native
+  def data: ChartData                                        = js.native
+  def options: ChartOptions                                  = js.native
+  def canvas: Element                                        = js.native
 }
 
 @js.native
@@ -260,36 +366,25 @@ object Chart extends js.Object {
   def instances: js.Dictionary[Chart] = js.native
 }
 
-/**
-  * This object is not part of the facade. It contains utility methods.
-  */
-object ChartUtil {
-  // Keep this many seconds of data
-  val keepSecs = 60
-  // Min time for X time axis
-  def minTime = new js.Date(new Date().getTime - keepSecs * 1000)
-  // Padding in ms for the right side of the x-axis, so that new items are immediately visible
-  val xAxisPaddingMs = 2000
-  // Max time for X time axis
-  def maxTime = new js.Date(new Date().getTime + xAxisPaddingMs)
+//@js.native
+//@JSImport("chartjs-plugin-streaming", JSImport.Namespace)
+//class ChartPluginStreaming() extends js.Object {}
+//
+//@js.native
+//@JSGlobal
+//object ChartPluginStreaming extends js.Object {
+//  def init(): Unit = {
+//    println("XXX FIXME")
+//  }
+//}
 
+/**
+ * This object is not part of the facade. It contains utility methods.
+ */
+object ChartUtil {
   // Add a data point to the chart, keep 60 seconds worth of data
   def addData(chart: Chart, label: js.Date, data: Double): Unit = {
-    chart.data.labels.push(label)
-    chart.data.datasets.foreach(_.data.push(data))
-    val t = minTime
-    while (chart.data.labels.nonEmpty && chart.data.labels(0).getTime() < t.getTime()) {
-      chart.data.labels.shift()
-      chart.data.datasets.foreach(_.data.shift())
-    }
+    chart.data.datasets(0).data.push(DataPoint(label, data))
     chart.update()
   }
-
-  // Adjusts the min and max values of the X-axis to keep it in sync with the other charts
-  def adjustChart(chart: Chart): Unit = {
-    chart.options.scales.xAxes(0).time.min = minTime
-    chart.options.scales.xAxes(0).time.max = maxTime
-    chart.update()
-  }
-
 }

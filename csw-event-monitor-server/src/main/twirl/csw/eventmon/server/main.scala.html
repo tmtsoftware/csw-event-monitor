@@ -21,6 +21,8 @@
         <script src="/assets/js/materializeInit.js"></script>
         @content
         @scalajs.html.scripts("csw-event-monitor-client", name => s"/assets/$name", name => getClass.getResource(s"/public/$name") != null)
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+        <script src="https://github.com/nagix/chartjs-plugin-streaming/releases/download/v1.7.1/chartjs-plugin-streaming.js"></script>
         <script src="/assets/js/chartSettings.js"></script>
     </body>
 </html>

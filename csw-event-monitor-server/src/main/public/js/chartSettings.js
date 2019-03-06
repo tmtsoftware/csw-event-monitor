@@ -44,7 +44,6 @@ Chart.defaults.global.tooltips.callbacks.label = function(tooltipItem, data) {
 };
 
 Chart.defaults.global.tooltips.callbacks.title = function(tooltipItem, data) {
-    // var d = new Date(data.labels[tooltipItem.datasetIndex]);
-    var d = data.labels[tooltipItem[0].index];
+    var d = data.datasets[0].data[tooltipItem[0].index].x;
     return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2);
 };

@@ -28,7 +28,8 @@ lazy val `csw-event-monitor-client` = project
     npmDependencies in Compile ++= Seq(
       "react"     -> "16.4.1",
       "react-dom" -> "16.4.2",
-      "chart.js" -> "2.7.3"
+      "chart.js" -> "2.7.3",
+//      "chartjs-plugin-streaming" -> "1.7.1",
     ),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
