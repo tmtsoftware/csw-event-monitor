@@ -1,4 +1,5 @@
 var globalModules = {
+    materialize_css: "materialize-css",
     moment: "moment",
     chartjs_plugin_streaming: "chartjs-plugin-streaming"
 };

@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="theme-color" content="#000000">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">*@
         <link rel="stylesheet" href="/assets/css/layout.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="shortcut icon" href="/assets/images/favicon.ico">
@@ -17,10 +17,10 @@
         <noscript>
             You need to enable JavaScript to run this app.
         </noscript>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-        <script src="/assets/js/materializeInit.js"></script>
+        @*<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>*@
         @content
         @scalajs.html.scripts("csw-event-monitor-client", name => s"/assets/$name", name => getClass.getResource(s"/public/$name") != null)
+        <script src="/assets/js/materializeInit.js"></script>
         <script src="/assets/js/chartSettings.js"></script>
     </body>
 </html>

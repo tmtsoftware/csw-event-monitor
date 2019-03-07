@@ -26,6 +26,7 @@ lazy val `csw-event-monitor-client` = project
     scalaJSUseMainModuleInitializer := true,
     resolvers += Resolver.sonatypeRepo("snapshots"),
     npmDependencies in Compile ++= Seq(
+      "materialize-css"          -> "1.0.0",
       "react"                    -> "16.4.1",
       "react-dom"                -> "16.4.2",
       "chart.js"                 -> "2.7.3",
@@ -35,7 +36,9 @@ lazy val `csw-event-monitor-client` = project
     npmDevDependencies in Compile ++= Seq(
       "webpack-merge"  -> "4.2.1",
       "imports-loader" -> "0.8.0",
-      "expose-loader"  -> "0.7.5"
+      "expose-loader"  -> "0.7.5",
+      "css-loader"  -> "2.1.1",
+      "style-loader"  -> "0.23.1"
     ),
     webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js"),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
@@ -46,8 +49,6 @@ lazy val `csw-event-monitor-client` = project
       Utils.`enumeratum`.value,
       Utils.`enumeratum-play-json`.value,
       Utils.`upickle`.value,
-//      Utils.`scala-js-materializecss`.value,
-//      Utils.`scala-java-time`.value,
       Csw.`csw-params`.value
     ),
     version in webpack := "4.8.1",
