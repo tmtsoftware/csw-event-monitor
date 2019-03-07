@@ -26,11 +26,18 @@ lazy val `csw-event-monitor-client` = project
     scalaJSUseMainModuleInitializer := true,
     resolvers += Resolver.sonatypeRepo("snapshots"),
     npmDependencies in Compile ++= Seq(
-      "react"     -> "16.4.1",
-      "react-dom" -> "16.4.2",
-      "chart.js" -> "2.7.3",
-//      "chartjs-plugin-streaming" -> "1.7.1",
+      "react"                    -> "16.4.1",
+      "react-dom"                -> "16.4.2",
+      "chart.js"                 -> "2.7.3",
+      "moment"                   -> "2.22.2",
+      "chartjs-plugin-streaming" -> "1.7.1",
     ),
+    npmDevDependencies in Compile ++= Seq(
+      "webpack-merge"  -> "4.2.1",
+      "imports-loader" -> "0.8.0",
+      "expose-loader"  -> "0.7.5"
+    ),
+    webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js"),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
       React4s.`react4s`.value,
@@ -54,4 +61,6 @@ lazy val `csw-event-monitor-client` = project
   )
 
 // loads the server project at sbt startup
-onLoad in Global := (onLoad in Global).value andThen {s: State => "project csw-event-monitor-server" :: s}
+onLoad in Global := (onLoad in Global).value andThen { s: State =>
+  "project csw-event-monitor-server" :: s
+}

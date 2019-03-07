@@ -360,23 +360,25 @@ class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
   def canvas: Element                                        = js.native
 }
 
+
+//@js.native
+//@JSImport("./moment/min/moment.min.js", JSImport.Default)
+//object Moment extends js.Object
+//
+//
+//@js.native
+//@JSImport("./chartjs-plugin-streaming/dist/chartjs-plugin-streaming.min.js", JSImport.Default)
+//object ChartPluginStreaming extends js.Object
+
+
 @js.native
 @JSGlobal
 object Chart extends js.Object {
+//  private val y = Moment
+//  private val x = ChartPluginStreaming
+
   def instances: js.Dictionary[Chart] = js.native
 }
-
-//@js.native
-//@JSImport("chartjs-plugin-streaming", JSImport.Namespace)
-//class ChartPluginStreaming() extends js.Object {}
-//
-//@js.native
-//@JSGlobal
-//object ChartPluginStreaming extends js.Object {
-//  def init(): Unit = {
-//    println("XXX FIXME")
-//  }
-//}
 
 /**
  * This object is not part of the facade. It contains utility methods.
