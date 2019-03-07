@@ -3,10 +3,15 @@ package csw.eventmon.client
 import com.github.ahnfelt.react4s._
 import LoadComponent._
 import csw.eventmon.client.MainComponent.localStorageKey
+import org.scalajs.dom.{FileReader, UIEvent}
 import org.scalajs.dom.ext.LocalStorage
+import org.scalajs.dom.raw.HTMLInputElement
+
+import scala.scalajs.js
 
 object LoadComponent {
   private val id = "loadConfig"
+  private val fileInputId = "fileInput"
 
   sealed trait LoadType {
     val displayName: String
@@ -20,35 +25,60 @@ object LoadComponent {
   val loadTypes: List[LoadType] = List(LoadFromLocalStorage, LoadFromFile)
 }
 
-// A modal dialog for adding events to subscribe to
+// A modal dialog for loading the current configuration from local storage or a file
 case class LoadComponent() extends Component[Set[EventFieldSelection]] {
   private val selectedName     = State("")
   private val selectedLoadType = State[Option[LoadType]](None)
   private val savedConfigs     = State[Map[String, Set[EventFieldSelection]]](Map.empty)
 
-  private def makeNameItem(get: Get): Element = {
-    val map           = get(savedConfigs)
-    val maybeLoadType = get(selectedLoadType)
-    if (map.isEmpty || maybeLoadType.isEmpty) {
-      E.div()
-    } else {
-      val names       = map.keySet.toList
-      val defaultItem = E.option(A.value(""), A.disabled(), A.hidden(), Text("Choose one"))
-      val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
-      val id          = "loadNameSelect"
-      val select = E
-        .select(A.id(id), A.onChangeText(nameSelected), Attribute("defaultValue", ""), Tags(items))
-        .withRef(Materialize.formSelect(id))
-      E.div(
-        A.className("row"),
-        E.div(A.className("input-field col s6"), select)
-      )
-    }
+  private def makeLocalStorageNameSelector(get: Get): Element = {
+    val map         = get(savedConfigs)
+    val names       = map.keySet.toList
+    val defaultItem = E.option(A.value(""), A.disabled(), A.hidden(), Text("Choose one"))
+    val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
+    val id          = "loadNameSelect"
+    val select = E
+      .select(A.id(id), A.onChangeText(selectedName.set), Attribute("defaultValue", ""), Tags(items))
+      .withRef(Materialize.formSelect(id))
+    E.div(
+      A.className("row"),
+      E.div(A.className("input-field col s6"), select)
+    )
   }
 
-  private def nameSelected(name: String): Unit = {
-    println(s"XXX selected $name")
-    selectedName.set(name)
+  private def fileSelected(get: Get)(event: SyntheticEvent): Unit = {
+    import upickle.default._
+    val reader = new FileReader()
+    reader.onload = (_: UIEvent) => {
+      val json = reader.result.asInstanceOf[String]
+      val set = read[Set[EventFieldSelection]](json)
+      selectedName.set("file") // name doesn't matter here
+      savedConfigs.set(Map("file" -> set))
+    }
+    val document           = js.Dynamic.global.document
+    val files = document.getElementById(fileInputId).asInstanceOf[HTMLInputElement].files
+    reader.readAsText(files.item(0))
+  }
+
+  private def makeFileSelector(get: Get): Element = {
+    E.form(
+      A.action("#"),
+      E.div(
+        A.className("file-field input-field"),
+        E.div(A.className("btn"), E.span(Text("Choose File")), E.input(A.id(fileInputId), A.`type`("file"), A.onChange(fileSelected(get)))),
+        E.div(A.className("file-path-wrapper"), E.input(A.className("file-path validate"), A.`type`("text")))
+      )
+    )
+  }
+
+  private def makeNameItem(get: Get): Element = {
+    get(selectedLoadType) match {
+      case None => E.div()
+      case Some(LoadFromLocalStorage) =>
+        makeLocalStorageNameSelector(get)
+      case Some(LoadFromFile) =>
+        makeFileSelector(get)
+    }
   }
 
   private def loadTypeSelected(loadTypeStr: String): Unit = {
@@ -66,17 +96,17 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
   }
 
   private def loadSavedConfigsForLoadType(maybeLoadType: Option[LoadType]): Unit = {
-    val map = maybeLoadType match {
+    maybeLoadType match {
       case Some(loadType) =>
         loadType match {
-          case LoadFromLocalStorage => loadFromLocalStorage()
-          // XXX TODO
-          case _ => Map.empty[String, Set[EventFieldSelection]]
+          case LoadFromLocalStorage =>
+            val map = loadFromLocalStorage()
+            savedConfigs.set(map)
+          case LoadFromFile =>
+            // Need to render a file input field first
         }
-      case None => Map.empty[String, Set[EventFieldSelection]]
+      case None =>
     }
-    println(s"XXX set savedConfigs to $map")
-    savedConfigs.set(map)
   }
 
   private def makeLoadtypeItem(): Element = {

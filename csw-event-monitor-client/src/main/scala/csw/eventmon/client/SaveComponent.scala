@@ -19,7 +19,7 @@ object SaveComponent {
   case class SaveSettings(name: String, saveType: SaveType)
 }
 
-// A modal dialog for adding events to subscribe to
+// A modal dialog for saving the current configuration to local storage or a file
 case class SaveComponent() extends Component[SaveSettings] {
   private val selectedName = State("")
   private val selectedSaveType = State[Option[SaveType]](None)

@@ -1,13 +1,15 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.Navbar.{apply => _, unapply => _, _}
-import csw.eventmon.client.SaveComponent.{SaveSettings, SaveToFile, SaveToLocalStorage}
+import csw.eventmon.client.Navbar._
+import csw.eventmon.client.SaveComponent._
 import org.scalajs.dom.ext.LocalStorage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import MainComponent._
 import csw.params.events.Event
+
+import scala.scalajs.js
 
 object MainComponent {
   val localStorageKey = "csw-event-monitor"
@@ -38,6 +40,7 @@ case class MainComponent() extends Component[NoEmit] {
     }
   }
 
+  // Saves the current config to local browser storage
   private def saveToLocalStorage(get: Get, name: String): Unit = {
     import upickle.default._
     val map = LocalStorage(localStorageKey) match {
@@ -49,11 +52,27 @@ case class MainComponent() extends Component[NoEmit] {
     LocalStorage(localStorageKey) = write(map)
   }
 
+  // Downloads the json for the current config.
+  // See https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser/30800715#30800715
+  private def saveToFile(get: Get, name: String): Unit = {
+    import upickle.default._
+    val json               = write(get(eventFieldSelections))
+    val fileName           = s"$name.json"
+    val dataStr            = s"data:text/json;charset=utf-8,$json"
+    val document           = js.Dynamic.global.document
+    val downloadAnchorNode = document.createElement("a")
+    downloadAnchorNode.setAttribute("href", dataStr)
+    downloadAnchorNode.setAttribute("download", fileName)
+    document.body.appendChild(downloadAnchorNode) // required for firefox
+    downloadAnchorNode.click()
+    downloadAnchorNode.remove()
+  }
+
   // Call when the user clicks Save and selects and name and type of save (file, config service, etc.)
   private def saveConfig(get: Get, settings: SaveSettings): Unit = {
     settings.saveType match {
       case SaveToLocalStorage => saveToLocalStorage(get, settings.name)
-      case SaveToFile         => // XXX FIXME TODO
+      case SaveToFile         => saveToFile(get, settings.name)
     }
   }
 
