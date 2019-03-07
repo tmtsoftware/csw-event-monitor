@@ -32,6 +32,7 @@ case class MainComponent() extends Component[NoEmit] {
         val eventStream =
           eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
         eventStreamMap.modify(_ + (eventSelection    -> eventStream))
+        println(s"XXX updated eventStreamMap: ${eventStreamMap}")
         eventSelectionMap.modify(_ + (eventSelection -> Set(eventFieldSelection)))
       }
       val fields = get(eventSelectionMap)(eventSelection) + eventFieldSelection
@@ -81,6 +82,7 @@ case class MainComponent() extends Component[NoEmit] {
   private def loadConfig(get: Get, events: Set[EventFieldSelection]): Unit = {
     get(eventStreamMap).values.foreach(_.close())
     eventStreamMap.set(Map.empty)
+    println(s"XXX cleared eventStreamMap")
     eventSelectionMap.set(Map.empty)
     eventFieldSelections.set(Set.empty)
     events.foreach(addEvent(get))
@@ -99,6 +101,7 @@ case class MainComponent() extends Component[NoEmit] {
   override def render(get: Get): Node = {
     val charts = get(eventSelectionMap).keySet.toList.map { eventSelection =>
       val eventSelections = get(eventSelectionMap)(eventSelection).toList
+      println(s"XXX eventSelection = $eventSelection, eventSelections = $eventSelections, get(eventStreamMap) = ${get(eventStreamMap)}")
       val eventStream     = get(eventStreamMap)(eventSelection)
       Component(SingleEventStreamChart, eventSelections, eventStream, get(paused))
     }

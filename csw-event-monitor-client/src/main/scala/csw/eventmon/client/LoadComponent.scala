@@ -53,8 +53,7 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
     reader.onload = (_: UIEvent) => {
       val json = reader.result.asInstanceOf[String]
       val set  = read[Set[EventFieldSelection]](json)
-      selectedName.set("file") // name doesn't matter here
-      savedConfigs.set(Map("file" -> set))
+      emit(set)
     }
     val document = js.Dynamic.global.document
     val files    = document.getElementById(fileInputId).asInstanceOf[HTMLInputElement].files
@@ -109,49 +108,70 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
     }
   }
 
-  private def makeLoadtypeItem(): Element = {
-    val defaultItem =
-      E.option(A.value("-"), A.disabled(), Text("Load from ..."))
-    val items = defaultItem :: loadTypes.map(t => E.option(A.value(t.displayName), Text(t.displayName)))
-    E.div(A.className("row"),
-          E.div(A.id("load-type-div"),
-                A.className("input-field col s6"),
-                E.select(A.onChangeText(loadTypeSelected), A.value("-"), Tags(items))))
-  }
+//  private def makeLoadtypeItem(): Element = {
+//    val defaultItem =
+//      E.option(A.value("-"), A.disabled(), Text("Load from ..."))
+//    val items = defaultItem :: loadTypes.map(t => E.option(A.value(t.displayName), Text(t.displayName)))
+//    E.div(A.className("row"),
+//          E.div(A.id("load-type-div"),
+//                A.className("input-field col s6"),
+//                E.select(A.onChangeText(loadTypeSelected), A.value("-"), Tags(items))))
+//  }
 
-  private def makeButtons(get: Get): Element = {
-    val disabled = if (get(selectedName).isEmpty) "disabled" else ""
-    E.div(
-      A.className("modal-footer"),
-      E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("Cancel")),
-      E.a(A.href("#!"),
-          A.className(s"modal-close waves-effect waves-green btn-flat $disabled"),
-          A.onClick(okButtonClicked(get)),
-          Text("OK"))
-    )
-  }
+//  private def makeButtons(get: Get): Element = {
+//    val disabled = if (get(selectedName).isEmpty) "disabled" else ""
+//    E.div(
+//      A.className("modal-footer"),
+//      E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("Cancel")),
+//      E.a(A.href("#!"),
+//          A.className(s"modal-close waves-effect waves-green btn-flat $disabled"),
+//          A.onClick(okButtonClicked(get)),
+//          Text("OK"))
+//    )
+//  }
 
-  private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
-    val name     = get(selectedName)
-    val loadType = get(selectedLoadType)
-    val map      = get(savedConfigs)
-    if (name.nonEmpty && loadType.nonEmpty && map.contains(name)) {
-      emit(map(name))
-    }
-  }
+//  private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
+//    val name     = get(selectedName)
+//    val loadType = get(selectedLoadType)
+//    val map      = get(savedConfigs)
+//    if (name.nonEmpty && loadType.nonEmpty && map.contains(name)) {
+//      emit(map(name))
+//    }
+//  }
 
-  private def makeDialogBody(get: Get): Element = {
-    E.div(makeLoadtypeItem(), makeNameItem(get))
-  }
+//  private def makeDialogBody(get: Get): Element = {
+//    E.div(makeLoadtypeItem(), makeNameItem(get))
+//  }
+
+//  <!-- Dropdown Trigger -->
+//    <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Drop Me!</a>
+//
+//  <!-- Dropdown Structure -->
+//    <ul id='dropdown1' class='dropdown-content'>
+//      <li><a href="#!">one</a></li>
+//      <li><a href="#!">two</a></li>
+//      <li class="divider" tabindex="-1"></li>
+//      <li><a href="#!">three</a></li>
+//      <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+//      <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+//    </ul>
 
   override def render(get: Get): Node = {
-    val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Load"))
-    val body = E.div(
-      A.id(id),
-      A.className("modal modal-fixed-footer"),
-      E.div(A.className("model-content"), makeDialogBody(get)),
-      E.div(A.className("modal-footer"), makeButtons(get))
-    )
-    E.li(body, trigger)
+    val trigger =
+      E.a(A.className("dropdown-trigger"), A.href("#"), Attribute("data-target", id), Text("Load"), S.paddingRight("15em"))
+//    val body = E.div(
+//      A.id(id),
+//      A.className("modal modal-fixed-footer"),
+//      E.div(A.className("model-content"), makeDialogBody(get)),
+//      E.div(A.className("modal-footer"), makeButtons(get))
+//    )
+//    E.li(body)
+    val dropdown = E.ul(A.id(id),
+                        A.className("dropdown-content"),
+                        E.li(E.a(A.href("#!"), makeFileSelector(get))),
+                        E.li(E.a(A.href("#!"), Text("From Local Storage"))))
+//    val item     = E.li(dropdown)
+
+    E.li(Fragment(trigger, dropdown))
   }
 }
