@@ -10,8 +10,9 @@ import org.scalajs.dom.raw.HTMLInputElement
 import scala.scalajs.js
 
 object LoadComponent {
-  private val id = "loadConfig"
+  private val id          = "loadConfig"
   private val fileInputId = "fileInput"
+  val loadNameSelectId    = "loadNameSelect"
 
   sealed trait LoadType {
     val displayName: String
@@ -36,38 +37,37 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
     val names       = map.keySet.toList
     val defaultItem = E.option(A.value(""), A.disabled(), A.hidden(), Text("Choose one"))
     val items       = defaultItem :: names.map(name => E.option(A.value(name), Text(name)))
-    val id          = "loadNameSelect"
     val select = E
-      .select(A.id(id), A.onChangeText(selectedName.set), Attribute("defaultValue", ""), Tags(items))
-      .withRef(Materialize.formSelect(id))
+      .select(A.id(loadNameSelectId), A.onChangeText(selectedName.set), Attribute("defaultValue", ""), Tags(items))
+      .withRef(Materialize.formSelect(loadNameSelectId))
     E.div(
       A.className("row"),
       E.div(A.className("input-field col s6"), select)
     )
   }
 
+  // Called when the use selects a file to load
   private def fileSelected(get: Get)(event: SyntheticEvent): Unit = {
     import upickle.default._
     val reader = new FileReader()
     reader.onload = (_: UIEvent) => {
       val json = reader.result.asInstanceOf[String]
-      val set = read[Set[EventFieldSelection]](json)
+      val set  = read[Set[EventFieldSelection]](json)
       selectedName.set("file") // name doesn't matter here
       savedConfigs.set(Map("file" -> set))
     }
-    val document           = js.Dynamic.global.document
-    val files = document.getElementById(fileInputId).asInstanceOf[HTMLInputElement].files
+    val document = js.Dynamic.global.document
+    val files    = document.getElementById(fileInputId).asInstanceOf[HTMLInputElement].files
     reader.readAsText(files.item(0))
   }
 
   private def makeFileSelector(get: Get): Element = {
-    E.form(
-      A.action("#"),
-      E.div(
-        A.className("file-field input-field"),
-        E.div(A.className("btn"), E.span(Text("Choose File")), E.input(A.id(fileInputId), A.`type`("file"), A.onChange(fileSelected(get)))),
-        E.div(A.className("file-path-wrapper"), E.input(A.className("file-path validate"), A.`type`("text")))
-      )
+    E.div(
+      A.className("row file-field input-field"),
+      E.div(A.className("col s6 btn"),
+            E.span(Text("Choose File")),
+            E.input(A.id(fileInputId), A.`type`("file"), A.onChange(fileSelected(get)))),
+      E.div(A.className("file-path-wrapper"), E.input(A.className("file-path validate"), A.`type`("text")))
     )
   }
 
@@ -103,7 +103,7 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
             val map = loadFromLocalStorage()
             savedConfigs.set(map)
           case LoadFromFile =>
-            // Need to render a file input field first
+          // Need to render a file input field first
         }
       case None =>
     }
@@ -114,7 +114,9 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
       E.option(A.value("-"), A.disabled(), Text("Load from ..."))
     val items = defaultItem :: loadTypes.map(t => E.option(A.value(t.displayName), Text(t.displayName)))
     E.div(A.className("row"),
-          E.div(A.className("input-field col s6"), E.select(A.onChangeText(loadTypeSelected), A.value("-"), Tags(items))))
+          E.div(A.id("load-type-div"),
+                A.className("input-field col s6"),
+                E.select(A.onChangeText(loadTypeSelected), A.value("-"), Tags(items))))
   }
 
   private def makeButtons(get: Get): Element = {

@@ -7,6 +7,7 @@ import play.api.libs.json._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
+// From esw-prototype
 class WebGateway(baseUri: String = "")(implicit ec: ExecutionContext) {
 
   implicit val unitReads: Reads[Unit] = Reads(_ => JsSuccess(()))

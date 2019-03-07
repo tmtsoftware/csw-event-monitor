@@ -8,9 +8,8 @@ import csw.params.core.generics.KeyType
 import csw.params.core.generics.KeyType._
 
 object EventSelectorComponent {
-  // XXX TODO FIXME: Use the whole subsystem list
-//  private val subsystemList = Subsystem.values.map(_.name).toList
-  private val subsystemList = List("tcs", "test")
+  private val subsystemList = Subsystem.values.map(_.name).toList
+//  private val subsystemList = List("tcs", "test")
   private val id            = "addEvent"
 
   private[client] def isNumericKey(keyType: KeyType[_]): Boolean = {

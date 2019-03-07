@@ -3,6 +3,7 @@ package csw.eventmon.client
 import org.scalajs.dom.EventSource
 import play.api.libs.json.{Json, Reads}
 
+// From esw-prototype
 class EventStream[T: Reads](eventSource: EventSource) {
 
   var onNext: T => Unit = { _ =>

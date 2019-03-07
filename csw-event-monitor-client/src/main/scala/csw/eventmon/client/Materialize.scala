@@ -9,7 +9,7 @@ import scala.scalajs.js.annotation.{JSGlobal, JSImport}
 // Note: M.FormSelect.init() is called from main.scala.html once when the page loads,
 // but needs to be called again for dynamic <select> updates!
 
-@JSImport("!style-loader!css-loader!materialize-css/dist/css/materialize.min.css", JSImport.Default )
+@JSImport("!style-loader!css-loader!materialize-css/dist/css/materialize.min.css", JSImport.Default)
 @js.native
 object MaterializeAssets extends js.Object {}
 
@@ -32,7 +32,7 @@ object Materialize {
   // (Required after any dynamic update of a select element!)
   def formSelect(id: String)(a: Any): Unit = {
     val document = js.Dynamic.global.document
-    val elem = document.getElementById(id).asInstanceOf[org.scalajs.dom.Element]
+    val elem     = document.getElementById(id).asInstanceOf[org.scalajs.dom.Element]
     M.FormSelect.init(elem, js.Object())
   }
 
