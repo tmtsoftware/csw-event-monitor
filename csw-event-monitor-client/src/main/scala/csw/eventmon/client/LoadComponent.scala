@@ -63,10 +63,8 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
   private def makeFileSelector(get: Get): Element = {
     E.div(
       A.className("file-field input-field"),
-      E.div(A.className("btn-flat"),
-            E.span(Text("Choose File")),
-            E.input(A.id(fileInputId), A.`type`("file"), A.onChange(fileSelected(get))))
-//      E.div(A.className("file-path-wrapper"), E.input(A.className("file-path validate"), A.`type`("text")))
+      E.span(Text("Choose File")),
+      E.input(A.id(fileInputId), A.`type`("file"), A.onChange(fileSelected(get)))
     )
   }
 
