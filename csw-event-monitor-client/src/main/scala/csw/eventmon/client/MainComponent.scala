@@ -115,11 +115,13 @@ case class MainComponent() extends Component[NoEmit] {
       Component(SingleEventStreamChart, eventSelections, eventStream, get(paused))
     }
     val numPlots = get(eventFieldSelections).size
+    val controls = Component(ControlComponent)
     E.div(
       A.className("container"),
       Component(Navbar, eventClient, numPlots, get(localStorageMap)).withHandler(navbarHandler(get)),
       E.p(),
-      Tags(charts)
+      Tags(charts),
+      controls
     )
   }
 
