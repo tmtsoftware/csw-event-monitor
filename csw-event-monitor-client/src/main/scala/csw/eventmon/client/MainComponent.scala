@@ -23,6 +23,7 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventStreamMap       = State[Map[EventSelection, EventStream[Event]]](Map.empty)
   private val eventSelectionMap    = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)
   private val paused               = State[Boolean](false)
+  private val localStorageMap =  State[Map[String, Set[EventFieldSelection]]](loadFromLocalStorage())
 
   // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventFieldSelection: EventFieldSelection): Unit = {
@@ -40,7 +41,7 @@ case class MainComponent() extends Component[NoEmit] {
     }
   }
 
-  // Saves the current config to local browser storage
+  // Adds the current config to local browser storage
   private def saveToLocalStorage(get: Get, name: String): Unit = {
     import upickle.default._
     val map = LocalStorage(localStorageKey) match {
@@ -50,6 +51,16 @@ case class MainComponent() extends Component[NoEmit] {
         Map(name -> get(eventFieldSelections))
     }
     LocalStorage(localStorageKey) = write(map)
+    localStorageMap.set(map)
+  }
+
+  // Loads the saved configs from local browser storage
+  private def loadFromLocalStorage(): Map[String, Set[EventFieldSelection]] = {
+    import upickle.default._
+    LocalStorage(localStorageKey) match {
+      case Some(json) => read[Map[String, Set[EventFieldSelection]]](json)
+      case None       => Map.empty
+    }
   }
 
   // Downloads the json for the current config.
@@ -103,9 +114,10 @@ case class MainComponent() extends Component[NoEmit] {
       val eventStream     = get(eventStreamMap)(eventSelection)
       Component(SingleEventStreamChart, eventSelections, eventStream, get(paused))
     }
+    val numPlots = get(eventFieldSelections).size
     E.div(
       A.className("container"),
-      Component(Navbar, eventClient, get(eventFieldSelections).size).withHandler(navbarHandler(get)),
+      Component(Navbar, eventClient, numPlots, get(localStorageMap)).withHandler(navbarHandler(get)),
       E.p(),
       Tags(charts)
     )

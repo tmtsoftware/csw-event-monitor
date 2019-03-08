@@ -2,9 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import LoadComponent._
-import csw.eventmon.client.MainComponent.localStorageKey
 import org.scalajs.dom.{FileReader, UIEvent}
-import org.scalajs.dom.ext.LocalStorage
 import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js
@@ -15,9 +13,7 @@ object LoadComponent {
 }
 
 // Manages a dropdown menu for loading the current configuration from local storage or a file
-case class LoadComponent() extends Component[Set[EventFieldSelection]] {
-
-  private val localStorageMap = State[Map[String, Set[EventFieldSelection]]](Map.empty)
+case class LoadComponent(localStorageMap: P[Map[String, Set[EventFieldSelection]]]) extends Component[Set[EventFieldSelection]] {
 
   // Called when the use selects a file to load
   private def fileSelected(get: Get)(event: SyntheticEvent): Unit = {
@@ -39,18 +35,6 @@ case class LoadComponent() extends Component[Set[EventFieldSelection]] {
       E.span(Text("Choose File ...")),
       E.input(A.id(fileInputId), A.`type`("file"), A.onChange(fileSelected(get)))
     )
-  }
-
-  private def loadFromLocalStorage(): Map[String, Set[EventFieldSelection]] = {
-    import upickle.default._
-    LocalStorage(localStorageKey) match {
-      case Some(json) => read[Map[String, Set[EventFieldSelection]]](json)
-      case None       => Map.empty
-    }
-  }
-
-  override def componentWillRender(get: Get): Unit = {
-    localStorageMap.set(loadFromLocalStorage())
   }
 
   override def render(get: Get): Node = {
