@@ -1,2 +1,10 @@
 /* increase the width, height and prevent vertical scroll! However, i don't recommend this, its better to turn on vertical scrolling. */
-.modal { width: 50% !important ; max-height: 100% !important ; overflow-y: hidden; overflow-x: hidden !important ;}
+.modal {
+    width: 50% !important ;
+    height: 60% !important ;
+    overflow: hidden !important ;
+}
+
+.dropdown-content {
+    max-height: 300px;
+}

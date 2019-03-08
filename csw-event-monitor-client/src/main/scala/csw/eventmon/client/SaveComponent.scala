@@ -28,7 +28,7 @@ case class SaveComponent() extends Component[SaveSettings] {
     E.div(
       A.className("row"),
       E.div(
-        A.className("input-field col s6"),
+        A.className("input-field col s4"),
         A.onChangeText(selectedName.set),
         E.input(A.id("name"), A.`type`("text")),
         E.label(A.`for`("name"), Text("Enter a name for this set of events:"))
@@ -47,7 +47,7 @@ case class SaveComponent() extends Component[SaveSettings] {
       E.option(A.value("-"), A.disabled(), Text("Save to ..."))
     val items = defaultItem :: saveTypes.map(t => E.option(A.value(t.displayName), Text(t.displayName)))
     E.div(A.className("row"),
-      E.div(A.className("input-field col s6"), E.select(A.onChangeText(saveTypeSelected), A.value("-"), Tags(items))))
+      E.div(A.className("input-field col s4"), E.select(A.onChangeText(saveTypeSelected), A.value("-"), Tags(items))))
 
   }
 

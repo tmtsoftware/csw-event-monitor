@@ -10,7 +10,7 @@ import csw.params.core.generics.KeyType._
 object EventSelectorComponent {
   private val subsystemList = Subsystem.values.map(_.name).toList
 //  private val subsystemList = List("tcs", "test")
-  private val id            = "addEvent"
+  private val id = "addEvent"
 
   private[client] def isNumericKey(keyType: KeyType[_]): Boolean = {
     keyType == IntKey || keyType == DoubleKey || keyType == FloatKey || keyType == ShortKey || keyType == ByteKey
@@ -36,23 +36,26 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select subsystem that publishes the event"))
     val items = defaultItem :: subsystemList.map(s => E.option(A.value(s), Text(s)))
-    E.div(A.className("row"),
-          E.div(A.className("input-field col s6"), E.select(A.onChangeText(subsystemSelected(get)), A.value(""), Tags(items))))
+    E.div(
+      A.className("row"),
+      E.div(A.className("input-field col s6"), E.select(A.onChangeText(subsystemSelected(get)), A.value(""), Tags(items)))
+    )
   }
 
   private def makeComponentItem(get: Get): Element = {
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select component that publishes the event"))
-    val subsystem  = get(selectedSubsystem)
-    val components = get(componentsForSubsystem).getOrElse(subsystem, Set.empty).toList
-    val items      = defaultItem :: components.map(s => E.option(A.value(s), Text(s)))
-    val id         = "componentSelect"
+    val subsystem    = get(selectedSubsystem)
+    val components   = get(componentsForSubsystem).getOrElse(subsystem, Set.empty).toList
+    val items        = defaultItem :: components.map(s => E.option(A.value(s), Text(s)))
+    val id           = "componentSelect"
     val currentValue = get(selectedComponent).getOrElse("")
     E.div(
       A.className("row"),
       E.div(
         A.className("input-field col s6"),
-        E.select(A.id(id), A.onChangeText(componentSelected(get)), A.value(currentValue), Tags(items)).withRef(Materialize.formSelect(id))
+        E.select(A.id(id), A.onChangeText(componentSelected(get)), A.value(currentValue), Tags(items))
+          .withRef(Materialize.formSelect(id))
       )
     )
   }
@@ -60,16 +63,17 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   private def makeEventNameItem(get: Get): Element = {
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select an event name"))
-    val component  = get(selectedComponent)
-    val eventNames = get(eventsForComponent).getOrElse(component.getOrElse(""), Set.empty).toList
-    val items      = defaultItem :: eventNames.map(s => E.option(A.value(s), Text(s)))
-    val id         = "eventNameSelect"
+    val component    = get(selectedComponent)
+    val eventNames   = get(eventsForComponent).getOrElse(component.getOrElse(""), Set.empty).toList
+    val items        = defaultItem :: eventNames.map(s => E.option(A.value(s), Text(s)))
+    val id           = "eventNameSelect"
     val currentValue = get(selectedEventName).getOrElse("")
     E.div(
       A.className("row"),
       E.div(
         A.className("input-field col s6"),
-        E.select(A.id(id), A.onChangeText(eventNameSelected(get)), A.value(currentValue), Tags(items)).withRef(Materialize.formSelect(id))
+        E.select(A.id(id), A.onChangeText(eventNameSelected(get)), A.value(currentValue), Tags(items))
+          .withRef(Materialize.formSelect(id))
       )
     )
   }
@@ -77,16 +81,17 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   private def makeEventFieldItem(get: Get): Element = {
     val defaultItem =
       E.option(A.value(""), A.disabled(), Text("Select an event field to plot"))
-    val eventName   = get(selectedEventName)
-    val eventFields = get(fieldsForEvent).getOrElse(eventName.getOrElse(""), Set.empty).toList
-    val items       = defaultItem :: eventFields.map(s => E.option(A.value(s), Text(s)))
-    val id          = "eventFieldNameSelect"
+    val eventName    = get(selectedEventName)
+    val eventFields  = get(fieldsForEvent).getOrElse(eventName.getOrElse(""), Set.empty).toList
+    val items        = defaultItem :: eventFields.map(s => E.option(A.value(s), Text(s)))
+    val id           = "eventFieldNameSelect"
     val currentValue = get(selectedEventField).getOrElse("")
     E.div(
       A.className("row"),
       E.div(
         A.className("input-field col s6"),
-        E.select(A.id(id), A.onChangeText(eventFieldSelected(get)), A.value(currentValue), Tags(items)).withRef(Materialize.formSelect(id))
+        E.select(A.id(id), A.onChangeText(eventFieldSelected(get)), A.value(currentValue), Tags(items))
+          .withRef(Materialize.formSelect(id))
       )
     )
   }

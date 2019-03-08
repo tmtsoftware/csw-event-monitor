@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // Required for Materialize modal elements
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, {});
+    var instances = M.Modal.init(elems, {
+        // preventScrolling: "true"
+    });
 });
 
 // Required for Materialize dropdown elements
