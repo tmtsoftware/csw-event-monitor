@@ -38,7 +38,10 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
     val items = defaultItem :: subsystemList.map(s => E.option(A.value(s), Text(s)))
     E.div(
       A.className("row"),
-      E.div(A.className("input-field col s6"), E.select(A.onChangeText(subsystemSelected(get)), A.value(""), Tags(items)))
+      E.div(
+        A.className("input-field col s6"),
+        E.select(A.onChangeText(subsystemSelected(get)), A.value(""), Tags(items))
+      )
     )
   }
 

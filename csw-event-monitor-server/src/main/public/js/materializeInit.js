@@ -28,3 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // hover: "true"
     });
 });
+
+// // Fix select scroll wheel issue: See https://github.com/Dogfalo/materialize/issues/6236
+// $(document).ready(function () {
+//     $('body').append('<select class="browser-default" style="position:absolute;visibility:hidden"></select>'); //this is the hack
+//     M.AutoInit();
+// });
+
+
