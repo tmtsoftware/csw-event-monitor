@@ -1,6 +1,7 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.ControlComponent.ControlOption
 import csw.params.events.SystemEvent
 
 import scala.scalajs.js
@@ -9,6 +10,7 @@ import scala.scalajs.js.timers.SetIntervalHandle
 case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
                           maybeEvent: P[Option[SystemEvent]],
                           showXLabels: P[Boolean],
+                          controlOptions: P[ControlOption],
                           paused: P[Boolean])
     extends Component[NoEmit] {
 
@@ -20,7 +22,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     val legend   = LegendOptions(position = "bottom")
     val tooltips = TooltipOptions()
     val scales   = ScalesOptions()
-    // XXX TODO: Add prop for color, different for each chart
+    // XXX TODO: Add prop for color, different for each chart?
 //    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
     val chartData = ChartData(Nil, List(ChartDataset(Nil, id, fill = false, borderColor = "#404080")))
     val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales)
@@ -35,9 +37,17 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     new js.Date(instant.getEpochSecond * 1000 + instant.getNano / 1000000)
   }
 
+  // Update the chart with the latest options, data, etc.
   private def updateChart(get: Get): Unit = {
+    val opts = get(controlOptions)
     get(maybeChart).foreach { chart =>
-      chart.options.scales.xAxes(0).realtime.pause = get(paused)
+      val rt = chart.options.scales.xAxes(0).realtime
+      rt.pause = get(paused)
+      rt.duration = opts.duration * 1000
+      rt.ttl = opts.ttl * 1000
+      rt.delay = opts.delay
+      chart.options.plugins.streaming.frameRate = opts.frameRate
+
       get(maybeEvent).foreach { event =>
         val info = get(eventFieldSelection)
         val maybeParam = if (info.maybeEventField.nonEmpty) {

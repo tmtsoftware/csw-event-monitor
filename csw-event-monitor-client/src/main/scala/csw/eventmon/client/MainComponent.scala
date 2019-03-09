@@ -7,6 +7,7 @@ import org.scalajs.dom.ext.LocalStorage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import MainComponent._
+import csw.eventmon.client.ControlComponent._
 import csw.params.events.Event
 
 import scala.scalajs.js
@@ -15,15 +16,33 @@ object MainComponent {
   val localStorageKey = "csw-event-monitor"
 }
 
+// This is the main component for the event monitor.
+// The other components emit values that are handled here or delegated to other components.
 case class MainComponent() extends Component[NoEmit] {
 
-  private val gateway              = new WebGateway()
-  private val eventClient          = new EventJsClient(gateway)
+  // Gateway to server side
+  private val gateway = new WebGateway()
+
+  // Event service web client
+  private val eventClient = new EventJsClient(gateway)
+
+  // Set of currently selected events
   private val eventFieldSelections = State[Set[EventFieldSelection]](Set.empty)
-  private val eventStreamMap       = State[Map[EventSelection, EventStream[Event]]](Map.empty)
-  private val eventSelectionMap    = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)
-  private val paused               = State[Boolean](false)
-  private val localStorageMap =  State[Map[String, Set[EventFieldSelection]]](loadFromLocalStorage())
+
+  // Gives you the stream for reading each selected event
+  private val eventStreamMap = State[Map[EventSelection, EventStream[Event]]](Map.empty)
+
+  // If you are plotting multiple fields from the same event, this maps the basic event selection to the fields being plotted
+  private val eventSelectionMap = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)
+
+  // Set to true to pause live updating of the charts
+  private val paused            = State[Boolean](false)
+
+  // Contains the contents of browser local storage, which maps names to a set of events to plot
+  private val localStorageMap   = State[Map[String, Set[EventFieldSelection]]](loadFromLocalStorage())
+
+  // Options that apply to all of the charts
+  private val controlOptions = State[ControlOption](ControlOption())
 
   // Call when the user adds an event subscription
   private def addEvent(get: Get)(eventFieldSelection: EventFieldSelection): Unit = {
@@ -97,6 +116,7 @@ case class MainComponent() extends Component[NoEmit] {
     events.foreach(addEvent(get))
   }
 
+  // Handler for navbar items
   private def navbarHandler(get: Get)(cmd: NavbarCommand): Unit = {
     cmd match {
       case AddEventFieldSelection(eventFieldSelection) => addEvent(get)(eventFieldSelection)
@@ -112,16 +132,16 @@ case class MainComponent() extends Component[NoEmit] {
     val charts = get(eventSelectionMap).keySet.toList.map { eventSelection =>
       val eventSelections = get(eventSelectionMap)(eventSelection).toList
       val eventStream     = get(eventStreamMap)(eventSelection)
-      Component(SingleEventStreamChart, eventSelections, eventStream, get(paused))
+      Component(SingleEventStreamChart, eventSelections, eventStream, get(controlOptions), get(paused))
     }
     val numPlots = get(eventFieldSelections).size
-    val controls = Component(ControlComponent)
+    val controls = Component(ControlComponent, get(controlOptions))
     E.div(
       A.className("container"),
       Component(Navbar, eventClient, numPlots, get(localStorageMap)).withHandler(navbarHandler(get)),
       E.p(),
       Tags(charts),
-      controls
+      controls.withHandler(controlOptions.set)
     )
   }
 

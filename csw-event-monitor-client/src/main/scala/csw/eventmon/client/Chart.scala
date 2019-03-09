@@ -1,14 +1,13 @@
 package csw.eventmon.client
 
-import java.util.Date
-
 import org.scalajs.dom.Element
 
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 import scala.scalajs.js.annotation.{JSGlobal, JSImport}
 
-// A partial scala.js facade for Chart.js
+// A partial scala.js facade for Chart.js.
+// This basically just contains the parts needed by this app.
 
 @js.native
 trait DataPoint extends js.Object {
@@ -188,8 +187,10 @@ object AxisTime {
 
 @js.native
 trait Realtime extends js.Object {
-  def duration: Int  = js.native
-  def delay: Int     = js.native
+  var duration: Int  = js.native
+  var ttl: Int  = js.native
+  var frameRate: Int  = js.native
+  var delay: Int     = js.native
   var pause: Boolean = js.native
 }
 
@@ -278,28 +279,42 @@ object ScalesOptions {
 }
 
 @js.native
-trait ChartTitle extends js.Object {
-  def display: Boolean = js.native
-  def text: String     = js.native
+trait StreamingOptions extends js.Object {
+  var frameRate: Int = js.native
 }
 
-object ChartTitle {
-  def apply(display: Boolean = true, text: String = "XXX ADD TITLE HERE"): ChartTitle = {
+object StreamingOptions {
+  def apply(frameRate: Int = 30): StreamingOptions = {
     js.Dynamic
       .literal(
-        display = display,
-        text = text
+        frameRate = frameRate,
       )
-      .asInstanceOf[ChartTitle]
+      .asInstanceOf[StreamingOptions]
   }
 }
+
+@js.native
+trait PluginOptions extends js.Object {
+  def streaming: StreamingOptions = js.native
+}
+
+object PluginOptions {
+  def apply(streaming: StreamingOptions = StreamingOptions()): PluginOptions = {
+    js.Dynamic
+      .literal(
+        streaming = streaming,
+      )
+      .asInstanceOf[PluginOptions]
+  }
+}
+
 @js.native
 trait ChartOptions extends js.Object {
-  def title: ChartTitle        = js.native
   def responsive: Boolean      = js.native
   def legend: LegendOptions    = js.native
   def tooltips: TooltipOptions = js.native
   def scales: ScalesOptions    = js.native
+  def plugins: PluginOptions    = js.native
 }
 
 object ChartOptions {
@@ -361,22 +376,9 @@ class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
 }
 
 
-//@js.native
-//@JSImport("./moment/min/moment.min.js", JSImport.Default)
-//object Moment extends js.Object
-//
-//
-//@js.native
-//@JSImport("./chartjs-plugin-streaming/dist/chartjs-plugin-streaming.min.js", JSImport.Default)
-//object ChartPluginStreaming extends js.Object
-
-
 @js.native
 @JSGlobal
 object Chart extends js.Object {
-//  private val y = Moment
-//  private val x = ChartPluginStreaming
-
   def instances: js.Dictionary[Chart] = js.native
 }
 

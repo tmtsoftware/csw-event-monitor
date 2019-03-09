@@ -1,61 +1,32 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.ControlComponent._
 
-//<div>
-//<span class="label">duration:</span>
-//<span id="durationValue" class="value">20000</span>
-//<span><input type="range" min="1000" max="60000" step="100" value="20000" id="duration" class="control"></span>
-//</div>
-//<div>
-//<span class="label">ttl:</span>
-//<span id="ttlValue" class="value">60000</span>
-//<span><input type="range" min="1000" max="60000" step="100" value="60000" id="ttl" class="control"></span>
-//</div>
-//<div>
-//<span class="label">refresh:</span>
-//<span id="refreshValue" class="value">1000</span>
-//<span><input type="range" min="50" max="3000" step="50" value="1000" id="refresh" class="control"></span>
-//</div>
-//<div>
-//<span class="label">delay:</span>
-//<span id="delayValue" class="value">2000</span>
-//<span><input type="range" min="0" max="5000" step="100" value="2000" id="delay" class="control"></span>
-//</div>
-//<div>
-//<span class="label">frameRate:</span>
-//<span id="frameRateValue" class="value">30</span>
-//<span><input type="range" min="1" max="60" step="1" value="30" id="frameRate" class="control"></span>
-//</div>
+object ControlComponent {
+  case class ControlOption(duration: Int = 60, ttl: Int = 60, delay: Int = 2000, frameRate: Int = 30)
+}
 
-//<form action="#">
-//<p class="range-field">
-//<input type="range" id="test5" min="0" max="100" />
-//</p>
-//</form>
-
-case class ControlComponent() extends Component[NoEmit] {
-
-  private val duration = State[Int](60)
+/**
+ * Displays a set of controls for changing the plot views
+ */
+case class ControlComponent(settings: P[ControlOption]) extends Component[ControlOption] {
 
   override def render(get: Get): Node = {
+    val s = get(settings)
     E.div(
-      A.className("row"),
-      E.div(A.className("col s2 offset-s1"), Text("duration"), S.textAlign("right"), S.paddingRight("1em")),
-      E.div(A.className("col s1"), Text(get(duration).toString), S.textAlign("left"), S.paddingLeft("1em")),
-      E.div(
-        S.paddingLeft("0px"),
-        A.className("col s4"),
-        A.className("range-field"),
-        E.input(
-          A.`type`("range"),
-          A.onChangeText(t => duration.set(t.toInt)),
-          A.min("20"),
-          A.max("3600"),
-          A.step("1"),
-          A.value(get(duration).toString)
-        )
-      )
+      Component(SliderComponent, "duration", s.duration, "s", 20, 600, 1, s"data in the past ${s.duration} seconds will be displayed")
+        .withKey("duration")
+        .withHandler(secs => emit(s.copy(duration = secs))),
+      Component(SliderComponent, "ttl", s.ttl, "s", 20, 600, 1, s"data will be automatically deleted after ${s.ttl} seconds")
+        .withKey("ttl")
+        .withHandler(secs => emit(s.copy(ttl = secs))),
+      Component(SliderComponent, "delay", s.delay, "ms", 0, 5000, 100, s"delay of ${s.delay} ms, so upcoming values are known before plotting a line")
+        .withKey("delay")
+        .withHandler(ms => emit(s.copy(delay = ms))),
+      Component(SliderComponent, "frame rate", s.frameRate, "ms", 1, 60, 1, s"chart is drawn ${s.frameRate} times every second")
+        .withKey("frameRate")
+        .withHandler(ms => emit(s.copy(frameRate = ms))),
     )
   }
 }

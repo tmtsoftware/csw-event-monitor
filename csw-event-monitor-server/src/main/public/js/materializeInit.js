@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.tooltipped');
+    var instances = M.Tooltip.init(elems, {});
+});
+
+
 // // Fix select scroll wheel issue: See https://github.com/Dogfalo/materialize/issues/6236
 // $(document).ready(function () {
 //     $('body').append('<select class="browser-default" style="position:absolute;visibility:hidden"></select>'); //this is the hack

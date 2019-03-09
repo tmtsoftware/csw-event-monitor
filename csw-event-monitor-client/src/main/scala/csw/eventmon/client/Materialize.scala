@@ -24,10 +24,16 @@ trait Modal extends js.Object {
 }
 
 @js.native
+trait Tooltip extends js.Object {
+  def init(elem: Element, options: js.Object): Unit = js.native
+}
+
+@js.native
 @JSImport("materialize-css", JSImport.Namespace)
 object M extends js.Object {
   var FormSelect: FormSelect = js.native
   var Modal: Modal = js.native
+  var Tooltip: Tooltip = js.native
 }
 
 // Contains some (non-native) utility methods
@@ -45,7 +51,14 @@ object Materialize {
   def modal(id: String)(a: Any): Unit = {
     val document = js.Dynamic.global.document
     val elem     = document.getElementById(id).asInstanceOf[org.scalajs.dom.Element]
-    M.Modal.init(elem, js.Object {val preventScrolling = "true"})
+//    M.Modal.init(elem, js.Object {val preventScrolling = "true"})
+    M.Modal.init(elem, js.Object {})
+  }
+
+  def tooltip(id: String)(a: Any): Unit = {
+    val document = js.Dynamic.global.document
+    val elem     = document.getElementById(id).asInstanceOf[org.scalajs.dom.Element]
+    M.Tooltip.init(elem, js.Object {})
   }
 
 }
