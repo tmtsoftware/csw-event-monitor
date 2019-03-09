@@ -36,10 +36,10 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventSelectionMap = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)
 
   // Set to true to pause live updating of the charts
-  private val paused            = State[Boolean](false)
+  private val paused = State[Boolean](false)
 
   // Contains the contents of browser local storage, which maps names to a set of events to plot
-  private val localStorageMap   = State[Map[String, Set[EventFieldSelection]]](loadFromLocalStorage())
+  private val localStorageMap = State[Map[String, Set[EventFieldSelection]]](loadFromLocalStorage())
 
   // Options that apply to all of the charts
   private val controlOptions = State[ControlOption](ControlOption())
@@ -123,6 +123,7 @@ case class MainComponent() extends Component[NoEmit] {
       case SaveConfig(settings)                        => saveConfig(get, settings)
       case LoadConfig(events)                          => loadConfig(get, events)
       case Pause(p)                                    => paused.set(p)
+      case UpdateControlOptions(opts)                  => controlOptions.set(opts)
       case x                                           => println(s"XXX Not implemented: $x")
     }
   }
@@ -135,13 +136,11 @@ case class MainComponent() extends Component[NoEmit] {
       Component(SingleEventStreamChart, eventSelections, eventStream, get(controlOptions), get(paused))
     }
     val numPlots = get(eventFieldSelections).size
-    val controls = Component(ControlComponent, get(controlOptions))
     E.div(
       A.className("container"),
-      Component(Navbar, eventClient, numPlots, get(localStorageMap)).withHandler(navbarHandler(get)),
+      Component(Navbar, eventClient, numPlots, get(localStorageMap), get(controlOptions)).withHandler(navbarHandler(get)),
       E.p(),
       Tags(charts),
-      controls.withHandler(controlOptions.set)
     )
   }
 

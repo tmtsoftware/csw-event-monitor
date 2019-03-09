@@ -1,6 +1,7 @@
 package csw.eventmon.client
 import com.github.ahnfelt.react4s._
 import Navbar._
+import csw.eventmon.client.ControlComponent.ControlOption
 import csw.eventmon.client.SaveComponent.SaveSettings
 
 object Navbar {
@@ -10,9 +11,13 @@ object Navbar {
   case class SaveConfig(settings: SaveSettings)                               extends NavbarCommand
   case class LoadConfig(events: Set[EventFieldSelection])                     extends NavbarCommand
   case class Pause(paused: Boolean)                                           extends NavbarCommand
+  case class UpdateControlOptions(controlOptions: ControlOption)              extends NavbarCommand
 }
 
-case class Navbar(eventClient: P[EventJsClient], numPlots: P[Int], localStorageMap: P[Map[String, Set[EventFieldSelection]]])
+case class Navbar(eventClient: P[EventJsClient],
+                  numPlots: P[Int],
+                  localStorageMap: P[Map[String, Set[EventFieldSelection]]],
+                  controlOptions: P[ControlOption])
     extends Component[NavbarCommand] {
 
   override def render(get: Get): Node = {
@@ -26,6 +31,7 @@ case class Navbar(eventClient: P[EventJsClient], numPlots: P[Int], localStorageM
           Component(SaveComponent).withHandler(s => emit(SaveConfig(s))),
           Component(LoadComponent, get(localStorageMap)).withHandler(s => emit(LoadConfig(s))),
           Component(PauseComponent, get(numPlots) != 0).withHandler(s => emit(Pause(s))),
+          Component(ControlPopupComponent, get(controlOptions)).withHandler(s => emit(UpdateControlOptions(s))),
         )
       )
     )
