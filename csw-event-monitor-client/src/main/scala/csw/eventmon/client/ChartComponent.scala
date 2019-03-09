@@ -14,8 +14,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
                           paused: P[Boolean])
     extends Component[NoEmit] {
 
-  private val maybeChart = State[Option[Chart]](None)
-//  private val maybeCanvas = State[Option[Element]](None)
+  private val maybeChart                  = State[Option[Chart]](None)
   var interval: Option[SetIntervalHandle] = None
 
   private def makeChart(get: Get, id: String): Chart = {
@@ -23,7 +22,6 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     val tooltips = TooltipOptions()
     val scales   = ScalesOptions()
     // XXX TODO: Add prop for color, different for each chart?
-//    val chartData = ChartData(defaultLabels, List(ChartDataset(defaultData, id, fill = false, borderColor = "#404080")))
     val chartData = ChartData(Nil, List(ChartDataset(Nil, id, fill = false, borderColor = "#404080")))
     val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales)
     val config    = ChartConfiguration("LineWithLine", chartData, options)
@@ -69,11 +67,20 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
   }
 
   override def render(get: Get): Node = {
-    val id = get(eventFieldSelection).toString
-    E.canvas(A.id(id), A.width("400"), A.height("50")).withRef { _ =>
-      if (get(maybeChart).isEmpty)
-        maybeChart.set(Some(makeChart(get, id)))
-      updateChart(get)
-    }
+    val id     = get(eventFieldSelection).toString
+    val width = get(controlOptions).chartWidth.toString
+    val height = get(controlOptions).chartHeight.toString
+    // See https://www.chartjs.org/docs/latest/general/responsive.html#important-note
+    E.div(
+      A.className("chart-container"),
+      S.position("relative"),
+      S.width(s"${width}vw"),
+      S.height(s"${height}vh"),
+      E.canvas(A.id(id)).withRef { _ =>
+        if (get(maybeChart).isEmpty)
+          maybeChart.set(Some(makeChart(get, id)))
+        updateChart(get)
+      }
+    )
   }
 }

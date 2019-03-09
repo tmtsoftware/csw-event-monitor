@@ -311,6 +311,7 @@ object PluginOptions {
 @js.native
 trait ChartOptions extends js.Object {
   def responsive: Boolean      = js.native
+  def maintainAspectRatio: Boolean = js.native
   def legend: LegendOptions    = js.native
   def tooltips: TooltipOptions = js.native
   def scales: ScalesOptions    = js.native
@@ -319,12 +320,14 @@ trait ChartOptions extends js.Object {
 
 object ChartOptions {
   def apply(responsive: Boolean = true,
+            maintainAspectRatio: Boolean = false,
             legend: LegendOptions = LegendOptions(),
             tooltips: TooltipOptions = TooltipOptions(),
             scales: ScalesOptions = ScalesOptions()): ChartOptions = {
     js.Dynamic
       .literal(
         responsive = responsive,
+        maintainAspectRatio = maintainAspectRatio,
         legend = legend,
         tooltips = tooltips,
         scales = scales
