@@ -70,7 +70,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     val id     = get(eventFieldSelection).toString
     val width = get(controlOptions).chartWidth.toString
     val height = get(controlOptions).chartHeight.toString
-    // See https://www.chartjs.org/docs/latest/general/responsive.html#important-note
+    // The div is used for resizing the charts: See https://www.chartjs.org/docs/latest/general/responsive.html#important-note
     E.div(
       A.className("chart-container"),
       S.position("relative"),
