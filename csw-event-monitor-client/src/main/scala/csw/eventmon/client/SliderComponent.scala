@@ -6,7 +6,7 @@ import com.github.ahnfelt.react4s._
  * Displays a slider and emits the current value
  */
 case class SliderComponent(label: P[String],
-                           initialValue: P[Int],
+                           value: P[Int],
                            units: P[String],
                            minValue: P[Int],
                            maxValue: P[Int],
@@ -14,15 +14,15 @@ case class SliderComponent(label: P[String],
                            tooltip: P[String])
     extends Component[Int] {
 
-  private val value = State[Option[Int]](None)
+//  private val value = State[Option[Int]](None)
 
-  override def componentWillRender(get: Get): Unit = {
-    if (get(value).isEmpty)
-      value.set(Some(get(initialValue)))
-  }
+//  override def componentWillRender(get: Get): Unit = {
+//    if (get(value).isEmpty)
+//      value.set(Some(get(initialValue)))
+//  }
 
   private def valueChanged(i: Int): Unit = {
-    value.set(Some(i))
+//    value.set(Some(i))
     emit(i)
   }
 
@@ -31,10 +31,11 @@ case class SliderComponent(label: P[String],
     E.div(
       A.id(id),
       A.className("row tooltipped"),
-      Attribute("data-position", "top"),
+      S.marginBottom("0px"),
+      Attribute("data-position", "left"),
       Attribute("data-tooltip", get(tooltip)),
       E.div(A.className("col s2 offset-s1"), Text(s"${get(label)}:"), S.textAlign("right"), S.paddingRight("2px")),
-      E.div(A.className("col s1"), Text(get(value).get.toString + get(units)), S.textAlign("left"), S.paddingLeft("2px")),
+      E.div(A.className("col s1"), Text(get(value).toString + get(units)), S.textAlign("left"), S.paddingLeft("2px")),
       E.div(
         S.paddingLeft("0px"),
         A.className("col s4"),
@@ -45,7 +46,7 @@ case class SliderComponent(label: P[String],
           A.min(get(minValue).toString),
           A.max(get(maxValue).toString),
           A.step(get(step).toString),
-          A.value(get(value).get.toString)
+          A.value(get(value).toString)
         )
       )
     ).withRef(Materialize.tooltip(id))

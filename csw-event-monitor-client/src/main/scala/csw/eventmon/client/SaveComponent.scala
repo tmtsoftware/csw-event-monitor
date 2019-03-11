@@ -79,7 +79,7 @@ case class SaveComponent() extends Component[SaveSettings] {
     val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), Text("Save"))
     val body    = E.div(A.id(id), A.className("modal modal-fixed-footer"),
       E.div(A.className("model-content "), makeDialogBody(get)),
-      E.div(A.className("modal-footer"), makeButtons(get))
+      E.div(makeButtons(get))
     )
     E.li(trigger, body)
   }

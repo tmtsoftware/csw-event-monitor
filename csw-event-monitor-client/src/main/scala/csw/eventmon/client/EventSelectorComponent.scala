@@ -173,7 +173,7 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
       A.id(id),
       A.className("modal modal-fixed-footer"),
       E.div(A.className("model-content"), makeDialogBody(get)),
-      E.div(A.className("modal-footer"), makeButtons(get))
+      makeButtons(get)
     )
     E.li(trigger, body)
   }

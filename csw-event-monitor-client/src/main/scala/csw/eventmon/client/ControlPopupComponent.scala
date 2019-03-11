@@ -12,12 +12,13 @@ object ControlPopupComponent {
 /**
  * A popup window with chart controls
  */
-case class ControlPopupComponent(controlOptions: P[ControlOption]) extends Component[ControlOption] {
+case class ControlPopupComponent(controlOptions: P[ControlOption], localStorageMap: P[Map[String, Set[EventFieldSelection]]])
+    extends Component[ControlOption] {
 
   override def render(get: Get): Node = {
     val icon     = E.i(A.className("material-icons"), Text(iconName))
     val trigger  = E.a(A.className("modal-trigger"), A.href(s"#$id"), icon)
-    val controls = Component(ControlComponent, get(controlOptions)).withHandler(emit)
+    val controls = Component(ControlComponent, get(controlOptions), get(localStorageMap)).withHandler(emit)
     val body     = E.div(A.id(id), A.className("modal"), controls)
     E.li(trigger, body)
   }

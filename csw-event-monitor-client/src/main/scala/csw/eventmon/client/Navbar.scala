@@ -31,7 +31,8 @@ case class Navbar(eventClient: P[EventJsClient],
           Component(SaveComponent).withHandler(s => emit(SaveConfig(s))),
           Component(LoadComponent, get(localStorageMap)).withHandler(s => emit(LoadConfig(s))),
           Component(PauseComponent, get(numPlots) != 0).withHandler(s => emit(Pause(s))),
-          Component(ControlPopupComponent, get(controlOptions)).withHandler(s => emit(UpdateControlOptions(s))),
+          Component(ControlPopupComponent, get(controlOptions), get(localStorageMap))
+            .withHandler(s => emit(UpdateControlOptions(s))),
         )
       )
     )

@@ -39,7 +39,6 @@ case class LoadComponent(localStorageMap: P[Map[String, Set[EventFieldSelection]
 
   override def render(get: Get): Node = {
     val localStorageItems = get(localStorageMap).map(p => E.li(E.a(A.href("#!"), Text(p._1), A.onClick(_ => emit(p._2))))).toList
-    println(s"XXX local items: ${get(localStorageMap).keySet.toList}")
 
     val dropdownTrigger =
       E.a(A.className("dropdown-trigger"), A.href("#"), Attribute("data-target", id), Text("Load"), S.paddingRight("15em"))
