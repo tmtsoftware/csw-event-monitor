@@ -7,7 +7,7 @@ import org.scalajs.dom.ext.LocalStorage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import MainComponent._
-import csw.eventmon.client.ControlComponent._
+import csw.eventmon.client.ControlComponent.ControlOption
 import csw.params.events.Event
 
 import scala.scalajs.js
@@ -98,12 +98,19 @@ case class MainComponent() extends Component[NoEmit] {
     downloadAnchorNode.remove()
   }
 
-  // Call when the user clicks Save and selects and name and type of save (file, config service, etc.)
+  // Called when the user clicks Save and selects and name and type of save (file, config service, etc.)
   private def saveConfig(get: Get, settings: SaveSettings): Unit = {
     settings.saveType match {
       case SaveToLocalStorage => saveToLocalStorage(get, settings.name)
       case SaveToFile         => saveToFile(get, settings.name)
     }
+  }
+
+  // Called when the user selects saved local storage (config) items to delete (resulting in a new map of saved items)
+  private def manageConfig(get: Get, map: Map[String, Set[EventFieldSelection]]): Unit = {
+    import upickle.default._
+    LocalStorage(localStorageKey) = write(map)
+    localStorageMap.set(map)
   }
 
   // Called when the user selects a previously saved configuration (list of events) to load.
@@ -121,6 +128,7 @@ case class MainComponent() extends Component[NoEmit] {
     cmd match {
       case AddEventFieldSelection(eventFieldSelection) => addEvent(get)(eventFieldSelection)
       case SaveConfig(settings)                        => saveConfig(get, settings)
+      case ManageConfig(map)                           => manageConfig(get, map)
       case LoadConfig(events)                          => loadConfig(get, events)
       case Pause(p)                                    => paused.set(p)
       case UpdateControlOptions(opts)                  => controlOptions.set(opts)

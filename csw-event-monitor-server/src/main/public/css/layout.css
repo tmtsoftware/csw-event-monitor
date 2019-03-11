@@ -6,7 +6,7 @@
     /*width: auto;*/
     /*height: auto;*/
     /*max-height: 70% !important ;*/
-    /*!*overflow: hidden !important ;*!*/
+    /*overflow: hidden !important ;*/
     /*color: black !important;*/
     /*opacity: 0.9 !important;*/
 /*}*/
@@ -17,12 +17,13 @@
 
 
 .modal {
+    display: block;
     position: fixed;
     left:0;
     right:0;
     background-color: #fafafa;
-    max-height: 70%;
-    height: 70%;
+    max-height: 50%;
+    height: 50%;
     margin:auto;
     border-radius:2px;
     will-change:top,opacity;
@@ -33,7 +34,7 @@
 
 .modal-content {
     opacity: 0.9 !important;
-    height:auto;
+    height:50%;
     padding:0;
     overflow: auto !important;
 }

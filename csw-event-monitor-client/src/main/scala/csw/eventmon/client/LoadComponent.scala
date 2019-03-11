@@ -41,11 +41,12 @@ case class LoadComponent(localStorageMap: P[Map[String, Set[EventFieldSelection]
     val localStorageItems = get(localStorageMap).map(p => E.li(E.a(A.href("#!"), Text(p._1), A.onClick(_ => emit(p._2))))).toList
 
     val dropdownTrigger =
-      E.a(A.className("dropdown-trigger"), A.href("#"), Attribute("data-target", id), Text("Load"), S.paddingRight("15em"))
+      E.a(A.className("dropdown-trigger"), A.href("#"), Attribute("data-target", id), Text("Load"), S.paddingRight("10em"))
     val dropdown = E.ul(
       A.id(id),
       A.className("dropdown-content"),
       E.li(E.a(A.href("#!"), makeFileSelector(get))),
+      E.li(A.className("divider"), A.tabIndex("-1")),
       E.li(A.className("divider"), A.tabIndex("-1")),
       Tags(localStorageItems)
     )

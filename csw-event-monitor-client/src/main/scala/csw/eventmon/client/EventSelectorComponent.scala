@@ -172,7 +172,7 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
     val body = E.div(
       A.id(id),
       A.className("modal modal-fixed-footer"),
-      E.div(A.className("model-content"), makeDialogBody(get)),
+      E.div(A.className("modal-content"), makeDialogBody(get)),
       makeButtons(get)
     )
     E.li(trigger, body)

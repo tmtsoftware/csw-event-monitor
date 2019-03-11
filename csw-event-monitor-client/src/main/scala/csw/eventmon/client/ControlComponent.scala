@@ -1,7 +1,7 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
-import csw.eventmon.client.ControlComponent._
+import ControlComponent._
 
 object ControlComponent {
   case class ControlOption(duration: Int = 60,
@@ -12,14 +12,14 @@ object ControlComponent {
                            chartHeight: Int = 22)
 
   val chartControlsId = "chartControls"
-  val manageSavedId   = "editSaved"
+  val id              = "control-popup"
+  val iconName        = "settings"
 }
 
 /**
- * Displays a set of controls for changing the plot views
+ * A popup window with chart controls
  */
-case class ControlComponent(settings: P[ControlOption], localStorageMap: P[Map[String, Set[EventFieldSelection]]])
-    extends Component[ControlOption] {
+case class ControlComponent(settings: P[ControlOption]) extends Component[ControlOption] {
 
   // Makes the content of the chart control tab
   private def makeChartControls(get: Get): Element = {
@@ -79,63 +79,30 @@ case class ControlComponent(settings: P[ControlOption], localStorageMap: P[Map[S
                 s"Each chart is drawn with a height of ${s.chartHeight} vh")
         .withKey("chartHeight")
         .withHandler(vh => emit(s.copy(chartHeight = vh))),
-      E.div(
-        A.className("row"),
-        E.div(
-          A.className("col s4 offset-s2"),
-          E.a(
-            A.className("waves-effect waves-light btn"),
-            Text("Reset to Default Settings"),
-            A.onClick(_ => emit(ControlOption())),
-            S.paddingBottom("2vh")
-          ),
-        )
-      )
     )
   }
 
-  // Makes the content of the tab to manage local storage
-  private def makeManageLocalStorageItem(get: Get): Element = {
-    val map = get(localStorageMap)
-    val items = map.keySet.toList.map { name =>
-      E.div(
-        A.className("row"),
-        S.marginBottom("0px"),
-        E.div(A.className("col s4 offset-s1"),
-              E.label(E.input(A.`type`("checkbox"), A.className("filled-in")), E.span(Text(name))))
-      )
-    }
-
-    val button =
-      E.div(
-        A.className("row"),
-        E.div(
-          A.className("col s4 offset-s2"),
-          E.a(
-            A.className("waves-effect waves-light btn"),
-            Text("Delete Selected"),
-//          A.onClick(_ => emit(ControlOption())),
-            S.paddingBottom("2vh")
-          )
-        )
-      )
-
-    E.div(A.id(manageSavedId), Tags(items), button)
+  private def makeButtons(get: Get): Element = {
+    E.div(
+      A.className("modal-footer"),
+      E.a(A.href("#!"),
+          A.className("modal-close waves-effect waves-green btn-flat"),
+          A.onClick(_ => emit(ControlOption())),
+          Text("Reset")),
+      E.a(A.href("#!"), A.className("modal-close waves-effect waves-green btn-flat"), Text("OK")),
+    )
   }
 
   override def render(get: Get): Node = {
-    E.div(
-      A.className("row"),
-      E.div(
-        A.className("col s12"),
-        E.ul(
-          A.className("tabs"),
-          E.li(A.className("tab col s3"), E.a(A.href(s"#$chartControlsId"), Text("Chart Controls"))),
-          E.li(A.className("tab col s3"), E.a(A.href(s"#$manageSavedId"), Text("Manage Local Storage")))
-        )
-      ),
-      makeChartControls(get),
-      makeManageLocalStorageItem(get)
+    val icon    = E.i(A.className("material-icons"), Text(iconName))
+    val trigger = E.a(A.className("modal-trigger"), A.href(s"#$id"), icon)
+    val body = E.div(
+      A.id(id),
+      A.className("modal modal-fixed-footer"),
+      E.div(A.className("modal-content"), makeChartControls(get)),
+      makeButtons(get)
     )
+    E.li(trigger, body)
   }
+
 }
