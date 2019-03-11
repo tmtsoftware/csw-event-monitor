@@ -164,7 +164,13 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   }
 
   private def makeDialogBody(get: Get): Element = {
-    E.div(makeSubsystemItem(get), makeComponentItem(get), makeEventNameItem(get), makeEventFieldItem(get))
+    E.div(
+      E.p(E.em(Text("Note: The menus below are filled by temporarily subscribing to the Event Service using wildcards."))),
+      makeSubsystemItem(get),
+      makeComponentItem(get),
+      makeEventNameItem(get),
+      makeEventFieldItem(get),
+    )
   }
 
   override def render(get: Get): Node = {
