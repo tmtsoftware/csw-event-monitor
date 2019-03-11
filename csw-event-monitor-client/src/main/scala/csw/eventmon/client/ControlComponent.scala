@@ -26,6 +26,7 @@ case class ControlComponent(settings: P[ControlOption]) extends Component[Contro
     val s = get(settings)
     E.div(
       A.id(chartControlsId),
+      E.h6(Text("Below you can configure how the charts are displayed.")),
       Component(SliderComponent,
                 "duration",
                 s.duration,

@@ -39,12 +39,12 @@ case class ManageComponent(localStorageMap: P[Map[String, Set[EventFieldSelectio
         )
       )
     }
-    E.div(Tags(items))
+    E.div(E.h6(Text("Below is a list of event configurations that were saved to the browser's local storage.")), Tags(items))
   }
 
   private def deleteSelected(get: Get)(e: MouseEvent): Unit = {
     val toDelete = get(selectedItems)
-    val map = get(localStorageMap).filterKeys(s => !toDelete.contains(s))
+    val map      = get(localStorageMap).filterKeys(s => !toDelete.contains(s))
     emit(map)
   }
 

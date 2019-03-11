@@ -2,6 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import SaveComponent._
+import org.scalajs.dom
 
 object SaveComponent {
   private val id = "saveConfig"
@@ -65,14 +66,16 @@ case class SaveComponent() extends Component[SaveSettings] {
     if (name.nonEmpty && saveType.nonEmpty)
       emit(SaveSettings(name, saveType.get))
     else {
-      // XXX TODO: display error message
-      val msg = if (name.isEmpty || name.equals("-")) "Please enter a name to save under" else "Please select where to save to"
-      println(msg)
+      val msg = if (name.isEmpty || name.equals("-")) "Please enter a name for saving the event configuration" else "Please select where to save to"
+      dom.window.alert(msg)
     }
   }
 
   private def makeDialogBody(get: Get): Element = {
-    E.div(makeNameItem(), makeSavetypeItem())
+    E.div(
+      E.h6(Text("You can save the current event configuration to a file or to the browser's local storage.")),
+      makeNameItem(),
+      makeSavetypeItem())
   }
 
   override def render(get: Get): Node = {
