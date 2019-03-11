@@ -14,15 +14,7 @@ case class SliderComponent(label: P[String],
                            tooltip: P[String])
     extends Component[Int] {
 
-//  private val value = State[Option[Int]](None)
-
-//  override def componentWillRender(get: Get): Unit = {
-//    if (get(value).isEmpty)
-//      value.set(Some(get(initialValue)))
-//  }
-
   private def valueChanged(i: Int): Unit = {
-//    value.set(Some(i))
     emit(i)
   }
 
