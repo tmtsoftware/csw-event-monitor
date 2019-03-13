@@ -46,6 +46,18 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
       rt.delay = opts.delay
       chart.options.plugins.streaming.frameRate = opts.frameRate
 
+      if (opts.performance) {
+        // disable animation
+        chart.options.animation.duration = 0
+        chart.options.hover.animationDuration = 0
+        chart.options.responsiveAnimationDuration = 0
+        // disables bezier curves
+        chart.options.elements.line.tension = 0
+        // disable for all datasets
+//        chart.options.showLines = false
+
+      }
+
       get(maybeEvent).foreach { event =>
         val info = get(eventFieldSelection)
         val maybeParam = if (info.maybeEventField.nonEmpty) {

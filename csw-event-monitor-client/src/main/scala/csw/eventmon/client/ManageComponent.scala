@@ -1,5 +1,7 @@
 package csw.eventmon.client
+
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.react4s.React4sUtil._
 
 object ManageComponent {
   val id = "manageLocalStorage"
@@ -12,11 +14,6 @@ case class ManageComponent(localStorageMap: P[Map[String, Set[EventFieldSelectio
   private val selectedItems = State[Set[String]](Set.empty)
 
   import ManageComponent._
-
-  // Should be in React4s: Like A.onChangeText, but for a checkbox
-  private def onChecked(onChange: String => Unit) = {
-    A.onChange(e => onChange(e.target.checked.asInstanceOf[Boolean].toString))
-  }
 
   // Called when a checkbox is clicked
   private def selectionChanged(name: String, selected: Boolean): Unit = {

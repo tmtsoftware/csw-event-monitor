@@ -2,6 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import ControlComponent._
+import csw.eventmon.client.react4s.React4sUtil._
 
 object ControlComponent {
   case class ControlOption(duration: Int = 60,
@@ -9,7 +10,8 @@ object ControlComponent {
                            delay: Int = 2000,
                            frameRate: Int = 30,
                            chartWidth: Int = 67,
-                           chartHeight: Int = 22)
+                           chartHeight: Int = 22,
+                           performance: Boolean = false)
 
   val chartControlsId = "chartControls"
   val id              = "control-popup"
@@ -31,13 +33,13 @@ case class ControlComponent(settings: P[ControlOption]) extends Component[Contro
                 "duration",
                 s.duration,
                 "s",
-                20,
+                5,
                 600,
                 1,
                 s"Data in the past ${s.duration} seconds will be displayed")
         .withKey("duration")
         .withHandler(secs => emit(s.copy(duration = secs))),
-      Component(SliderComponent, "ttl", s.ttl, "s", 20, 600, 1, s"Data will be automatically deleted after ${s.ttl} seconds")
+      Component(SliderComponent, "ttl", s.ttl, "s", 5, 600, 1, s"Data will be automatically deleted after ${s.ttl} seconds")
         .withKey("ttl")
         .withHandler(secs => emit(s.copy(ttl = secs))),
       Component(SliderComponent,
@@ -53,7 +55,7 @@ case class ControlComponent(settings: P[ControlOption]) extends Component[Contro
       Component(SliderComponent,
                 "frame rate",
                 s.frameRate,
-                "ms",
+                "x/s",
                 1,
                 60,
                 1,
@@ -80,6 +82,16 @@ case class ControlComponent(settings: P[ControlOption]) extends Component[Contro
                 s"Each chart is drawn with a height of ${s.chartHeight} vh")
         .withKey("chartHeight")
         .withHandler(vh => emit(s.copy(chartHeight = vh))),
+      E.div(
+        A.className("row"),
+        E.div(
+          A.className("col s4 offset-s1"),
+          E.label(
+            E.input(A.`type`("checkbox"), A.className("filled-in"), onChecked(p => emit(s.copy(performance = p.toBoolean)))),
+            E.span(Text("Optimize for Performance"))
+          )
+        )
+      )
     )
   }
 

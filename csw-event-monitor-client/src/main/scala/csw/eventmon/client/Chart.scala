@@ -188,8 +188,8 @@ object AxisTime {
 @js.native
 trait Realtime extends js.Object {
   var duration: Int  = js.native
-  var ttl: Int  = js.native
-  var frameRate: Int  = js.native
+  var ttl: Int       = js.native
+  var frameRate: Int = js.native
   var delay: Int     = js.native
   var pause: Boolean = js.native
 }
@@ -309,13 +309,79 @@ object PluginOptions {
 }
 
 @js.native
+trait AnimationOptions extends js.Object {
+  // animation.duration in ms
+  var duration: Int = js.native
+}
+
+object AnimationOptions {
+  def apply(duration: Int = 1000): AnimationOptions = {
+    js.Dynamic
+      .literal(
+        duration = duration,
+      )
+      .asInstanceOf[AnimationOptions]
+  }
+}
+
+@js.native
+trait HoverOptions extends js.Object {
+  var animationDuration: Int = js.native
+}
+
+object HoverOptions {
+  def apply(animationDuration: Int = 400): HoverOptions = {
+    js.Dynamic
+      .literal(
+        animationDuration = animationDuration,
+      )
+      .asInstanceOf[HoverOptions]
+  }
+}
+
+@js.native
+trait ChartLine extends js.Object {
+  var tension: Double = js.native
+}
+
+object ChartLine {
+  def apply(tension: Double = 0.4): ChartLine = {
+    js.Dynamic
+      .literal(
+        tension = tension,
+      )
+      .asInstanceOf[ChartLine]
+  }
+}
+
+@js.native
+trait ChartElements extends js.Object {
+  var line: ChartLine = js.native
+}
+
+object ChartElements {
+  def apply(line: ChartLine = ChartLine()): ChartElements = {
+    js.Dynamic
+      .literal(
+        line = line,
+      )
+      .asInstanceOf[ChartElements]
+  }
+}
+
+@js.native
 trait ChartOptions extends js.Object {
-  def responsive: Boolean      = js.native
-  def maintainAspectRatio: Boolean = js.native
-  def legend: LegendOptions    = js.native
-  def tooltips: TooltipOptions = js.native
-  def scales: ScalesOptions    = js.native
-  def plugins: PluginOptions    = js.native
+  def responsive: Boolean              = js.native
+  def maintainAspectRatio: Boolean     = js.native
+  def legend: LegendOptions            = js.native
+  def tooltips: TooltipOptions         = js.native
+  def scales: ScalesOptions            = js.native
+  def plugins: PluginOptions           = js.native
+  def animation: AnimationOptions      = js.native
+  def hover: HoverOptions              = js.native
+  var responsiveAnimationDuration: Int = js.native
+  var showLines: Boolean               = js.native
+  def elements: ChartElements          = js.native
 }
 
 object ChartOptions {
@@ -323,14 +389,19 @@ object ChartOptions {
             maintainAspectRatio: Boolean = false,
             legend: LegendOptions = LegendOptions(),
             tooltips: TooltipOptions = TooltipOptions(),
-            scales: ScalesOptions = ScalesOptions()): ChartOptions = {
+            scales: ScalesOptions = ScalesOptions(),
+            responsiveAnimationDuration: Int = 0,
+            showLines: Boolean = true,
+  ): ChartOptions = {
     js.Dynamic
       .literal(
         responsive = responsive,
         maintainAspectRatio = maintainAspectRatio,
         legend = legend,
         tooltips = tooltips,
-        scales = scales
+        scales = scales,
+        responsiveAnimationDuration = responsiveAnimationDuration,
+        showLines = showLines
       )
       .asInstanceOf[ChartOptions]
   }
@@ -377,8 +448,6 @@ class Chart(ctx: String, config: ChartConfiguration) extends js.Object {
   def options: ChartOptions                                  = js.native
   def canvas: Element                                        = js.native
 }
-
-
 @js.native
 @JSGlobal
 object Chart extends js.Object {
