@@ -30,8 +30,8 @@ lazy val `csw-event-monitor-client` = project
       "react"                    -> "16.4.1",
       "react-dom"                -> "16.4.2",
       "chart.js"                 -> "2.7.3",
-      "moment"                   -> "2.22.2",
-      "chartjs-plugin-streaming" -> "1.7.1",
+//      "moment"                   -> "2.22.2",
+//      "chartjs-plugin-streaming" -> "1.7.1",
     ),
     npmDevDependencies in Compile ++= Seq(
       "webpack-merge"  -> "4.2.1",
@@ -40,6 +40,8 @@ lazy val `csw-event-monitor-client` = project
       "css-loader"  -> "2.1.1",
       "style-loader"  -> "0.23.1"
     ),
+    // Note: this was working for sbt ~reStart, but not with the generated server script! Needs research.
+    // For now included the *.min.js files in the server's public/js dir.
 //    webpackConfigFile := Some(baseDirectory.value / "dev.webpack.config.js"),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
@@ -53,8 +55,6 @@ lazy val `csw-event-monitor-client` = project
     ),
     version in webpack := "4.8.1",
     version in startWebpackDevServer := "3.1.4",
-    // Note: this was working for sbt ~reStart, but not with the generated server script! Needs research.
-    // For now included the *.min.js files in the server's public/js dir.
 //    webpackResources := webpackResources.value +++
 //    PathFinder(Seq(baseDirectory.value / "index.html")) ** "*.*",
     webpackDevServerExtraArgs in fastOptJS ++= Seq(
