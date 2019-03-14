@@ -92,7 +92,10 @@ case class ControlComponent(settings: P[ControlOption]) extends Component[Contro
         E.div(
           A.className("col s4 offset-s1"),
           E.label(
-            E.input(A.`type`("checkbox"), A.className("filled-in"), onChecked(p => emit(s.copy(performance = p.toBoolean)))),
+            E.input(A.`type`("checkbox"),
+                    A.className("filled-in"),
+                    A.checked(s.performance),
+                    onChecked(p => emit(s.copy(performance = p.toBoolean)))),
             E.span(Text("Optimize for Performance"))
           )
         )
