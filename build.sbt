@@ -40,7 +40,7 @@ lazy val `csw-event-monitor-client` = project
       "css-loader"  -> "2.1.1",
       "style-loader"  -> "0.23.1"
     ),
-    webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js"),
+//    webpackConfigFile := Some(baseDirectory.value / "dev.webpack.config.js"),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
       React4s.`react4s`.value,
@@ -53,8 +53,10 @@ lazy val `csw-event-monitor-client` = project
     ),
     version in webpack := "4.8.1",
     version in startWebpackDevServer := "3.1.4",
-    webpackResources := webpackResources.value +++
-    PathFinder(Seq(baseDirectory.value / "index.html")) ** "*.*",
+    // Note: this was working for sbt ~reStart, but not with the generated server script! Needs research.
+    // For now included the *.min.js files in the server's public/js dir.
+//    webpackResources := webpackResources.value +++
+//    PathFinder(Seq(baseDirectory.value / "index.html")) ** "*.*",
     webpackDevServerExtraArgs in fastOptJS ++= Seq(
       "--content-base",
       baseDirectory.value.getAbsolutePath
