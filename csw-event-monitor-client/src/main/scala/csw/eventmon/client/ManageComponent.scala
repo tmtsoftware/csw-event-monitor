@@ -1,6 +1,7 @@
 package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
+import csw.eventmon.client.MainComponent.SaveInfo
 import csw.eventmon.client.react4s.React4sUtil._
 
 object ManageComponent {
@@ -8,8 +9,8 @@ object ManageComponent {
 }
 
 // Displays a dialog to manage the items saved in local storage
-case class ManageComponent(localStorageMap: P[Map[String, Set[EventFieldSelection]]])
-    extends Component[Map[String, Set[EventFieldSelection]]] {
+case class ManageComponent(localStorageMap: P[Map[String, SaveInfo]])
+    extends Component[Map[String, SaveInfo]] {
 
   private val selectedItems = State[Set[String]](Set.empty)
 

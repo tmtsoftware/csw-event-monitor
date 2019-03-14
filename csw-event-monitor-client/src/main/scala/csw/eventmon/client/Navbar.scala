@@ -2,6 +2,7 @@ package csw.eventmon.client
 import com.github.ahnfelt.react4s._
 import Navbar._
 import csw.eventmon.client.ControlComponent.ControlOption
+import csw.eventmon.client.MainComponent.SaveInfo
 import csw.eventmon.client.SaveComponent.SaveSettings
 
 object Navbar {
@@ -9,15 +10,15 @@ object Navbar {
   sealed trait NavbarCommand
   case class AddEventFieldSelection(eventFieldSelection: EventFieldSelection) extends NavbarCommand
   case class SaveConfig(settings: SaveSettings)                               extends NavbarCommand
-  case class ManageConfig(map: Map[String, Set[EventFieldSelection]])         extends NavbarCommand
-  case class LoadConfig(events: Set[EventFieldSelection])                     extends NavbarCommand
+  case class ManageConfig(map: Map[String, SaveInfo])                         extends NavbarCommand
+  case class LoadConfig(saveInfo: SaveInfo)                                   extends NavbarCommand
   case class Pause(paused: Boolean)                                           extends NavbarCommand
   case class UpdateControlOptions(controlOptions: ControlOption)              extends NavbarCommand
 }
 
 case class Navbar(eventClient: P[EventJsClient],
                   numPlots: P[Int],
-                  localStorageMap: P[Map[String, Set[EventFieldSelection]]],
+                  localStorageMap: P[Map[String, SaveInfo]],
                   controlOptions: P[ControlOption])
     extends Component[NavbarCommand] {
 

@@ -3,8 +3,13 @@ package csw.eventmon.client
 import com.github.ahnfelt.react4s._
 import ControlComponent._
 import csw.eventmon.client.react4s.React4sUtil._
+import upickle.default.{ReadWriter => RW, macroRW}
 
 object ControlComponent {
+
+  object ControlOption {
+    implicit val rw: RW[ControlOption] = macroRW
+  }
   case class ControlOption(duration: Int = 60,
                            ttl: Int = 60,
                            delay: Int = 2000,

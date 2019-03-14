@@ -2,6 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import LoadComponent._
+import csw.eventmon.client.MainComponent.SaveInfo
 import org.scalajs.dom.{FileReader, UIEvent}
 import org.scalajs.dom.raw.HTMLInputElement
 
@@ -13,7 +14,7 @@ object LoadComponent {
 }
 
 // Manages a dropdown menu for loading the current configuration from local storage or a file
-case class LoadComponent(localStorageMap: P[Map[String, Set[EventFieldSelection]]]) extends Component[Set[EventFieldSelection]] {
+case class LoadComponent(localStorageMap: P[Map[String, SaveInfo]]) extends Component[SaveInfo] {
 
   // Called when the use selects a file to load
   private def fileSelected(get: Get)(event: SyntheticEvent): Unit = {
@@ -21,8 +22,8 @@ case class LoadComponent(localStorageMap: P[Map[String, Set[EventFieldSelection]
     val reader = new FileReader()
     reader.onload = (_: UIEvent) => {
       val json = reader.result.asInstanceOf[String]
-      val set  = read[Set[EventFieldSelection]](json)
-      emit(set)
+      val saveInfo  = read[SaveInfo](json)
+      emit(saveInfo)
     }
     val document = js.Dynamic.global.document
     val files    = document.getElementById(fileInputId).asInstanceOf[HTMLInputElement].files

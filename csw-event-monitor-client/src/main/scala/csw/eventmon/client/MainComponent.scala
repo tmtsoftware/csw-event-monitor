@@ -9,11 +9,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import MainComponent._
 import csw.eventmon.client.ControlComponent.ControlOption
 import csw.params.events.Event
+import upickle.default.{ReadWriter => RW, macroRW}
 
 import scala.scalajs.js
 
 object MainComponent {
   val localStorageKey = "csw-event-monitor"
+
+  // Used to save chart config to file or local storage
+  case class SaveInfo(events: Set[EventFieldSelection], settings: ControlOption)
+  case object SaveInfo {
+    implicit val rw: RW[SaveInfo] = macroRW
+  }
 }
 
 // This is the main component for the event monitor.
@@ -39,7 +46,7 @@ case class MainComponent() extends Component[NoEmit] {
   private val paused = State[Boolean](false)
 
   // Contains the contents of browser local storage, which maps names to a set of events to plot
-  private val localStorageMap = State[Map[String, Set[EventFieldSelection]]](loadFromLocalStorage())
+  private val localStorageMap = State[Map[String, SaveInfo]](loadFromLocalStorage())
 
   // Options that apply to all of the charts
   private val controlOptions = State[ControlOption](ControlOption())
@@ -66,22 +73,24 @@ case class MainComponent() extends Component[NoEmit] {
   // Adds the current config to local browser storage
   private def saveToLocalStorage(get: Get, name: String): Unit = {
     import upickle.default._
-    val map = LocalStorage(localStorageKey) match {
-      case Some(json) =>
-        read[Map[String, Set[EventFieldSelection]]](json) + (name -> get(eventFieldSelections))
-      case None =>
-        Map(name -> get(eventFieldSelections))
-    }
+    val map = get(localStorageMap) + (name -> SaveInfo(get(eventFieldSelections), get(controlOptions)))
     LocalStorage(localStorageKey) = write(map)
     localStorageMap.set(map)
   }
 
   // Loads the saved configs from local browser storage
-  private def loadFromLocalStorage(): Map[String, Set[EventFieldSelection]] = {
+  private def loadFromLocalStorage(): Map[String, SaveInfo] = {
     import upickle.default._
     LocalStorage(localStorageKey) match {
-      case Some(json) => read[Map[String, Set[EventFieldSelection]]](json)
-      case None       => Map.empty
+      case Some(json) =>
+        try {
+          read[Map[String, SaveInfo]](json)
+        } catch {
+          case ex: Exception =>
+            ex.printStackTrace()
+            Map.empty
+        }
+      case None => Map.empty
     }
   }
 
@@ -89,7 +98,7 @@ case class MainComponent() extends Component[NoEmit] {
   // See https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser/30800715#30800715
   private def saveToFile(get: Get, name: String): Unit = {
     import upickle.default._
-    val json               = write(get(eventFieldSelections))
+    val json               = write(SaveInfo(get(eventFieldSelections), get(controlOptions)))
     val fileName           = s"$name.json"
     val dataStr            = s"data:text/json;charset=utf-8,$json"
     val document           = js.Dynamic.global.document
@@ -110,7 +119,7 @@ case class MainComponent() extends Component[NoEmit] {
   }
 
   // Called when the user selects saved local storage (config) items to delete (resulting in a new map of saved items)
-  private def manageConfig(get: Get, map: Map[String, Set[EventFieldSelection]]): Unit = {
+  private def manageConfig(get: Get, map: Map[String, SaveInfo]): Unit = {
     import upickle.default._
     LocalStorage(localStorageKey) = write(map)
     localStorageMap.set(map)
@@ -118,12 +127,13 @@ case class MainComponent() extends Component[NoEmit] {
 
   // Called when the user selects a previously saved configuration (list of events) to load.
   // Unsubscribe to all current events and subscribe to the new ones.
-  private def loadConfig(get: Get, events: Set[EventFieldSelection]): Unit = {
+  private def loadConfig(get: Get, saveInfo: SaveInfo): Unit = {
     eventSelectionMap.set(Map.empty)
     eventFieldSelections.set(Set.empty)
     get(eventStreamMap).values.foreach(_.close())
     eventStreamMap.set(Map.empty)
-    events.foreach(addEvent(get))
+    controlOptions.set(saveInfo.settings)
+    saveInfo.events.foreach(addEvent(get))
   }
 
   // Handler for navbar items
@@ -132,7 +142,7 @@ case class MainComponent() extends Component[NoEmit] {
       case AddEventFieldSelection(eventFieldSelection) => addEvent(get)(eventFieldSelection)
       case SaveConfig(settings)                        => saveConfig(get, settings)
       case ManageConfig(map)                           => manageConfig(get, map)
-      case LoadConfig(events)                          => loadConfig(get, events)
+      case LoadConfig(saveInfo)                        => loadConfig(get, saveInfo)
       case Pause(p)                                    => paused.set(p)
       case UpdateControlOptions(opts)                  => controlOptions.set(opts)
       case x                                           => println(s"XXX Not implemented: $x")

@@ -10,7 +10,7 @@ case object EventSelection {
  */
 case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String],
                           maybeRateLimit: Option[Int] = None) {
-  override def toString: String = s"$subsystem-${maybeComponent.getOrElse("")}-${maybeName.getOrElse("")}"
+  override def toString: String = s"$subsystem-${maybeComponent.getOrElse("")}-${maybeName.getOrElse("")}-${maybeRateLimit.getOrElse("")}"
 }
 
 case object EventFieldSelection {
