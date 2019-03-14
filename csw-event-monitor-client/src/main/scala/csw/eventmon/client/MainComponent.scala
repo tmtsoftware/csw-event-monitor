@@ -50,7 +50,10 @@ case class MainComponent() extends Component[NoEmit] {
       val eventSelection = eventFieldSelection.eventSelection
       if (!get(eventStreamMap).contains(eventSelection)) {
         val eventStream =
-          eventClient.subscribe(eventSelection.subsystem.toLowerCase(), eventSelection.maybeComponent, eventSelection.maybeName)
+          eventClient.subscribe(eventSelection.subsystem.toLowerCase(),
+                                eventSelection.maybeComponent,
+                                eventSelection.maybeName,
+                                eventSelection.maybeRateLimit)
         eventStreamMap.modify(_ + (eventSelection    -> eventStream))
         eventSelectionMap.modify(_ + (eventSelection -> Set(eventFieldSelection)))
       }

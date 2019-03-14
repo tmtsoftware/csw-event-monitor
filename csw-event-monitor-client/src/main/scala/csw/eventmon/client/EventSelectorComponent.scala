@@ -2,6 +2,7 @@ package csw.eventmon.client
 
 import com.github.ahnfelt.react4s._
 import EventSelectorComponent._
+import csw.eventmon.client.react4s.React4sUtil.onChecked
 import csw.params.core.models.Subsystem
 import csw.params.events.{Event, SystemEvent}
 import csw.params.core.generics.KeyType
@@ -9,22 +10,25 @@ import csw.params.core.generics.KeyType._
 
 object EventSelectorComponent {
   private val subsystemList = Subsystem.values.map(_.name).toList
-//  private val subsystemList = List("tcs", "test")
-  private val id = "addEvent"
+  private val id            = "addEvent"
 
   private[client] def isNumericKey(keyType: KeyType[_]): Boolean = {
     keyType == IntKey || keyType == DoubleKey || keyType == FloatKey || keyType == ShortKey || keyType == ByteKey
   }
 
+  // Rate limit used for discovering events inside this dialog
+  private val rateLimitMs = Some(200)
 }
 
 // A modal dialog for adding events to subscribe to
 case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Component[EventFieldSelection] {
   // Selected states
-  private val selectedSubsystem  = State("")
-  private val selectedComponent  = State[Option[String]](None)
-  private val selectedEventName  = State[Option[String]](None)
-  private val selectedEventField = State[Option[String]](None)
+  private val selectedSubsystem   = State("")
+  private val selectedComponent   = State[Option[String]](None)
+  private val selectedEventName   = State[Option[String]](None)
+  private val selectedEventField  = State[Option[String]](None)
+  private val selectedRateLimiter = State[Int](200)
+  private val rateLimitEnabled    = State[Boolean](false)
 
   // Temp event stream used to get component names, event names, fields
   private val maybeEventStream       = State[Option[EventStream[Event]]](None)
@@ -99,6 +103,40 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
     )
   }
 
+  private def makeRateLimitItem(get: Get): Element = {
+    val canUseRateLimit = get(selectedComponent).isDefined && get(selectedEventName).isDefined
+    E.div(
+      A.className("row"),
+      E.div(
+        A.className("col s2"),
+        E.label(
+          E.input(A.`type`("checkbox"),
+                  Tags(if (!canUseRateLimit) Some(A.disabled()) else None),
+                  A.className("filled-in"),
+                  onChecked(p => rateLimitEnabled.set(p.toBoolean))),
+          E.span(Text("Rate Limit"))
+        )
+      ),
+      E.div(
+        E.div(A.className("col s1"), Text(s"${get(selectedRateLimiter)}ms"), S.textAlign("left"), S.paddingLeft("2px")),
+        E.div(
+          S.paddingLeft("0px"),
+          A.className("col s3"),
+          A.className("range-field"),
+          E.input(
+            A.`type`("range"),
+            A.onChangeText(s => selectedRateLimiter.set(s.toInt)),
+            A.min("100"),
+            A.max("1000"),
+            A.step("1"),
+            A.value(get(selectedRateLimiter).toString),
+            Tags(if (!get(rateLimitEnabled)) Some(A.disabled()) else None)
+          )
+        )
+      )
+    )
+  }
+
   private def makeButtons(get: Get): Element = {
     E.div(
       A.className("modal-footer"),
@@ -113,7 +151,7 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
                                   maybeComponent: Option[String],
                                   maybeEvent: Option[String]): Unit = {
     get(maybeEventStream).foreach(_.close())
-    maybeEventStream.set(Some(get(eventClient).subscribe(subsystem.toLowerCase(), maybeComponent, maybeEvent)))
+    maybeEventStream.set(Some(get(eventClient).subscribe(subsystem.toLowerCase(), maybeComponent, maybeEvent, rateLimitMs)))
     get(maybeEventStream).get.onNext = {
       case event: SystemEvent =>
         val component  = event.source.prefix.split('.').tail.head
@@ -132,18 +170,24 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   // called when a subsystem item is selected
   private def subsystemSelected(get: Get)(subsystem: String): Unit = {
     println(s"Select subsystem: $subsystem")
+    selectedEventField.set(None)
+    selectedEventName.set(None)
+    selectedComponent.set(None)
     selectedSubsystem.set(subsystem)
     tempSubscribeEvents(get, subsystem, None, None)
   }
 
   // called when a component item is selected
   private def componentSelected(get: Get)(component: String): Unit = {
+    selectedEventField.set(None)
+    selectedEventName.set(None)
     selectedComponent.set(Some(component))
     tempSubscribeEvents(get, get(selectedSubsystem), Some(component), None)
   }
 
   // called when an event name item is selected
   private def eventNameSelected(get: Get)(eventName: String): Unit = {
+    selectedEventField.set(None)
     selectedEventName.set(Some(eventName))
     tempSubscribeEvents(get, get(selectedSubsystem), get(selectedComponent), get(selectedEventName))
   }
@@ -156,11 +200,12 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
 
   private def okButtonClicked(get: Get)(ev: MouseEvent): Unit = {
     get(maybeEventStream).foreach(_.close())
-    val subsystem       = get(selectedSubsystem)
-    val maybeComponent  = get(selectedComponent)
-    val maybeEventName  = get(selectedEventName)
-    val maybeEventField = get(selectedEventField)
-    emit(EventFieldSelection(EventSelection(subsystem, maybeComponent, maybeEventName), maybeEventField))
+    val subsystem        = get(selectedSubsystem)
+    val maybeComponent   = get(selectedComponent)
+    val maybeEventName   = get(selectedEventName)
+    val maybeEventField  = get(selectedEventField)
+    val maybeRateLimiter = if (get(rateLimitEnabled)) Some(get(selectedRateLimiter)) else None
+    emit(EventFieldSelection(EventSelection(subsystem, maybeComponent, maybeEventName, maybeRateLimiter), maybeEventField))
   }
 
   private def makeDialogBody(get: Get): Element = {
@@ -170,6 +215,7 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
       makeComponentItem(get),
       makeEventNameItem(get),
       makeEventFieldItem(get),
+      makeRateLimitItem(get)
     )
   }
 

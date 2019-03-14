@@ -15,7 +15,6 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
     extends Component[NoEmit] {
 
   private val maybeChart                  = State[Option[Chart]](None)
-  var interval: Option[SetIntervalHandle] = None
 
   private def makeChart(get: Get, id: String): Chart = {
     val legend   = LegendOptions(position = "bottom")
@@ -72,10 +71,6 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
         }
       }
     }
-  }
-
-  override def componentWillUnmount(get: Get): Unit = {
-    for (i <- interval) js.timers.clearInterval(i)
   }
 
   override def render(get: Get): Node = {

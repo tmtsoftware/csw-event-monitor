@@ -41,6 +41,7 @@ lazy val `csw-event-monitor-client` = project
       "style-loader"  -> "0.23.1"
     ),
     // Note: this was working for sbt ~reStart, but not with the generated server script! Needs research.
+    // (Need to add @JSImports for both!)
     // For now included the *.min.js files in the server's public/js dir.
 //    webpackConfigFile := Some(baseDirectory.value / "dev.webpack.config.js"),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

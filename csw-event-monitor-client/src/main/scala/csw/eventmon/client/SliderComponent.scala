@@ -38,7 +38,7 @@ case class SliderComponent(label: P[String],
           A.min(get(minValue).toString),
           A.max(get(maxValue).toString),
           A.step(get(step).toString),
-          A.value(get(value).toString)
+          A.value(get(value).toString),
         )
       )
     ).withRef(Materialize.tooltip(id))

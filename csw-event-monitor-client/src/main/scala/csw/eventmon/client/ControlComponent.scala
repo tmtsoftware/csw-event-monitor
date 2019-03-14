@@ -55,7 +55,7 @@ case class ControlComponent(settings: P[ControlOption]) extends Component[Contro
       Component(SliderComponent,
                 "frame rate",
                 s.frameRate,
-                "x/s",
+                "hz",
                 1,
                 60,
                 1,
