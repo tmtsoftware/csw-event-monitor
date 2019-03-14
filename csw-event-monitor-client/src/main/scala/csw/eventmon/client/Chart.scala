@@ -75,13 +75,30 @@ trait LegendOptions extends js.Object {
 }
 
 object LegendOptions {
-  def apply(display: Boolean = true, position: String = "top"): LegendOptions = {
+  def apply(display: Boolean = false, position: String = "top"): LegendOptions = {
     js.Dynamic
       .literal(
         display = display,
         position = position
       )
       .asInstanceOf[LegendOptions]
+  }
+}
+
+@js.native
+trait TitleOptions extends js.Object {
+  def display: Boolean = js.native
+  def text: String     = js.native
+}
+
+object TitleOptions {
+  def apply(display: Boolean = false, text: String = "title"): TitleOptions = {
+    js.Dynamic
+      .literal(
+        display = display,
+        text = text
+      )
+      .asInstanceOf[TitleOptions]
   }
 }
 
@@ -374,6 +391,7 @@ trait ChartOptions extends js.Object {
   def responsive: Boolean              = js.native
   def maintainAspectRatio: Boolean     = js.native
   def legend: LegendOptions            = js.native
+  def title: TitleOptions              = js.native
   def tooltips: TooltipOptions         = js.native
   def scales: ScalesOptions            = js.native
   def plugins: PluginOptions           = js.native
@@ -388,20 +406,29 @@ object ChartOptions {
   def apply(responsive: Boolean = true,
             maintainAspectRatio: Boolean = false,
             legend: LegendOptions = LegendOptions(),
+            title: TitleOptions = TitleOptions(),
             tooltips: TooltipOptions = TooltipOptions(),
             scales: ScalesOptions = ScalesOptions(),
+            plugins: PluginOptions = PluginOptions(),
+            animation: AnimationOptions = AnimationOptions(),
+            hover: HoverOptions = HoverOptions(),
             responsiveAnimationDuration: Int = 0,
             showLines: Boolean = true,
-  ): ChartOptions = {
+            elements: ChartElements = ChartElements()): ChartOptions = {
     js.Dynamic
       .literal(
         responsive = responsive,
         maintainAspectRatio = maintainAspectRatio,
         legend = legend,
+        title = title,
         tooltips = tooltips,
         scales = scales,
+        plugins = plugins,
+        animation = animation,
+        hover = hover,
         responsiveAnimationDuration = responsiveAnimationDuration,
-        showLines = showLines
+        showLines = showLines,
+        elements = elements,
       )
       .asInstanceOf[ChartOptions]
   }

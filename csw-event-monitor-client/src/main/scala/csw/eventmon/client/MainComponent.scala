@@ -13,7 +13,7 @@ import upickle.default.{ReadWriter => RW, macroRW}
 
 import scala.scalajs.js
 
-object MainComponent {
+case object MainComponent {
   val localStorageKey = "csw-event-monitor"
 
   // Used to save chart config to file or local storage

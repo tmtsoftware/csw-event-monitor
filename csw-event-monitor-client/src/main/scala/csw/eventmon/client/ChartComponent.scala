@@ -5,7 +5,6 @@ import csw.eventmon.client.ControlComponent.ControlOption
 import csw.params.events.SystemEvent
 
 import scala.scalajs.js
-import scala.scalajs.js.timers.SetIntervalHandle
 
 case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
                           maybeEvent: P[Option[SystemEvent]],
@@ -18,13 +17,12 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
 
   private def makeChart(get: Get, id: String): Chart = {
     val legend   = LegendOptions(position = "bottom")
+    val title = TitleOptions(display = true, text = get(eventFieldSelection).title)
     val tooltips = TooltipOptions()
     val scales   = ScalesOptions()
-    // XXX TODO: Add prop for color, different for each chart?
-    val chartData = ChartData(Nil, List(ChartDataset(Nil, id, fill = false, borderColor = "#404080")))
-    val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales)
+    val chartData = ChartData(Nil, List(ChartDataset(Nil, id, fill = false)))
+    val options   = ChartOptions(legend = legend, tooltips = tooltips, scales = scales, title = title)
     val config    = ChartConfiguration("LineWithLine", chartData, options)
-//    val config    = ChartConfiguration("line", chartData, options)
     new Chart(id, config)
   }
 
@@ -74,7 +72,7 @@ case class ChartComponent(eventFieldSelection: P[EventFieldSelection],
   }
 
   override def render(get: Get): Node = {
-    val id     = get(eventFieldSelection).toString
+    val id     = get(eventFieldSelection).id
     val width = get(controlOptions).chartWidth.toString
     val height = get(controlOptions).chartHeight.toString
     // The div is used for resizing the charts: See https://www.chartjs.org/docs/latest/general/responsive.html#important-note

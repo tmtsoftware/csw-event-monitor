@@ -33,7 +33,7 @@ case class SingleEventStreamChart(eventFieldSelections: P[List[EventFieldSelecti
 
   override def render(get: Get): Node = {
     val charts = get(eventFieldSelections).map { eventFieldSelection =>
-      val id          = eventFieldSelection.toString
+      val id          = eventFieldSelection.id
       val showXLabels = eventFieldSelection == get(eventFieldSelections).last
       Component(ChartComponent, eventFieldSelection, get(maybeEvent), showXLabels, get(controlOptions), get(paused))
         .withKey(id)

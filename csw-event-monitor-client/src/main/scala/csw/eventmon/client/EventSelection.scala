@@ -10,7 +10,8 @@ case object EventSelection {
  */
 case class EventSelection(subsystem: String, maybeComponent: Option[String], maybeName: Option[String],
                           maybeRateLimit: Option[Int] = None) {
-  override def toString: String = s"$subsystem-${maybeComponent.getOrElse("")}-${maybeName.getOrElse("")}-${maybeRateLimit.getOrElse("")}"
+  def id: String = s"$subsystem-${maybeComponent.getOrElse("")}-${maybeName.getOrElse("")}"
+  def title: String = s"Subsystem: $subsystem, Component: ${maybeComponent.getOrElse("*")}, Event: ${maybeName.getOrElse("*")}"
 }
 
 case object EventFieldSelection {
@@ -21,5 +22,6 @@ case object EventFieldSelection {
  * Represents an optional selected field in an event
  */
 case class EventFieldSelection(eventSelection: EventSelection, maybeEventField: Option[String]) {
-  override def toString: String = s"$eventSelection-${maybeEventField.getOrElse("")}"
+  def id: String = s"${eventSelection.id}-${maybeEventField.getOrElse("")}"
+  def title: String = s"${eventSelection.title}, Field: ${maybeEventField.getOrElse("*")}, Rate Limit: ${eventSelection.maybeRateLimit.getOrElse("none")}"
 }
