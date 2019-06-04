@@ -5,7 +5,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 object Libs {
   val ScalaVersion = "2.12.8"
 
-  val `akka-http-cors`  = "ch.megard"   %% "akka-http-cors"  % "0.3.1"
+  val `akka-http-cors`  = "ch.megard"   %% "akka-http-cors"  % "0.4.0"
   val `scalajs-scripts` = "com.vmunier" %% "scalajs-scripts" % "1.1.2"
 }
 
@@ -20,12 +20,12 @@ object Csw {
 }
 
 object Akka {
-  val Version = "2.5.19"
+  val Version = "2.5.23"
 
   val `akka-actor`          = "com.typesafe.akka" %% "akka-actor"               % Version
   val `akka-stream`         = "com.typesafe.akka" %% "akka-stream"              % Version
   val `akka-typed`          = "com.typesafe.akka" %% "akka-actor-typed"         % Version
-  val `akka-http`           = "com.typesafe.akka" %% "akka-http"                % "10.1.5"
+  val `akka-http`           = "com.typesafe.akka" %% "akka-http"                % "10.1.8"
   val `akka-typed-testkit`  = "com.typesafe.akka" %% "akka-actor-testkit-typed" % Version
   val `akka-http-play-json` = "de.heikoseeberger" %% "akka-http-play-json"      % "1.21.0" //Apache 2.0
 }
@@ -37,10 +37,8 @@ object React4s {
 }
 
 object Utils {
-  val `play-json`               = dep("com.typesafe.play" %%% "play-json"               % "2.6.10") //Apache 2.0
-  val `enumeratum`              = dep("com.beachape"      %%% "enumeratum"              % "1.5.13")
-  val `enumeratum-play-json`    = dep("com.beachape"      %%% "enumeratum-play-json"    % "1.5.14")
-//  val `scala-java-time`         = dep("io.github.cquiroz" %%% "scala-java-time"         % "2.0.0-RC1")
-  val `upickle`                 = dep("com.lihaoyi"       %%% "upickle"                 % "0.7.1")
-//  val `scala-js-materializecss` = dep("ch.randm"          %%% "scala-js-materializecss" % "0.1.0")
+  val `play-json`            = dep("com.typesafe.play" %%% "play-json"            % "2.7.3")  //Apache 2.0
+  val `enumeratum`           = dep("com.beachape"      %%% "enumeratum"           % "1.5.13") //MIT License
+  val `enumeratum-play-json` = dep("com.beachape"      %%% "enumeratum-play-json" % "1.5.16") //MIT License
+  val `upickle` = dep("com.lihaoyi" %%% "upickle" % "0.7.1")
 }

@@ -1,20 +1,23 @@
 package csw.eventmon.server
 
-import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, Materializer}
+import akka.actor
+import akka.actor.typed.{ActorSystem, SpawnProtocol}
+import akka.stream.typed.scaladsl.ActorMaterializer
 import csw.event.api.scaladsl.EventService
 import csw.event.client.EventServiceFactory
 import csw.location.api.scaladsl.LocationService
-import csw.location.client.ActorSystemFactory
 import csw.location.client.scaladsl.HttpLocationServiceFactory
+import akka.actor.typed.scaladsl.adapter.TypedActorSystemOps
+import akka.stream.Materializer
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContextExecutor
 
 class Wiring(port: Option[Int]) {
 
-  lazy implicit val system: ActorSystem                = ActorSystemFactory.remote()
-  lazy implicit val materializer: Materializer         = ActorMaterializer()
-  lazy implicit val executionContext: ExecutionContext = system.dispatcher
+  implicit val typedSystem: ActorSystem[SpawnProtocol] = ActorSystem(SpawnProtocol.behavior, "DatabaseTest")
+  implicit lazy val untypedSystem: actor.ActorSystem   = typedSystem.toUntyped
+  implicit lazy val mat: Materializer                  = ActorMaterializer()(typedSystem)
+  implicit lazy val ec: ExecutionContextExecutor       = untypedSystem.dispatcher
 
   lazy val locationService: LocationService = HttpLocationServiceFactory.makeLocalClient
   lazy val eventService: EventService       = new EventServiceFactory().make(locationService)
