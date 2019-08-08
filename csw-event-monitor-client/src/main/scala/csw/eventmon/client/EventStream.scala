@@ -1,7 +1,8 @@
 package csw.eventmon.client
 
 import org.scalajs.dom.EventSource
-import play.api.libs.json.{Json, Reads}
+import io.bullet.borer.Json
+import csw.params.core.formats.ParamCodecs._
 
 // From esw-prototype
 class EventStream[T: Reads](eventSource: EventSource) {

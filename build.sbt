@@ -30,8 +30,6 @@ lazy val `csw-event-monitor-client` = project
       "react"                    -> "16.4.1",
       "react-dom"                -> "16.4.2",
       "chart.js"                 -> "2.7.3",
-//      "moment"                   -> "2.22.2",
-//      "chartjs-plugin-streaming" -> "1.7.1",
     ),
     npmDevDependencies in Compile ++= Seq(
       "webpack-merge"  -> "4.2.1",
