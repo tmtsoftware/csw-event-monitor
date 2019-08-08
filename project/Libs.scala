@@ -3,7 +3,7 @@ import Def.{setting => dep}
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 object Libs {
-  val ScalaVersion = "2.12.8"
+  val ScalaVersion = "2.13.0"
 
   val `akka-http-cors`  = "ch.megard"   %% "akka-http-cors"  % "0.4.1"
   val `scalajs-scripts` = "com.vmunier" %% "scalajs-scripts" % "1.1.4"
@@ -37,7 +37,7 @@ object React4s {
 }
 
 object Utils {
-  val `play-json`            = dep("com.typesafe.play" %%% "play-json"            % "2.7.3") //Apache 2.0
+  val `play-json`            = dep("com.typesafe.play" %%% "play-json"            % "2.7.4") //Apache 2.0
   val `enumeratum`           = dep("com.beachape"      %%% "enumeratum"           % "1.5.13") //MIT License
   val `enumeratum-play-json` = dep("com.beachape"      %%% "enumeratum-play-json" % "1.5.16") //MIT License
   val `upickle`              = dep("com.lihaoyi"       %%% "upickle"              % "0.7.5")
