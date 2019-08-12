@@ -37,7 +37,7 @@ case class MainComponent() extends Component[NoEmit] {
   private val eventFieldSelections = State[Set[EventFieldSelection]](Set.empty)
 
   // Gives you the stream for reading each selected event
-  private val eventStreamMap = State[Map[EventSelection, EventStream[Event]]](Map.empty)
+  private val eventStreamMap = State[Map[EventSelection, EventStream]](Map.empty)
 
   // If you are plotting multiple fields from the same event, this maps the basic event selection to the fields being plotted
   private val eventSelectionMap = State[Map[EventSelection, Set[EventFieldSelection]]](Map.empty)

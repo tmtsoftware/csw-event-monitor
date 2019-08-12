@@ -42,7 +42,7 @@ case class ManageComponent(localStorageMap: P[Map[String, SaveInfo]])
 
   private def deleteSelected(get: Get)(e: MouseEvent): Unit = {
     val toDelete = get(selectedItems)
-    val map      = get(localStorageMap).filterKeys(s => !toDelete.contains(s))
+    val map      = get(localStorageMap).filterKeys(s => !toDelete.contains(s)).toMap
     emit(map)
   }
 

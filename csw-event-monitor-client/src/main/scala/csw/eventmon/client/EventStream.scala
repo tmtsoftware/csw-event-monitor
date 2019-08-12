@@ -1,20 +1,21 @@
 package csw.eventmon.client
 
+import csw.params.core.formats.JsonSupport
+import csw.params.events.{Event, SystemEvent}
 import org.scalajs.dom.EventSource
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Json
 
 // From esw-prototype
-class EventStream[T: Reads](eventSource: EventSource) {
+class EventStream(eventSource: EventSource) {
 
-  var onNext: T => Unit = { _ =>
+  var onNext: Event => Unit = { _ =>
     ()
   }
 
   eventSource.onmessage = { messageEvent =>
-    println("XXX got an event!")
     val data = messageEvent.data.toString
     if (data.nonEmpty) {
-      val event = Json.parse(data).as[T]
+      val event = JsonSupport.readEvent[SystemEvent](Json.parse(data))
       onNext(event)
     }
   }

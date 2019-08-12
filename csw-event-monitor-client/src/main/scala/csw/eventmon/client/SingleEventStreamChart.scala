@@ -5,7 +5,7 @@ import csw.params.events.{Event, SystemEvent}
 
 // Manages the charts for one or more fields of a specific event, as described by eventFieldSelections
 case class SingleEventStreamChart(eventFieldSelections: P[List[EventFieldSelection]],
-                                  eventStream: P[EventStream[Event]],
+                                  eventStream: P[EventStream],
                                   controlOptions: P[ControlOption],
                                   paused: P[Boolean])
     extends Component[NoEmit] {

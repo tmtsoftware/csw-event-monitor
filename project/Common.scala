@@ -23,9 +23,7 @@ object Common extends AutoPlugin {
       "-unchecked",
       "-deprecation",
       "-Xlint",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code",
-      "-Xfuture"
+      "-Ywarn-dead-code"
     ),
     javacOptions in (Compile, doc) ++= Seq("-Xdoclint:none"),
     testOptions in Test ++= Seq(
@@ -36,7 +34,8 @@ object Common extends AutoPlugin {
       Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
     ),
     resolvers += "jitpack" at "https://jitpack.io",
-    resolvers += "bintray" at "http://jcenter.bintray.com",
+//    resolvers += "bintray" at "http://jcenter.bintray.com",
+//    resolvers += Resolver.sonatypeRepo("snapshots"),
     version := "0.0.1",
     parallelExecution in Test := false,
     autoCompilerPlugins := true,

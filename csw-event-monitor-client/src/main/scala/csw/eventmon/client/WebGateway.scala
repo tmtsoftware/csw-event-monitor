@@ -48,5 +48,5 @@ class WebGateway(baseUri: String = "")(implicit ec: ExecutionContext) {
   }
 
   def source(url: String): EventSource                            = new EventSource(s"$baseUri$url")
-  def stream[Response: Reads](url: String): EventStream[Response] = new EventStream(source(url))
+  def stream(url: String): EventStream = new EventStream(source(url))
 }

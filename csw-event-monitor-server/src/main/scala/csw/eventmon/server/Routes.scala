@@ -35,13 +35,10 @@ class Routes(
           path("subscribe" / Segment) { subsystem =>
             parameters(("component".?, "event".?, "rateLimit".?)) { (component, event, rateLimit) =>
               complete {
-                println(s"XXX subscribe $subsystem, $component, $event $rateLimit")
                 eventMonitor
                   .subscribe(subsystem, component, event, rateLimit.map(_.toInt))
-//                  .map(evt => ServerSentEvent(Json.stringify(Json.toJson(evt))))
                   .map {evt =>
-                    println(s"XXX got an event: $evt")
-                    ServerSentEvent(Json.stringify(Json.toJson(evt)))
+                    ServerSentEvent(Json.stringify(JsonSupport.writeEvent(evt)))
                   }
                   .keepAlive(10.second, () => ServerSentEvent.heartbeat)
               }

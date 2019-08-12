@@ -11,6 +11,7 @@ lazy val `csw-event-monitor-server` = project
     libraryDependencies ++= Seq(
       Akka.`akka-http`,
       Akka.`akka-stream`,
+      Akka.`akka-http-play-json`,
       Csw.`csw-event-client`,
       Csw.`csw-location-client`,
       Libs.`akka-http-cors`,
@@ -29,7 +30,7 @@ lazy val `csw-event-monitor-client` = project
       "materialize-css"          -> "1.0.0",
       "react"                    -> "16.4.1",
       "react-dom"                -> "16.4.2",
-      "chart.js"                 -> "2.7.3",
+      "chart.js"                 -> "2.7.3"
     ),
     npmDevDependencies in Compile ++= Seq(
       "webpack-merge"  -> "4.2.1",
@@ -45,7 +46,8 @@ lazy val `csw-event-monitor-client` = project
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
       React4s.`react4s`.value,
-      React4s.`router4s`.value,
+      Utils.`scalajs-dom`.value,
+//      React4s.`router4s`.value,
       Utils.`play-json`.value,
       Utils.`enumeratum`.value,
       Utils.`enumeratum-play-json`.value,

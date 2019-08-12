@@ -4,7 +4,7 @@ import com.github.ahnfelt.react4s._
 import EventSelectorComponent._
 import csw.eventmon.client.react4s.React4sUtil.onChecked
 import csw.params.core.models.Subsystem
-import csw.params.events.{Event, SystemEvent}
+import csw.params.events.SystemEvent
 import csw.params.core.generics.KeyType
 import csw.params.core.generics.KeyType._
 
@@ -31,7 +31,7 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
   private val rateLimitEnabled    = State[Boolean](false)
 
   // Temp event stream used to get component names, event names, fields
-  private val maybeEventStream       = State[Option[EventStream[Event]]](None)
+  private val maybeEventStream       = State[Option[EventStream]](None)
   private val componentsForSubsystem = State[Map[String, Set[String]]](Map.empty)
   private val eventsForComponent     = State[Map[String, Set[String]]](Map.empty)
   private val fieldsForEvent         = State[Map[String, Set[String]]](Map.empty)
@@ -169,7 +169,6 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
 
   // called when a subsystem item is selected
   private def subsystemSelected(get: Get)(subsystem: String): Unit = {
-    println(s"Select subsystem: $subsystem")
     selectedEventField.set(None)
     selectedEventName.set(None)
     selectedComponent.set(None)
