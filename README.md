@@ -4,6 +4,8 @@ The CSW Event Monitor is an akka-http/scala.js based web app for monitoring nume
 
 Controls are provided for pausing the display, changing the size of the charts and the amount of time displayed.
 
+![Screenshot](event-monitor.png)
+
 To build, run: 
     
     sbt stage
