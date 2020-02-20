@@ -31,9 +31,9 @@ trait Tooltip extends js.Object {
 @js.native
 @JSImport("materialize-css", JSImport.Namespace)
 object M extends js.Object {
-  var FormSelect: FormSelect = js.native
-  var Modal: Modal = js.native
-  var Tooltip: Tooltip = js.native
+  def FormSelect: FormSelect = js.native
+  def Modal: Modal = js.native
+  def Tooltip: Tooltip = js.native
 }
 
 // Contains some (non-native) utility methods

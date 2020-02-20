@@ -16,7 +16,8 @@ The app has a dedicated HTTP server. Run:
 
 to start it and then go to http://localhost:9090
 
-In order to have some events to plot, you will need to have some CSW components running. For test purposes, you can run the HCD and assembly from the [csw-prod-qa](https://github.com/tmtsoftware/csw-prod-qa) project. It publishes dummy events with random values using the tcs and test subsystems.
+In order to have some events to plot, you will need to have some CSW components running. For test purposes, you can run the [test HCD](test-hcd) 
+in this project  It publishes dummy events with random values using the tcs and test subsystems.
 
 For example: Start csw-services.sh:
 

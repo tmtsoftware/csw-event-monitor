@@ -57,7 +57,7 @@ case class MainComponent() extends Component[NoEmit] {
       val eventSelection = eventFieldSelection.eventSelection
       if (!get(eventStreamMap).contains(eventSelection)) {
         val eventStream =
-          eventClient.subscribe(eventSelection.subsystem.toLowerCase(),
+          eventClient.subscribe(eventSelection.subsystem,
                                 eventSelection.maybeComponent,
                                 eventSelection.maybeName,
                                 eventSelection.maybeRateLimit)

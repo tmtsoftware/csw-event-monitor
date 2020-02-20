@@ -184,8 +184,8 @@ object DisplayFormats {
 }
 @js.native
 trait AxisTime extends js.Object {
-  var min: js.Date                   = js.native
-  var max: js.Date                   = js.native
+  def min: js.Date                   = js.native
+  def max: js.Date                   = js.native
   def displayFormats: DisplayFormats = js.native
 }
 
@@ -373,7 +373,7 @@ object ChartLine {
 
 @js.native
 trait ChartElements extends js.Object {
-  var line: ChartLine = js.native
+  def line: ChartLine = js.native
 }
 
 object ChartElements {
@@ -398,7 +398,7 @@ trait ChartOptions extends js.Object {
   def animation: AnimationOptions      = js.native
   def hover: HoverOptions              = js.native
   var responsiveAnimationDuration: Int = js.native
-  var showLines: Boolean               = js.native
+  def showLines: Boolean               = js.native
   def elements: ChartElements          = js.native
 }
 

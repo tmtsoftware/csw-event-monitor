@@ -1,6 +1,10 @@
 import sbt.Keys.{libraryDependencies, resolvers}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmDependencies
 
+lazy val root = (project in file("."))
+  .aggregate(`csw-event-monitor-server`, `csw-event-monitor-client`, `test-hcd`)
+  .settings(name := "csw-event-monitor")
+
 lazy val `csw-event-monitor-server` = project
   .enablePlugins(DeployApp, SbtWeb, SbtTwirl, WebScalaJSBundlerPlugin)
   .settings(
@@ -39,15 +43,10 @@ lazy val `csw-event-monitor-client` = project
       "css-loader"  -> "2.1.1",
       "style-loader"  -> "0.23.1"
     ),
-    // Note: this was working for sbt ~reStart, but not with the generated server script! Needs research.
-    // (Need to add @JSImports for both!)
-    // For now included the *.min.js files in the server's public/js dir.
-//    webpackConfigFile := Some(baseDirectory.value / "dev.webpack.config.js"),
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
     libraryDependencies ++= Seq(
       React4s.`react4s`.value,
       Utils.`scalajs-dom`.value,
-//      React4s.`router4s`.value,
       Utils.`play-json`.value,
       Utils.`enumeratum`.value,
       Utils.`enumeratum-play-json`.value,
@@ -56,15 +55,23 @@ lazy val `csw-event-monitor-client` = project
     ),
     version in webpack := "4.8.1",
     version in startWebpackDevServer := "3.1.4",
-//    webpackResources := webpackResources.value +++
-//    PathFinder(Seq(baseDirectory.value / "index.html")) ** "*.*",
     webpackDevServerExtraArgs in fastOptJS ++= Seq(
       "--content-base",
       baseDirectory.value.getAbsolutePath
     )
   )
 
-// loads the server project at sbt startup
-onLoad in Global := (onLoad in Global).value andThen { s: State =>
-  "project csw-event-monitor-server" :: s
-}
+lazy val `test-hcd` = project
+  .enablePlugins(DeployApp)
+  .settings(
+    libraryDependencies ++= Seq(
+      Csw.`csw-framework`,
+      Csw.`csw-prefix`,
+    )
+  )
+
+
+//// loads the server project at sbt startup
+//onLoad in Global := (onLoad in Global).value andThen { s: State =>
+//  "project csw-event-monitor-server" :: s
+//}

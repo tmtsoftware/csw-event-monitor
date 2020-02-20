@@ -2,8 +2,9 @@ package csw.eventmon.server
 
 import akka.stream.scaladsl.Source
 import csw.event.api.scaladsl.{EventService, EventSubscription, SubscriptionModes}
-import csw.params.core.models.{Prefix, Subsystem}
 import csw.params.events.{Event, EventKey, EventName}
+import csw.prefix.models.{Prefix, Subsystem}
+
 import scala.concurrent.duration._
 
 class EventMonitor(eventService: EventService) {

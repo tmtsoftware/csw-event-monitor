@@ -3,7 +3,7 @@ package csw.eventmon.client
 import com.github.ahnfelt.react4s._
 import EventSelectorComponent._
 import csw.eventmon.client.react4s.React4sUtil.onChecked
-import csw.params.core.models.Subsystem
+import csw.prefix.models.Subsystem
 import csw.params.events.SystemEvent
 import csw.params.core.generics.KeyType
 import csw.params.core.generics.KeyType._
@@ -151,10 +151,10 @@ case class EventSelectorComponent(eventClient: P[EventJsClient]) extends Compone
                                   maybeComponent: Option[String],
                                   maybeEvent: Option[String]): Unit = {
     get(maybeEventStream).foreach(_.close())
-    maybeEventStream.set(Some(get(eventClient).subscribe(subsystem.toLowerCase(), maybeComponent, maybeEvent, rateLimitMs)))
+    maybeEventStream.set(Some(get(eventClient).subscribe(subsystem, maybeComponent, maybeEvent, rateLimitMs)))
     get(maybeEventStream).get.onNext = {
       case event: SystemEvent =>
-        val component  = event.source.prefix.split('.').tail.head
+        val component  = event.source.componentName
         val eventName  = event.eventName.name
         val fields     = event.paramSet.filter(p => isNumericKey(p.keyType)).map(_.keyName)
         val components = get(componentsForSubsystem).getOrElse(subsystem, Set.empty) + component
