@@ -23,15 +23,11 @@ For example: Start csw-services.sh:
 
     csw-services.sh start
 
-Then from the csw-prod-qa top level directory:
+Then from the top level directory:
 
-    test-hcd-app --local frameworkTests/src/main/resources/TestHcd.conf
-
-and in another window:
-
-    test-assembly-app --local frameworkTests/src/main/resources/TestAssembly.conf
+    ./target/universal/stage/bin/test-hcd --local test-hcd/src/main/resources/TestHcd.conf
 
 Note that some events are published at a high rate. In order to plot them, it is best to either select `Rate Limit` before subscribing, or use the settings dialog to change the `duration` and `ttl` values to be only a few seconds.
 
-Once the HCD and assembly are running, you can click on `Add Event` and select the `test` or `tcs` subsystem. After a short delay, the component and event name menus should be populated with the available values.
+Once the HCD and assembly are running, you can click on `Add Event` and select the `CSW` subsystem. After a short delay, the component and event name menus should be populated with the available values.
 
