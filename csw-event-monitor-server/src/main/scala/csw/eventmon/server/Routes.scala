@@ -33,7 +33,7 @@ class Routes(
       get {
         pathPrefix("events") {
           path("subscribe" / Segment) { subsystem =>
-            parameters(("component".?, "event".?, "rateLimit".?)) { (component, event, rateLimit) =>
+            parameters("component".?, "event".?, "rateLimit".?) { (component, event, rateLimit) =>
               complete {
                 eventMonitor
                   .subscribe(subsystem, component, event, rateLimit.map(_.toInt))

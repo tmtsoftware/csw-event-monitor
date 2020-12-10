@@ -10,7 +10,7 @@ class Server(configs: Configs, routes: Routes)(implicit system: ActorSystem) {
   import system._
 
   def start(): Future[Http.ServerBinding] = {
-    val f = Http().bindAndHandle(routes.route, interface = "0.0.0.0", port = configs.port)
+    val f = Http().newServerAt("0.0.0.0", configs.port).bind(routes.route)
     f.onComplete {
       case Success(b) =>
         println(s"Server online at http://${b.localAddress.getHostName}:${b.localAddress.getPort}")

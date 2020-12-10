@@ -15,15 +15,20 @@ object Common extends AutoPlugin {
     scalaVersion := Libs.ScalaVersion,
     organizationHomepage := Some(url("http://www.tmt.org")),
     updateOptions := updateOptions.value.withLatestSnapshots(false),
-    
+
     scalacOptions ++= Seq(
       "-encoding",
       "UTF-8",
       "-feature",
       "-unchecked",
       "-deprecation",
-      "-Xlint",
-      "-Ywarn-dead-code"
+      //-W Options
+      "-Wdead-code",
+      //-X Options
+      "-Xlint:_,-missing-interpolator",
+      "-Xsource:3",
+      "-Xcheckinit",
+      "-Xasync"
     ),
     javacOptions in (Compile, doc) ++= Seq("-Xdoclint:none"),
     testOptions in Test ++= Seq(
@@ -34,7 +39,7 @@ object Common extends AutoPlugin {
       Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
     ),
     resolvers += "jitpack" at "https://jitpack.io",
-    resolvers += "bintray" at "https://jcenter.bintray.com",
+//    resolvers += "bintray" at "https://jcenter.bintray.com",
     version := "0.0.1",
     parallelExecution in Test := false,
     autoCompilerPlugins := true,

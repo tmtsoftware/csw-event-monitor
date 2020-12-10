@@ -20,8 +20,7 @@ import csw.params.core.models.Id
 import csw.prefix.models.Subsystem.CSW
 
 import scala.concurrent.duration._
-import scala.async.Async._
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.ExecutionContextExecutor
 import scala.util.Random
 
 private class TestHcdBehaviorFactory extends ComponentBehaviorFactory {
@@ -51,7 +50,7 @@ private class TestHcdHandlers(ctx: ActorContext[TopLevelActorMessage], cswCtx: C
   private val baseEvent2              = SystemEvent(componentInfo.prefix, eventName2)
   private val baseEvent3              = SystemEvent(componentInfo.prefix, eventName3)
 
-  override def initialize(): Future[Unit] = async {
+  override def initialize(): Unit = {
     log.debug("Initialize called")
     startPublishingEvents()
   }
@@ -70,7 +69,7 @@ private class TestHcdHandlers(ctx: ActorContext[TopLevelActorMessage], cswCtx: C
     Completed(runId)
   }
 
-  override def onShutdown(): Future[Unit] = async {
+  override def onShutdown(): Unit = {
     log.debug("onShutdown called")
   }
 
