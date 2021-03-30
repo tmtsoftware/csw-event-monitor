@@ -1,0 +1,60 @@
+/* App wide global css goes in this file  */
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbarPageHeader {
+  min-width: 120vh;
+  height: 6vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarMenu {
+  height: 100%;
+  border-right: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  font-family: sans-serif;
+  background: #eaeaea !important;
+}
+
+.ant-form-item {
+  margin-bottom: 8px !important;
+}
+
+.ant-form-item-label {
+  white-space: normal;
+}
+
+.ant-drawer-header {
+  background-color: #b2c4db !important;
+  border-radius: 0;
+}
+
+.ant-drawer-title {
+  font-weight: 700 !important;
+  color: black;
+}
+
+.ant-drawer-body {
+  background-color: #eaeaea !important;
+  height: calc(100vh - 55px);
+}
+
+
+
+
+
+

@@ -1,19 +1,15 @@
-*.class
-*.log
-
-# sbt specific
-.cache/
-.history/
-.lib/
-dist/*
-target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
-
-# Scala-IDE specific
-.scala_dependencies
-.worksheet
 .idea
-
+.vscode
+target
+dist
+build
+node_modules
+*.iml
+coverage
+nohup.out
+.vscode/*
+yarn.lock
+*.tsbuildinfo
+.DS_Store
+target
+**/web_modules/*

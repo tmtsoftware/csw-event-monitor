@@ -1,33 +1,40 @@
 # CSW Event Monitor
 
-The CSW Event Monitor is an akka-http/scala.js based web app for monitoring numeric values in CSW events. The app lets you subscribe to CSW events and then displays a stripchart for each event selection.
+This subproject contains the React/Typescript based CSW Event Monitor web application.
+This version runs outside the browser as an [Electron app](https://www.electronjs.org/).
 
-Controls are provided for pausing the display, changing the size of the charts and the amount of time displayed.
+## Prerequisites Required for Running App
 
-![Screenshot](event-monitor.png)
+* The latest version of [Node.js](https://nodejs.org/en/download/package-manager/) must be installed.
+* csw-services  (including the Database Service) and esw-services should be running
 
-To build, run: 
-    
-    sbt stage
+## Run the App in Local Environment
 
-The app has a dedicated HTTP server. Run:
- 
-    ./target/universal/stage/bin/csw-event-monitor-server
+(Note: `npm` or `yarn` can be used in the following commands, but should not be mixed.)
 
-to start it and then go to http://localhost:9090
+Run following commands in the terminal.
+```
+npm install
+npm run dev
+```
 
-In order to have some events to plot, you will need to have some CSW components running. For test purposes, you can run the [test HCD](test-hcd) 
-in this project  It publishes dummy events with random values using the tcs and test subsystems.
+This should open the application in a dedicated window.
 
-For example: Start csw-services.sh:
+## Build the App for Production
 
-    csw-services.sh start
+Run following commands in the terminal:
+```
+npm install
+npm run release
+```
 
-Then from the top level directory:
+The release files are then found under ./dist (`snap` for Linux, `dmg` for MacOS).
 
-    ./target/universal/stage/bin/test-hcd --local test-hcd/src/main/resources/TestHcd.conf
+Notes:
 
-Note that some events are published at a high rate. In order to plot them, it is best to either select `Rate Limit` before subscribing, or use the settings dialog to change the `duration` and `ttl` values to be only a few seconds.
+* You can only build a release for the OS that you are building on.
+* To install the generated `snap` on a Linux system, you currently need to pass the `--dangerous` option to `snap`, since it is not signed.
 
-Once the HCD and assembly are running, you can click on `Add Event` and select the `CSW` subsystem. After a short delay, the component and event name menus should be populated with the available values.
-
+## References
+- ESW-TS Library - [Link](https://tmtsoftware/esw-ts/)
+- ESW-TS Library Documentation - [Link](https://tmtsoftware.github.io/esw-ts/)
