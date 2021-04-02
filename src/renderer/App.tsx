@@ -25,7 +25,9 @@ const App = (): JSX.Element => {
           <Layout>
             <Sidebar/>
             <Content>
-              <div/>
+              <div className='app-container'>
+                <p>Hello</p>
+              </div>
             </Content>
           </Layout>
         </Layout>

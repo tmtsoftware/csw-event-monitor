@@ -2,24 +2,25 @@
 
 .App {
   min-height: 100vh;
-  display: flex;
+  /*min-width: 90vw;*/
+  /*display: flex;*/
   flex-direction: column;
 }
 
 .topbarPageHeader {
   min-width: 120vh;
   height: 6vh;
-  display: flex;
+  /*display: flex;*/
   flex-direction: column;
 }
 
-.sidebarMenu {
-  height: 100%;
-  border-right: 0;
-}
+/*.sidebarMenu {*/
+/*  height: 100%;*/
+/*  border-right: 0;*/
+/*}*/
 
 body {
-  display: flex;
+  /*display: flex;*/
   justify-content: center;
   align-items: start;
   flex-direction: column;
@@ -27,33 +28,17 @@ body {
   padding: 0;
   height: 100vh;
   font-family: sans-serif;
-  background: #eaeaea !important;
+  /*background: #eaeaea !important;*/
 }
 
-.ant-form-item {
-  margin-bottom: 8px !important;
+.app-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 92%;
+  /*background-color: #383b3e;*/
 }
-
-.ant-form-item-label {
-  white-space: normal;
-}
-
-.ant-drawer-header {
-  background-color: #b2c4db !important;
-  border-radius: 0;
-}
-
-.ant-drawer-title {
-  font-weight: 700 !important;
-  color: black;
-}
-
-.ant-drawer-body {
-  background-color: #eaeaea !important;
-  height: calc(100vh - 55px);
-}
-
-
 
 
 
