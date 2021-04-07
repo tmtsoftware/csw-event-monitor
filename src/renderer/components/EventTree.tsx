@@ -1,7 +1,6 @@
 import React, {Key} from 'react'
 import {useAppContext} from "../AppContext"
 import {Tree} from 'antd';
-import {DownOutlined} from '@ant-design/icons';
 
 // type EventTreeProps = {
 //   xxx: string
@@ -37,7 +36,8 @@ const treeData: Array<DataNode> = allEvents.map(a => {
             children: c.events.map(e => {
                 const leaf: DataNode = {
                   key: `${a.subsystem}.${c.component}.${e.event}`,
-                  title: e.event
+                  title: e.event,
+                  isLeaf: true
                 }
                 return leaf
               }
@@ -51,6 +51,7 @@ const treeData: Array<DataNode> = allEvents.map(a => {
   }
 )
 
+const { DirectoryTree } = Tree;
 
 export const EventTree = (): JSX.Element => {
 
@@ -61,12 +62,11 @@ export const EventTree = (): JSX.Element => {
   }
 
   return (
-    <Tree
-      style={{height: '100%'}}
-      showLine
-      switcherIcon={<DownOutlined/>}
-      onSelect={onSelect}
-      treeData={treeData}>
-    </Tree>
+    <div>
+      <DirectoryTree
+        onSelect={onSelect}
+        treeData={treeData}>
+      </DirectoryTree>
+    </div>
   )
 }

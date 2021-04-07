@@ -2,33 +2,11 @@
 
 .App {
   min-height: 100vh;
-  /*min-width: 90vw;*/
-  /*display: flex;*/
-  flex-direction: column;
 }
 
 .topbarPageHeader {
   min-width: 120vh;
-  height: 6vh;
-  /*display: flex;*/
-  flex-direction: column;
-}
-
-/*.sidebarMenu {*/
-/*  height: 100%;*/
-/*  border-right: 0;*/
-/*}*/
-
-body {
-  /*display: flex;*/
-  justify-content: center;
-  align-items: start;
-  flex-direction: column;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  font-family: sans-serif;
-  /*background: #eaeaea !important;*/
+  height: 8vh;
 }
 
 .app-container {
@@ -37,7 +15,6 @@ body {
   width: 100%;
   padding: 0;
   padding-bottom: 92%;
-  /*background-color: #383b3e;*/
 }
 
 

@@ -18,6 +18,7 @@
     "release": "run-s clean build dist"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@tmtsoftware/esw-ts": "^0.1.0",
     "antd": "4.14.0",
     "electron-snowpack": "*",
