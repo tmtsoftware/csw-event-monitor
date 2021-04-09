@@ -5,10 +5,14 @@ import React, {createContext, useContext} from "react"
 export type AppContextState = {
   // Signals to update the display after a change in the database
   updateDisplay: () => void
+  setEventTreeDrawerOpen: (_: boolean) => void,
+  eventTreeDrawerOpen: boolean
 }
 
 const appContextDefaultValue: AppContextState = {
   updateDisplay: () => {},
+  setEventTreeDrawerOpen: (_: boolean) => {},
+  eventTreeDrawerOpen: false
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)

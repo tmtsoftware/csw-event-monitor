@@ -1,30 +1,34 @@
 import React from 'react'
-import {Input, PageHeader} from "antd"
+import {PageHeader} from "antd"
 import {Button} from 'antd';
-import {NodeCollapseOutlined, NodeExpandOutlined} from "@ant-design/icons";
-
-const {Search} = Input;
+import {FileAddOutlined} from "@ant-design/icons";
+import {useAppContext} from "../AppContext"
 
 export const Topbar = (): JSX.Element => {
+  const {eventTreeDrawerOpen, setEventTreeDrawerOpen} = useAppContext()
 
-  function onSearch(value: string) {
-    console.log(`XXX Search ${value}`)
-  }
-
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log(`XXX Change: ${e.currentTarget.value}`)
+  function addEvent() {
+    if (!eventTreeDrawerOpen)
+      setEventTreeDrawerOpen(true)
   }
 
   return (
     <PageHeader
-      style={{backgroundColor: '#b2c4db', height: '45px', paddingTop: '0'}}
+      // style={{backgroundColor: '#0c7499', height: '45px', paddingTop: '0'}}
+      style={{backgroundColor: '#b5cddb', height: '45px', paddingTop: '0'}}
       ghost={true}
       className={'topbarPageHeader'}
       title="CSW Event Monitor"
       extra={[
-        <Button type="ghost" icon={<NodeExpandOutlined/>} size={"middle"} title={'Expand all'}/>,
-        <Button type="ghost" icon={<NodeCollapseOutlined/>} size={"middle"} title={'Collapse all'}/>,
-        <Search placeholder="Filter events" onSearch={onSearch} onChange={onChange} style={{width: 200}} title={'Filter event tree'}/>
+        <Button
+          key='addEvent'
+          type='ghost'
+          icon={<FileAddOutlined/>}
+          size={"middle"}
+          title={'Add Event'}
+          onClick={addEvent}>
+          Add Event
+        </Button>,
       ]}
     >
     </PageHeader>
