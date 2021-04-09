@@ -11,15 +11,17 @@ const {Search} = Input;
 const {Text} = Typography;
 
 export const EventTreeDrawer = (): JSX.Element => {
+  const {eventTreeDrawerOpen, setEventTreeDrawerOpen, eventTreeFilter, setEventTreeFilter} = useAppContext()
+
   function onSearch(value: string) {
     console.log(`XXX Search ${value}`)
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     console.log(`XXX Change: ${e.currentTarget.value}`)
+    setEventTreeFilter(e.currentTarget.value)
   }
 
-  const {eventTreeDrawerOpen, setEventTreeDrawerOpen} = useAppContext()
   const spacing = {margin: '0px 5px 15px 0'}
 
   return (
@@ -52,6 +54,7 @@ export const EventTreeDrawer = (): JSX.Element => {
           style={spacing}/>
         <Search
           placeholder="Filter events"
+          value={eventTreeFilter}
           onSearch={onSearch}
           onChange={onChange}
           style={{margin: spacing.margin, width: 200}}

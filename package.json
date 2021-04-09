@@ -23,7 +23,8 @@
     "antd": "4.14.0",
     "electron-snowpack": "*",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "wildcard-match": "^5.1.0"
   },
   "devDependencies": {
     "@snowpack/plugin-react-refresh": "^2.4.1",

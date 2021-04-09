@@ -8,13 +8,13 @@ import {Topbar} from './components/Topbar'
 import {Layout} from "antd"
 import {appContext, AppContextState} from './AppContext'
 import {EventTreeDrawer} from "./components/EventTreeDrawer";
-import {Menubar} from "./components/Menubar";
 
 const {Content} = Layout
 
 const App = (): JSX.Element => {
 
   const [eventTreeDrawerOpen, setEventTreeDrawerOpen] = useState<boolean>(false)
+  const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
 
   function updateDisplay() {
     // XXX TODO
@@ -23,7 +23,9 @@ const App = (): JSX.Element => {
   const appContextValues: AppContextState = {
     updateDisplay,
     setEventTreeDrawerOpen,
-    eventTreeDrawerOpen
+    eventTreeDrawerOpen,
+    setEventTreeFilter,
+    eventTreeFilter
   }
 
   return (

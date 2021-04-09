@@ -1,6 +1,7 @@
 import React, {Key} from 'react'
 import {useAppContext} from "../AppContext"
 import {Tree} from 'antd';
+import wcmatch from 'wildcard-match'
 
 // type EventTreeProps = {
 //   xxx: string
@@ -51,22 +52,41 @@ const treeData: Array<DataNode> = allEvents.map(a => {
   }
 )
 
-const { DirectoryTree } = Tree;
+const {DirectoryTree} = Tree;
 
 export const EventTree = (): JSX.Element => {
 
-  // const {updateDisplay} = useAppContext()
+  const {eventTreeFilter} = useAppContext()
+  const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter : '*.*.*')
+
+  function filterTreeNode(node: DataNode): boolean {
+    if (node.children)
+      return node.children.filter(filterTreeNode).length > 0
+    if (node.isLeaf)
+      return isMatch(node.key.toString())
+    return false
+  }
+
+  function filterTreeData(ar: Array<DataNode>): Array<DataNode> {
+    // return ar.filter(filterTreeNode)
+    return ar.filter(filterTreeNode).map(node => {
+      return {
+        key: node.key,
+        title: node.title,
+        children: node.children ? filterTreeData(node.children) : node.children,
+        isLeaf: node.isLeaf
+      }
+    })
+  }
 
   function onSelect(selectedKeys: Array<Key>, info: object) {
     console.log('selected', selectedKeys, info);
   }
 
   return (
-    <div>
-      <DirectoryTree
-        onSelect={onSelect}
-        treeData={treeData}>
-      </DirectoryTree>
-    </div>
+    <DirectoryTree
+      onSelect={onSelect}
+      treeData={filterTreeData(treeData)}>
+    </DirectoryTree>
   )
 }
