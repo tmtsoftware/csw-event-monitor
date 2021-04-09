@@ -4,42 +4,13 @@
   min-height: 100vh;
 }
 
-.topbarPageHeader {
-  /*min-width: 120vh;*/
-  height: 8vh;
-}
-
 .app-container {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  padding-bottom: 92%;
+  /*position: relative;*/
+  /*height: 100%;*/
+  /*width: 100%;*/
+  /*padding: 0;*/
+  /*padding-bottom: 92%;*/
 }
 
-/*.resizable {*/
-/*  height: 150px;*/
-/*  width: 150px;*/
-/*  border: 1px solid #333;*/
-/*  resize: both;*/
-/*  overflow: auto;*/
-/*}*/
-
-/*[data-theme="compact"] .ant-drawer-body p {*/
-/*  margin-bottom: 0;*/
-/*}*/
-
-/*.sidebar-dragger {*/
-/*  width: 5px;*/
-/*  cursor: ew-resize;*/
-/*  padding: 4px 0 0 0;*/
-/*  border-top: 1px solid #ddd;*/
-/*  position: absolute;*/
-/*  top: 0;*/
-/*  left: 0;*/
-/*  bottom: 0;*/
-/*  z-index: 100;*/
-/*  background-color: #fff;*/
-/*}*/
 
 

@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 
-// import 'antd/dist/antd.dark.css';
-import 'antd/dist/antd.css'
+import 'antd/dist/antd.dark.css';
+// import 'antd/dist/antd.css'
 import './App.css'
 
 import {Topbar} from './components/Topbar'
 import {Layout} from "antd"
 import {appContext, AppContextState} from './AppContext'
 import {EventTreeDrawer} from "./components/EventTreeDrawer";
+import {MainWindow} from "./components/MainWindow";
 
 const {Content} = Layout
 
@@ -30,9 +31,7 @@ const App = (): JSX.Element => {
       <Layout className='App'>
         <Topbar/>
         <Content>
-          <div className='app-container'>
-            <p>Hello</p>
-          </div>
+          <MainWindow/>
           <EventTreeDrawer/>
         </Content>
       </Layout>
