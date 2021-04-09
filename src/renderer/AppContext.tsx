@@ -7,16 +7,12 @@ export type AppContextState = {
   updateDisplay: () => void
   setEventTreeDrawerOpen: (_: boolean) => void,
   eventTreeDrawerOpen: boolean,
-  setEventTreeFilter: (_: string) => void
-  eventTreeFilter: string
 }
 
 const appContextDefaultValue: AppContextState = {
   updateDisplay: () => {},
   setEventTreeDrawerOpen: (_: boolean) => {},
   eventTreeDrawerOpen: false,
-  setEventTreeFilter: (_: string) => {},
-  eventTreeFilter: ""
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)
