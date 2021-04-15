@@ -14,8 +14,8 @@ export const Topbar = (): JSX.Element => {
 
   return (
     <PageHeader
-      style={{backgroundColor: '#0c7499', height: '45px', paddingTop: '0'}}
-      // style={{backgroundColor: '#b5cddb', height: '45px', paddingTop: '0'}}
+      style={{backgroundColor: '#0c7499', height: '45px', paddingTop: '5px'}}
+      // style={{backgroundColor: '#b5cddb', height: '45px', paddingTop: '5px'}}
       ghost={true}
       title="CSW Event Monitor"
       extra={[
