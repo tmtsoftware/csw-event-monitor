@@ -1,10 +1,14 @@
 import React, {useState} from 'react'
 import {Row, Col} from 'antd';
 import {EventWindow} from "./EventWindow";
+import {useAppContext} from "../AppContext";
 
 export const MainWindow = (): JSX.Element => {
   const [numRows, setNumRows] = useState<number>(2)
   const [numCols, setNumCols] = useState<number>(4)
+  const {subscriptions} = useAppContext()
+
+  console.log(`XXX main window: subscriptions: ${subscriptions} (${subscriptions.length})`)
 
   const colIndexes = [...Array.from(Array(numRows * numCols).keys())]
   const cols = colIndexes.map(_ => {

@@ -1,27 +1,16 @@
 import React, {Key, useState} from 'react'
 import {Button, Input, Tree, Typography} from 'antd';
 import wcmatch from 'wildcard-match'
-import allEventsJson from '../data/events.json'
 import {DataNode} from 'antd/lib/tree';
 import {ExpandAltOutlined, ShrinkOutlined} from "@ant-design/icons";
+import {EventDataNode} from "rc-tree/lib/interface";
+import {useAppContext} from "../AppContext";
+import {Event, EventKey, EventName, Prefix, Subscription, Subsystem} from "@tmtsoftware/esw-ts";
+import {EventTreeData} from "../data/EventTreeData";
+import {EventSubscription} from "../data/EventSubscription";
 
-interface Event {
-  event: string
-}
 
-interface EventsForComponent {
-  component: string
-  events: Array<Event>
-}
-
-interface EventsForSubsystem {
-  subsystem: string
-  components: Array<EventsForComponent>
-}
-
-const allEvents = allEventsJson as Array<EventsForSubsystem>
-
-const treeData: Array<DataNode> = allEvents.map(a => {
+const treeData: Array<DataNode> = EventTreeData.allEvents.map(a => {
     const node: DataNode = {
       key: a.subsystem,
       title: a.subsystem,
@@ -56,6 +45,7 @@ export const EventTree = (): JSX.Element => {
   const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
   const [expandedKeys, setExpandedKeys] = useState<Array<string>>([])
   const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter + '*' : '*.*.*')
+  const {eventService, subscriptions, setSubscriptions} = useAppContext()
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEventTreeFilter(e.currentTarget.value)
@@ -87,8 +77,34 @@ export const EventTree = (): JSX.Element => {
     })
   }
 
-  function onSelect(selectedKeys: Array<Key>, info: object) {
-    console.log('selected', selectedKeys, info);
+  const onEventCallback = (event: Event) => {
+    console.log(event)
+    // make use of ${event} inside this callback function
+  }
+
+  function onDoubleClick(_: React.MouseEvent, node: EventDataNode) {
+    console.log(`double-click ${node.key}`)
+    const ar = node.key.toString().split('.')
+    console.log(`XXX ar = ${ar}, len = ${ar.length}`)
+    if (ar.length == 3) {
+      if (eventService) {
+        const [subsystemName, componentName, eventName] = ar
+        const subsystem: Subsystem = subsystemName as Subsystem
+        const sourcePrefix = new Prefix(subsystem, componentName)
+        const eventKey = new EventKey(sourcePrefix, new EventName(eventName))
+        const eventKeys = new Set([eventKey])
+        const subscription: Subscription = eventService.subscribe(eventKeys, 1)(onEventCallback)
+        const eventSubscription: EventSubscription = {
+          subscription: subscription,
+          subsystem: subsystemName,
+          component: componentName,
+          event: eventName
+        }
+        setSubscriptions(subscriptions.concat(eventSubscription))
+      } else {
+        console.log("No event service!")
+      }
+    }
   }
 
   function getAllKeys(data: Array<DataNode>): Array<string> {
@@ -137,7 +153,8 @@ export const EventTree = (): JSX.Element => {
           title={'Filter event tree. Use wildcards like *, ? for subsystem, component, event names'}/>
       </div>
       <DirectoryTree
-        onSelect={onSelect}
+        multiple={false}
+        onDoubleClick={onDoubleClick}
         expandedKeys={expandedKeys}
         onExpand={onExpand}
         treeData={filterTreeData(treeData)}>
