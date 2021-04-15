@@ -1,6 +1,7 @@
 import React, {createContext, useContext} from "react"
-import {EventService} from "@tmtsoftware/esw-ts";
+import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
+import {EventModel} from "./data/EventTreeData";
 
 // Application context: Holds values and functions that are shared by different components in the app
 export type AppContextState = {
@@ -10,8 +11,11 @@ export type AppContextState = {
   eventTreeDrawerOpen: boolean,
   eventService: EventService | undefined,
   subscriptions: Array<EventSubscription>,
-  setSubscriptions: (a: Array<EventSubscription>) => void
-
+  setSubscriptions: (a: Array<EventSubscription>) => void,
+  eventModel?: EventModel,
+  setEventModel: (eventModel: EventModel) => void,
+  systemEvents: Array<SystemEvent>,
+  setSystemEvents: (systemEvents: Array<SystemEvent>) => void
 }
 
 const appContextDefaultValue: AppContextState = {
@@ -20,7 +24,11 @@ const appContextDefaultValue: AppContextState = {
   eventTreeDrawerOpen: false,
   eventService: undefined,
   subscriptions: [],
-  setSubscriptions: (_: Array<EventSubscription>) => []
+  setSubscriptions: (_: Array<EventSubscription>) => [],
+  eventModel: undefined,
+  setEventModel: (_: EventModel) => {},
+  systemEvents: [],
+  setSystemEvents: (_: Array<SystemEvent>) => {}
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)

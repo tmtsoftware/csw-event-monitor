@@ -5,47 +5,24 @@ import {DataNode} from 'antd/lib/tree';
 import {ExpandAltOutlined, ShrinkOutlined} from "@ant-design/icons";
 import {EventDataNode} from "rc-tree/lib/interface";
 import {useAppContext} from "../AppContext";
-import {Event, EventKey, EventName, Prefix, Subscription, Subsystem} from "@tmtsoftware/esw-ts";
-import {EventTreeData} from "../data/EventTreeData";
+import {Event, EventKey, EventName, Prefix, Subscription, Subsystem, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "../data/EventSubscription";
-
-
-const treeData: Array<DataNode> = EventTreeData.allEvents.map(a => {
-    const node: DataNode = {
-      key: a.subsystem,
-      title: a.subsystem,
-      children: a.components.map(c => {
-          const child: DataNode = {
-            key: `${a.subsystem}.${c.component}`,
-            title: c.component,
-            children: c.events.map(e => {
-                const leaf: DataNode = {
-                  key: `${a.subsystem}.${c.component}.${e.event}`,
-                  title: e.event,
-                  isLeaf: true
-                }
-                return leaf
-              }
-            )
-          }
-          return child
-        }
-      )
-    }
-    return node
-  }
-)
+import {EventModel, IcdServerInfo} from "../data/EventTreeData";
 
 const {DirectoryTree} = Tree;
 const {Search} = Input;
 const {Text} = Typography;
 
-export const EventTree = (): JSX.Element => {
+type EventTreeProps = {
+  eventTreeData: Array<DataNode>
+}
+
+export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
   const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
   const [expandedKeys, setExpandedKeys] = useState<Array<string>>([])
   const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter + '*' : '*.*.*')
-  const {eventService, subscriptions, setSubscriptions} = useAppContext()
+  const {eventService, subscriptions, setSubscriptions, setEventModel, systemEvents, setSystemEvents} = useAppContext()
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEventTreeFilter(e.currentTarget.value)
@@ -77,18 +54,29 @@ export const EventTree = (): JSX.Element => {
     })
   }
 
+  function getEventModel(subsystem: string, component: string, event: string) {
+    fetch(`${IcdServerInfo.baseUri}/eventInfo/${subsystem}/${component}/${event}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const eventModel: EventModel = data
+        console.log(`XXX Got eventModel for ${eventModel.name}`)
+        setEventModel(eventModel)
+      })
+  }
+
   const onEventCallback = (event: Event) => {
+    const systemEvent = event as SystemEvent
+    setSystemEvents(systemEvents.concat([systemEvent]))
     console.log(event)
-    // make use of ${event} inside this callback function
   }
 
   function onDoubleClick(_: React.MouseEvent, node: EventDataNode) {
     console.log(`double-click ${node.key}`)
     const ar = node.key.toString().split('.')
-    console.log(`XXX ar = ${ar}, len = ${ar.length}`)
     if (ar.length == 3) {
       if (eventService) {
         const [subsystemName, componentName, eventName] = ar
+        getEventModel(subsystemName, componentName, eventName)
         const subsystem: Subsystem = subsystemName as Subsystem
         const sourcePrefix = new Prefix(subsystem, componentName)
         const eventKey = new EventKey(sourcePrefix, new EventName(eventName))
@@ -114,7 +102,7 @@ export const EventTree = (): JSX.Element => {
   }
 
   function expandTree() {
-    setExpandedKeys(getAllKeys(filterTreeData(treeData)))
+    setExpandedKeys(getAllKeys(filterTreeData(eventTreeData)))
   }
 
   function collapseTree() {
@@ -157,7 +145,7 @@ export const EventTree = (): JSX.Element => {
         onDoubleClick={onDoubleClick}
         expandedKeys={expandedKeys}
         onExpand={onExpand}
-        treeData={filterTreeData(treeData)}>
+        treeData={filterTreeData(eventTreeData)}>
       </DirectoryTree>
     </div>
   )

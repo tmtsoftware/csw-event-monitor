@@ -10,18 +10,24 @@ import {Layout, Typography} from "antd"
 import {appContext, AppContextState} from './AppContext'
 import {EventTreeDrawer} from "./components/EventTreeDrawer";
 import {MainWindow} from "./components/MainWindow";
-import {EventService} from "@tmtsoftware/esw-ts";
+import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
+import {DataNode} from "antd/lib/tree";
+import {EventModel, EventsForSubsystem, IcdServerInfo} from "./data/EventTreeData";
+import {EventParamTable} from "./components/EventParamTable";
 
 const {Content} = Layout
 const {Text} = Typography;
 
 const App = (): JSX.Element => {
 
+  const [eventTreeData, setEventTreeData] = useState<Array<DataNode>>([])
   const [eventTreeDrawerOpen, setEventTreeDrawerOpen] = useState<boolean>(false)
   const [eventService, setEventService] = useState<EventService | undefined>(undefined)
   const [hasError, setHasError] = useState<String>("")
   const [subscriptions, setSubscriptions] = useState<Array<EventSubscription>>([])
+  const [eventModel, setEventModel] = useState<EventModel | undefined>(undefined)
+  const [systemEvents, setSystemEvents] = useState<Array<SystemEvent>>([])
 
   async function findEventService() {
     try {
@@ -32,8 +38,48 @@ const App = (): JSX.Element => {
   }
 
   useEffect(() => {
+    // noinspection JSIgnoredPromiseFromCall
     findEventService()
   }, []);
+
+  useEffect(() => {
+    // Gets the event tree data and puts it in the correct format
+    function getData() {
+      fetch(`${IcdServerInfo.baseUri}/eventList`)
+        .then((response) => response.json())
+        .then((result) => {
+          const allEvents: Array<EventsForSubsystem> = result
+          const treeData: Array<DataNode> = allEvents.map(a => {
+              const node: DataNode = {
+                key: a.subsystem,
+                title: a.subsystem,
+                children: a.components.map(c => {
+                    const child: DataNode = {
+                      key: `${a.subsystem}.${c.component}`,
+                      title: c.component,
+                      children: c.events.map(e => {
+                          const leaf: DataNode = {
+                            key: `${a.subsystem}.${c.component}.${e.event}`,
+                            title: e.event,
+                            isLeaf: true
+                          }
+                          return leaf
+                        }
+                      )
+                    }
+                    return child
+                  }
+                )
+              }
+              return node
+            }
+          )
+          setEventTreeData(treeData)
+        })
+    }
+
+    getData()
+  }, [])
 
   function updateDisplay() {
     // XXX TODO
@@ -45,7 +91,11 @@ const App = (): JSX.Element => {
     eventTreeDrawerOpen,
     eventService,
     subscriptions,
-    setSubscriptions
+    setSubscriptions,
+    eventModel,
+    setEventModel,
+    systemEvents,
+    setSystemEvents
   }
 
   return (
@@ -57,7 +107,7 @@ const App = (): JSX.Element => {
             <Text strong={true} type="danger">{hasError}</Text>
             : <MainWindow/>
           }
-          <EventTreeDrawer/>
+          <EventTreeDrawer eventTreeData={eventTreeData}/>
         </Content>
       </Layout>
     </appContext.Provider>

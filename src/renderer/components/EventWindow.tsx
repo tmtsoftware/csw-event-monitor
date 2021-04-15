@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 
-export const EventWindow = (): JSX.Element => {
+export const EventParamWindow = (): JSX.Element => {
 
   return (
     <div>
-      Drop event here
+      Event
     </div>
   )
 }
