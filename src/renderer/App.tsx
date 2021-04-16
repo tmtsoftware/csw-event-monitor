@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 
-import 'antd/dist/antd.dark.css';
-// import 'antd/dist/antd.css'
+// import 'antd/dist/antd.dark.css';
+// // import 'antd/dist/antd.css'
 
 import './App.css'
 
@@ -14,7 +14,6 @@ import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
 import {DataNode} from "antd/lib/tree";
 import {EventModel, EventsForSubsystem, IcdServerInfo} from "./data/EventTreeData";
-import {EventParamTable} from "./components/EventParamTable";
 
 const {Content} = Layout
 const {Text} = Typography;
@@ -26,7 +25,7 @@ const App = (): JSX.Element => {
   const [eventService, setEventService] = useState<EventService | undefined>(undefined)
   const [hasError, setHasError] = useState<String>("")
   const [subscriptions, setSubscriptions] = useState<Array<EventSubscription>>([])
-  const [eventModel, setEventModel] = useState<EventModel | undefined>(undefined)
+  const [eventModels, setEventModels] = useState<Array<EventModel>>([])
   const [systemEvents, setSystemEvents] = useState<Array<SystemEvent>>([])
 
   async function findEventService() {
@@ -92,8 +91,8 @@ const App = (): JSX.Element => {
     eventService,
     subscriptions,
     setSubscriptions,
-    eventModel,
-    setEventModel,
+    eventModels,
+    setEventModels,
     systemEvents,
     setSystemEvents
   }

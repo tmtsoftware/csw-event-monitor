@@ -22,7 +22,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
   const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
   const [expandedKeys, setExpandedKeys] = useState<Array<string>>([])
   const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter + '*' : '*.*.*')
-  const {eventService, subscriptions, setSubscriptions, setEventModel, systemEvents, setSystemEvents} = useAppContext()
+  const {eventService, subscriptions, setSubscriptions, eventModels, setEventModels, systemEvents, setSystemEvents} = useAppContext()
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEventTreeFilter(e.currentTarget.value)
@@ -60,7 +60,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
       .then((data) => {
         const eventModel: EventModel = data
         console.log(`XXX Got eventModel for ${eventModel.name}`)
-        setEventModel(eventModel)
+        setEventModels(eventModels.filter((x) => x.name != eventModel.name).concat([eventModel]))
       })
   }
 

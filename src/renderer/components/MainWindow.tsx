@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
 import {Row, Col} from 'antd';
-import {EventParamWindow} from "./EventWindow";
 import {useAppContext} from "../AppContext";
-import {EventParamTable} from "./EventParamTable";
+import {EventModelTabs} from "./EventModelTabs";
 
 export const MainWindow = (): JSX.Element => {
   const [numRows, setNumRows] = useState<number>(2)
@@ -34,9 +33,10 @@ export const MainWindow = (): JSX.Element => {
         <Col span={24}>
           <div style={{
             padding: '1vh 0',
+            margin: '20px 0 0 0',
             border: 'solid'
           }}>
-            <EventParamTable/>
+            <EventModelTabs/>
           </div>
         </Col>
       </Row>

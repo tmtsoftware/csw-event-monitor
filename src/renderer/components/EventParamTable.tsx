@@ -1,8 +1,8 @@
 import React from 'react'
 import {Table} from "antd"
 import {ColumnsType} from "antd/es/table"
-import {useAppContext} from "../AppContext"
 import {Key} from "antd/lib/table/interface";
+import {EventModel} from "../data/EventTreeData";
 
 interface EventParameter {
   name: string,
@@ -11,8 +11,11 @@ interface EventParameter {
   description: string,
 }
 
-export const EventParamTable = (): JSX.Element => {
-  const {eventModel} = useAppContext()
+type EventParamTableProps = {
+  eventModel: EventModel
+}
+
+export const EventParamTable = ({eventModel}: EventParamTableProps): JSX.Element => {
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<EventParameter> = [
@@ -72,6 +75,7 @@ export const EventParamTable = (): JSX.Element => {
           ...rowSelection,
         }}
         size={'small'}
+        // title={() => eventModel.}
         dataSource={dataSource}
         columns={columns}
         pagination={false}

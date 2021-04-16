@@ -12,8 +12,8 @@ export type AppContextState = {
   eventService: EventService | undefined,
   subscriptions: Array<EventSubscription>,
   setSubscriptions: (a: Array<EventSubscription>) => void,
-  eventModel?: EventModel,
-  setEventModel: (eventModel: EventModel) => void,
+  eventModels: Array<EventModel>,
+  setEventModels: (eventModels: Array<EventModel>) => void,
   systemEvents: Array<SystemEvent>,
   setSystemEvents: (systemEvents: Array<SystemEvent>) => void
 }
@@ -25,8 +25,8 @@ const appContextDefaultValue: AppContextState = {
   eventService: undefined,
   subscriptions: [],
   setSubscriptions: (_: Array<EventSubscription>) => [],
-  eventModel: undefined,
-  setEventModel: (_: EventModel) => {},
+  eventModels: [],
+  setEventModels: (_: Array<EventModel>) => {},
   systemEvents: [],
   setSystemEvents: (_: Array<SystemEvent>) => {}
 }
