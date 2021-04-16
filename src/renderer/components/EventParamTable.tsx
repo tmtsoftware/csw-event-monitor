@@ -2,7 +2,8 @@ import React from 'react'
 import {Table, Typography} from "antd"
 import {ColumnsType} from "antd/es/table"
 import {Key} from "antd/lib/table/interface";
-import {EventInfoModel} from "../data/EventTreeData";
+import {EventInfoModel, ParamInfoModel} from "../data/EventTreeData";
+import {useAppContext} from "../AppContext";
 
 const {Text} = Typography;
 
@@ -18,6 +19,8 @@ type EventParamTableProps = {
 }
 
 export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Element => {
+
+  const {paramInfoModels, setParamInfoModels} = useAppContext()
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<EventParameter> = [
@@ -62,6 +65,14 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
     const rowSelection = {
       onChange: (selectedRowKeys: Key[], selectedRows: EventParameter[]) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+        const a: Array<ParamInfoModel> = selectedRows.map((p) => {
+          return {
+            eventInfoModel: eventInfoModel,
+            parameterName: p.name
+          }
+        })
+        const otherEventParams = paramInfoModels.filter((p) => p.eventInfoModel != eventInfoModel)
+        setParamInfoModels(otherEventParams.concat(a))
       }
     }
 

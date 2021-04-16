@@ -1,7 +1,7 @@
 import React, {createContext, useContext} from "react"
 import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
-import {EventInfoModel, EventModel} from "./data/EventTreeData";
+import {EventInfoModel, ParamInfoModel} from "./data/EventTreeData";
 
 // Application context: Holds values and functions that are shared by different components in the app
 export type AppContextState = {
@@ -15,7 +15,9 @@ export type AppContextState = {
   eventInfoModels: Array<EventInfoModel>,
   setEventInfoModels: (eventInfoModels: Array<EventInfoModel>) => void,
   systemEvents: Array<SystemEvent>,
-  setSystemEvents: (systemEvents: Array<SystemEvent>) => void
+  setSystemEvents: (systemEvents: Array<SystemEvent>) => void,
+  paramInfoModels: Array<ParamInfoModel>,
+  setParamInfoModels: (paramInfoModels: Array<ParamInfoModel>) => void
 }
 
 const appContextDefaultValue: AppContextState = {
@@ -28,7 +30,9 @@ const appContextDefaultValue: AppContextState = {
   eventInfoModels: [],
   setEventInfoModels: (_: Array<EventInfoModel>) => {},
   systemEvents: [],
-  setSystemEvents: (_: Array<SystemEvent>) => {}
+  setSystemEvents: (_: Array<SystemEvent>) => {},
+  paramInfoModels: [],
+  setParamInfoModels: (_: Array<ParamInfoModel>) => {}
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)
