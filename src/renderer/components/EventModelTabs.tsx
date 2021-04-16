@@ -6,7 +6,7 @@ import {EventParamTable} from "./EventParamTable";
 const {TabPane} = Tabs;
 
 export const EventModelTabs = (): JSX.Element => {
-  const {eventModels} = useAppContext()
+  const {eventInfoModels} = useAppContext()
   const [selectedEventName, setSelectedEventName] = useState<string | undefined>(undefined)
 
   function onChange(activeKey: string) {
@@ -25,10 +25,10 @@ export const EventModelTabs = (): JSX.Element => {
       activeKey={selectedEventName}
       onEdit={onEdit}
     >
-      {eventModels.map(eventModel => {
+      {eventInfoModels.map(eventInfoModel => {
         return (
-          <TabPane tab={eventModel.name} key={eventModel.name} closable={true}>
-            {<EventParamTable eventModel={eventModel}/>}
+          <TabPane tab={eventInfoModel.eventModel.name} key={eventInfoModel.eventModel.name} closable={true}>
+            {<EventParamTable eventInfoModel={eventInfoModel}/>}
           </TabPane>
         )
       })}

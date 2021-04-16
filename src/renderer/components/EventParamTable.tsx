@@ -1,8 +1,10 @@
 import React from 'react'
-import {Table} from "antd"
+import {Table, Typography} from "antd"
 import {ColumnsType} from "antd/es/table"
 import {Key} from "antd/lib/table/interface";
-import {EventModel} from "../data/EventTreeData";
+import {EventInfoModel} from "../data/EventTreeData";
+
+const {Text} = Typography;
 
 interface EventParameter {
   name: string,
@@ -12,10 +14,10 @@ interface EventParameter {
 }
 
 type EventParamTableProps = {
-  eventModel: EventModel
+  eventInfoModel: EventInfoModel
 }
 
-export const EventParamTable = ({eventModel}: EventParamTableProps): JSX.Element => {
+export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Element => {
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<EventParameter> = [
@@ -47,7 +49,7 @@ export const EventParamTable = ({eventModel}: EventParamTableProps): JSX.Element
       }
     ];
 
-    const dataSource: Array<EventParameter> = eventModel ? eventModel.parameterList.map((param) => {
+    const dataSource: Array<EventParameter> = eventInfoModel ? eventInfoModel.eventModel.parameterList.map((param) => {
       return {
         key: param.name,
         name: param.name,
@@ -60,13 +62,12 @@ export const EventParamTable = ({eventModel}: EventParamTableProps): JSX.Element
     const rowSelection = {
       onChange: (selectedRowKeys: Key[], selectedRows: EventParameter[]) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
-      },
-      getCheckboxProps: (param: EventParameter) => ({
-        disabled: false,
-        // Column configuration not to be checked
-        name: param.name,
-      }),
+      }
     }
+
+    const title = <Text
+      strong>{eventInfoModel.subsystem}.{eventInfoModel.component}.{eventInfoModel.eventModel.name}
+    </Text>
 
     return (
       <Table<EventParameter>
@@ -74,8 +75,8 @@ export const EventParamTable = ({eventModel}: EventParamTableProps): JSX.Element
           type: 'checkbox',
           ...rowSelection,
         }}
+        title={() => title}
         size={'small'}
-        // title={() => eventModel.}
         dataSource={dataSource}
         columns={columns}
         pagination={false}

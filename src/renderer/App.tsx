@@ -13,7 +13,7 @@ import {MainWindow} from "./components/MainWindow";
 import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
 import {DataNode} from "antd/lib/tree";
-import {EventModel, EventsForSubsystem, IcdServerInfo} from "./data/EventTreeData";
+import {EventInfoModel, EventModel, EventsForSubsystem, IcdServerInfo} from "./data/EventTreeData";
 
 const {Content} = Layout
 const {Text} = Typography;
@@ -25,7 +25,7 @@ const App = (): JSX.Element => {
   const [eventService, setEventService] = useState<EventService | undefined>(undefined)
   const [hasError, setHasError] = useState<String>("")
   const [subscriptions, setSubscriptions] = useState<Array<EventSubscription>>([])
-  const [eventModels, setEventModels] = useState<Array<EventModel>>([])
+  const [eventInfoModels, setEventInfoModels] = useState<Array<EventInfoModel>>([])
   const [systemEvents, setSystemEvents] = useState<Array<SystemEvent>>([])
 
   async function findEventService() {
@@ -91,8 +91,8 @@ const App = (): JSX.Element => {
     eventService,
     subscriptions,
     setSubscriptions,
-    eventModels,
-    setEventModels,
+    eventInfoModels: eventInfoModels,
+    setEventInfoModels: setEventInfoModels,
     systemEvents,
     setSystemEvents
   }
