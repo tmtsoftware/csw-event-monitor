@@ -91,6 +91,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
         dataSource={dataSource}
         columns={columns}
         pagination={false}
+        scroll={{ y: 200 }}
       />
     )
   }

@@ -5,11 +5,10 @@ import {EventModelTabs} from "./EventModelTabs";
 import {ParamValuesWindow} from "./ParamValuesWindow";
 
 export const MainWindow = (): JSX.Element => {
-  const [numRows, setNumRows] = useState<number>(2)
-  const [numCols, setNumCols] = useState<number>(4)
-  const {subscriptions} = useAppContext()
-
-  console.log(`XXX main window: num subscriptions (${subscriptions.length})`)
+  const {subscriptions, paramInfoModels} = useAppContext()
+  const paramCount = paramInfoModels.length
+  const numRows = paramCount == 0 ? 1 : Math.trunc(Math.sqrt(paramCount))
+  const numCols = paramCount == 0 ? 1 : Math.round(paramCount/numRows)
 
   const colIndexes = [...Array.from(Array(numRows * numCols).keys())]
   const cols = colIndexes.map(index => {
