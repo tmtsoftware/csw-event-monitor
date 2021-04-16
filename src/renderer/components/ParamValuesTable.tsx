@@ -3,19 +3,21 @@ import {Table, Typography} from "antd"
 import {ColumnsType} from "antd/es/table"
 import {ParamInfoModel} from "../data/EventTreeData";
 import {useAppContext} from "../AppContext";
+import {BaseKey, Key} from "@tmtsoftware/esw-ts";
 
 const {Text} = Typography;
 
 interface ParamValue {
   time: string,
-  value: string,
+  value: any,
 }
 
 type ParamValuesTableProps = {
   paramInfoModel: ParamInfoModel
+  cswParamKey: BaseKey<Key>
 }
 
-export const ParamValuesTable = ({paramInfoModel}: ParamValuesTableProps): JSX.Element => {
+export const ParamValuesTable = ({paramInfoModel, cswParamKey}: ParamValuesTableProps): JSX.Element => {
   const {systemEvents} = useAppContext()
 
   function makeTable(): JSX.Element {
@@ -32,13 +34,14 @@ export const ParamValuesTable = ({paramInfoModel}: ParamValuesTableProps): JSX.E
       },
     ];
 
-    console.log(`XXX ParamValueTable: SystemEvent count: ${systemEvents.length}`)
     const dataSource: Array<ParamValue> = systemEvents.map((systemEvent) => {
+      const values = systemEvent.get(cswParamKey)?.values
+      // XXX TODO: Handle multiple values
+      const value = (values && values.length > 0) ? values[0] : "undefined"
       return {
         key: systemEvent.eventId,
         time: systemEvent.eventTime,
-        // value: systemEvent.get(),
-        value: "xxx",
+        value: value,
       };
     })
 
@@ -54,7 +57,7 @@ export const ParamValuesTable = ({paramInfoModel}: ParamValuesTableProps): JSX.E
         dataSource={dataSource}
         columns={columns}
         pagination={false}
-        scroll={{ y: 200 }}
+        scroll={{y: 200}}
       />
     )
   }

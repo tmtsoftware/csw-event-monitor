@@ -69,6 +69,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
   const onEventCallback = (event: Event) => {
     const systemEvent = event as SystemEvent
+    console.log(event)
     receivedSystemEvents = [systemEvent].concat(receivedSystemEvents)
     setSystemEvents(receivedSystemEvents)
   }

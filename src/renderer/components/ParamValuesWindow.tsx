@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {useAppContext} from "../AppContext";
 import {ParamValuesTable} from "./ParamValuesTable";
+import {ParameterUtil} from "../data/ParameterUtil";
 
 type ParamValuesWindowProps = {
   paramIndex: number
@@ -9,12 +10,15 @@ type ParamValuesWindowProps = {
 export const ParamValuesWindow = ({paramIndex}: ParamValuesWindowProps): JSX.Element => {
   const {paramInfoModels} = useAppContext()
   const paramInfoModel = (paramInfoModels.length > paramIndex) ? paramInfoModels[paramIndex] : undefined
-  const paramName = paramInfoModel ? paramInfoModel.parameterName : ""
+  const cswParamKey = paramInfoModel ? ParameterUtil.getCswKey(paramInfoModel) : undefined
 
   return (
     <div>
-      {paramInfoModel ?
-        <ParamValuesTable paramInfoModel={paramInfoModel}/>
+      {(paramInfoModel  && cswParamKey) ?
+        <ParamValuesTable
+          paramInfoModel={paramInfoModel}
+          cswParamKey={cswParamKey}
+        />
         : <div/>}
     </div>
   )
