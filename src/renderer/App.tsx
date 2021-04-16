@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react'
 
-// import 'antd/dist/antd.dark.css';
-// // import 'antd/dist/antd.css'
-
 import './App.css'
 
 import {Topbar} from './components/Topbar'
@@ -13,7 +10,7 @@ import {MainWindow} from "./components/MainWindow";
 import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
 import {DataNode} from "antd/lib/tree";
-import {EventInfoModel, EventModel, EventsForSubsystem, IcdServerInfo, ParamInfoModel} from "./data/EventTreeData";
+import {EventInfoModel, EventsForSubsystem, IcdServerInfo, ParamInfoModel} from "./data/EventTreeData";
 
 const {Content} = Layout
 const {Text} = Typography;
@@ -45,6 +42,7 @@ const App = (): JSX.Element => {
   useEffect(() => {
     // Gets the event tree data and puts it in the correct format
     function getData() {
+      console.log('XXX getData()')
       fetch(`${IcdServerInfo.baseUri}/eventList`)
         .then((response) => response.json())
         .then((result) => {
@@ -81,19 +79,14 @@ const App = (): JSX.Element => {
     getData()
   }, [])
 
-  function updateDisplay() {
-    // XXX TODO
-  }
-
   const appContextValues: AppContextState = {
-    updateDisplay,
     setEventTreeDrawerOpen,
     eventTreeDrawerOpen,
     eventService,
     subscriptions,
     setSubscriptions,
-    eventInfoModels: eventInfoModels,
-    setEventInfoModels: setEventInfoModels,
+    eventInfoModels,
+    setEventInfoModels,
     systemEvents,
     setSystemEvents,
     paramInfoModels,

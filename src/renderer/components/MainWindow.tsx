@@ -2,14 +2,14 @@ import React, {useState} from 'react'
 import {Row, Col} from 'antd';
 import {useAppContext} from "../AppContext";
 import {EventModelTabs} from "./EventModelTabs";
-import {EventParamWindow} from "./EventParamWindow";
+import {ParamValuesWindow} from "./ParamValuesWindow";
 
 export const MainWindow = (): JSX.Element => {
   const [numRows, setNumRows] = useState<number>(2)
   const [numCols, setNumCols] = useState<number>(4)
   const {subscriptions} = useAppContext()
 
-  console.log(`XXX main window: subscriptions: ${subscriptions} (${subscriptions.length})`)
+  console.log(`XXX main window: num subscriptions (${subscriptions.length})`)
 
   const colIndexes = [...Array.from(Array(numRows * numCols).keys())]
   const cols = colIndexes.map(index => {
@@ -17,10 +17,10 @@ export const MainWindow = (): JSX.Element => {
       <Col span={24 / numCols} key={index}>
         <div style={{
           // background: '#0092ff',
-          padding: '10vh 0',
+          padding: '1vh 0',
           border: 'solid'
         }}>
-          <EventParamWindow paramIndex={index}/>
+          <ParamValuesWindow paramIndex={index}/>
         </div>
       </Col>
     )

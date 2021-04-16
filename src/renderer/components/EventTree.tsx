@@ -17,6 +17,9 @@ type EventTreeProps = {
   eventTreeData: Array<DataNode>
 }
 
+// XXX issue with setSystemEvents(systemEvents.concat([systemEvent]))
+let receivedSystemEvents: Array<SystemEvent> = []
+
 export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
   const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
@@ -66,8 +69,8 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
   const onEventCallback = (event: Event) => {
     const systemEvent = event as SystemEvent
-    setSystemEvents(systemEvents.concat([systemEvent]))
-    console.log(event)
+    receivedSystemEvents = [systemEvent].concat(receivedSystemEvents)
+    setSystemEvents(receivedSystemEvents)
   }
 
   function onDoubleClick(_: React.MouseEvent, node: EventDataNode) {

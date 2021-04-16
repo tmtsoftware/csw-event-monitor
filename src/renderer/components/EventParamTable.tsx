@@ -96,7 +96,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
   }
 
   return (
-    <div style={{flex: 'grow'}}>
+    <div>
       {makeTable()}
     </div>
   )
