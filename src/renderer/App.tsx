@@ -23,7 +23,7 @@ const App = (): JSX.Element => {
   const [hasError, setHasError] = useState<String>("")
   const [subscriptions, setSubscriptions] = useState<Array<EventSubscription>>([])
   const [eventInfoModels, setEventInfoModels] = useState<Array<EventInfoModel>>([])
-  const [systemEvents, setSystemEvents] = useState<Array<SystemEvent>>([])
+  const [systemEvents, setSystemEvents] = useState<Map<string, Array<SystemEvent>>>(new Map())
   const [paramInfoModels, setParamInfoModels] = useState<Array<ParamInfoModel>>([])
 
   async function findEventService() {

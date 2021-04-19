@@ -13,8 +13,8 @@ export type AppContextState = {
   setSubscriptions: (_: Array<EventSubscription>) => void,
   eventInfoModels: Array<EventInfoModel>,
   setEventInfoModels: (_: Array<EventInfoModel>) => void,
-  systemEvents: Array<SystemEvent>,
-  setSystemEvents: (_: Array<SystemEvent>) => void,
+  systemEvents: Map<string, Array<SystemEvent>>,
+  setSystemEvents: (_: Map<string, Array<SystemEvent>>) => void,
   paramInfoModels: Array<ParamInfoModel>,
   setParamInfoModels: (_: Array<ParamInfoModel>) => void
 }
@@ -27,8 +27,8 @@ const appContextDefaultValue: AppContextState = {
   setSubscriptions: (_: Array<EventSubscription>) => [],
   eventInfoModels: [],
   setEventInfoModels: (_: Array<EventInfoModel>) => {},
-  systemEvents: [],
-  setSystemEvents: (_: Array<SystemEvent>) => {},
+  systemEvents: new Map(),
+  setSystemEvents: (_: Map<string, Array<SystemEvent>>) => {},
   paramInfoModels: [],
   setParamInfoModels: (_: Array<ParamInfoModel>) => {}
 }

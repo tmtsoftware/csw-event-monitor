@@ -18,7 +18,7 @@ type EventTreeProps = {
 }
 
 // XXX issue with setSystemEvents(systemEvents.concat([systemEvent]))
-let receivedSystemEvents: Array<SystemEvent> = []
+let receivedSystemEvents: Map<string, Array<SystemEvent>> = new Map()
 
 export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
@@ -67,11 +67,39 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
       })
   }
 
+  // XXX TODO: Limit size of received event array
+  // const onEventCallback = (event: Event) => {
+  //   const systemEvent = event as SystemEvent
+  //   const key = `${systemEvent.source.subsystem.toString()}.${systemEvent.source.componentName}.${systemEvent.eventName.name}`
+  //   const map = new Map(systemEvents)
+  //   console.log("XXX before map = ", map)
+  //   if (map.has(key)) {
+  //     const ar = map.get(key)
+  //     console.log(`XXX hasKey(${key}: length = ${ar?.length}`)
+  //     map.set(key, ar ? [systemEvent].concat(ar) : [systemEvent])
+  //   } else {
+  //     console.log(`XXX noHasKey(${key})`)
+  //     map.set(key, [systemEvent])
+  //   }
+  //   console.log("XXX after map = ", map)
+  //   setSystemEvents(map)
+  // }
   const onEventCallback = (event: Event) => {
     const systemEvent = event as SystemEvent
-    console.log(event)
-    receivedSystemEvents = [systemEvent].concat(receivedSystemEvents)
-    setSystemEvents(receivedSystemEvents)
+    const key = `${systemEvent.source.subsystem.toString()}.${systemEvent.source.componentName}.${systemEvent.eventName.name}`
+    const map = new Map(receivedSystemEvents)
+    console.log("XXX before map = ", map)
+    if (map.has(key)) {
+      const ar = map.get(key)
+      console.log(`XXX hasKey(${key}: length = ${ar?.length}`)
+      map.set(key, ar ? [systemEvent].concat(ar) : [systemEvent])
+    } else {
+      console.log(`XXX noHasKey(${key})`)
+      map.set(key, [systemEvent])
+    }
+    console.log("XXX after map = ", map)
+    receivedSystemEvents = map
+    setSystemEvents(map)
   }
 
   function onDoubleClick(_: React.MouseEvent, node: EventDataNode) {
@@ -80,19 +108,23 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
     if (ar.length == 3) {
       if (eventService) {
         const [subsystemName, componentName, eventName] = ar
-        getEventModel(subsystemName, componentName, eventName)
-        const subsystem: Subsystem = subsystemName as Subsystem
-        const sourcePrefix = new Prefix(subsystem, componentName)
-        const eventKey = new EventKey(sourcePrefix, new EventName(eventName))
-        const eventKeys = new Set([eventKey])
-        const subscription: Subscription = eventService.subscribe(eventKeys, 1)(onEventCallback)
-        const eventSubscription: EventSubscription = {
-          subscription: subscription,
-          subsystem: subsystemName,
-          component: componentName,
-          event: eventName
+        const existingSubscription = subscriptions.find(s =>
+          s.event == eventName && s.component == componentName && s.subsystem == subsystemName)
+        if (!existingSubscription) {
+          getEventModel(subsystemName, componentName, eventName)
+          const subsystem: Subsystem = subsystemName as Subsystem
+          const sourcePrefix = new Prefix(subsystem, componentName)
+          const eventKey = new EventKey(sourcePrefix, new EventName(eventName))
+          const eventKeys = new Set([eventKey])
+          const subscription: Subscription = eventService.subscribe(eventKeys, 1)(onEventCallback)
+          const eventSubscription: EventSubscription = {
+            subscription: subscription,
+            subsystem: subsystemName,
+            component: componentName,
+            event: eventName
+          }
+          setSubscriptions(subscriptions.concat(eventSubscription))
         }
-        setSubscriptions(subscriptions.concat(eventSubscription))
       } else {
         console.log("No event service!")
       }

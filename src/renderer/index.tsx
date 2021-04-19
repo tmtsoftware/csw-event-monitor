@@ -11,7 +11,7 @@ setAppConfigPath('/dist/AppConfig.js')
 
 render(
   <AuthContextProvider config={AppConfig}>
-    <LightApp/>
-    {/*<DarkApp/>*/}
+    {/*<LightApp/>*/}
+    <DarkApp/>
   </AuthContextProvider>,
   document.getElementById('root'))

@@ -1,23 +1,22 @@
-import React, {useState} from 'react'
-import {useAppContext} from "../AppContext";
+import React from 'react'
 import {ParamValuesTable} from "./ParamValuesTable";
-import {ParameterUtil} from "../data/ParameterUtil";
+import {ParamInfoModel} from "../data/EventTreeData";
+import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 
 type ParamValuesWindowProps = {
-  paramIndex: number
+  paramInfoModel: ParamInfoModel | undefined
+  cswParamKey: BaseKey<Key> | undefined
+  events: Array<SystemEvent> | undefined
 }
 
-export const ParamValuesWindow = ({paramIndex}: ParamValuesWindowProps): JSX.Element => {
-  const {paramInfoModels} = useAppContext()
-  const paramInfoModel = (paramInfoModels.length > paramIndex) ? paramInfoModels[paramIndex] : undefined
-  const cswParamKey = paramInfoModel ? ParameterUtil.getCswKey(paramInfoModel) : undefined
-
+export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamValuesWindowProps): JSX.Element => {
   return (
     <div>
       {(paramInfoModel  && cswParamKey) ?
         <ParamValuesTable
           paramInfoModel={paramInfoModel}
           cswParamKey={cswParamKey}
+          events={events}
         />
         : <div/>}
     </div>

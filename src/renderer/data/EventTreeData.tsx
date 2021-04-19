@@ -104,9 +104,16 @@ export interface EventInfoModel {
 
 export interface ParamInfoModel {
   eventInfoModel: EventInfoModel,
-  parameterName: string
+  parameterName: string,
+  description: string,
 }
 
 export class IcdServerInfo {
   static baseUri = import.meta.env.SNOWPACK_PUBLIC_API_URL
+}
+
+export class EventUtil {
+  static getEventKey(e: EventInfoModel): string {
+    return `${e.subsystem}.${e.component}.${e.eventModel.name}`
+  }
 }

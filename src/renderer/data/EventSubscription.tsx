@@ -1,4 +1,4 @@
-import {Event, EventKey, EventName, Prefix, Subscription, Subsystem} from "@tmtsoftware/esw-ts";
+import {Subscription} from "@tmtsoftware/esw-ts";
 
 export interface EventSubscription {
   subscription: Subscription
@@ -6,3 +6,4 @@ export interface EventSubscription {
   component: string
   event: string
 }
+
