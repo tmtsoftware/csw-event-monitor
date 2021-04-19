@@ -3,8 +3,16 @@ import {ParamValuesTable} from "./ParamValuesTable";
 import {ParamInfoModel} from "../data/EventTreeData";
 import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {Button, Menu, Typography} from "antd";
-import {BarChartOutlined, CloseOutlined, ExpandOutlined, LineChartOutlined, TableOutlined} from "@ant-design/icons";
+import {
+  BarChartOutlined,
+  CloseOutlined,
+  ExpandOutlined,
+  LineChartOutlined,
+  ShrinkOutlined,
+  TableOutlined
+} from "@ant-design/icons";
 import {MenuInfo} from 'rc-menu/lib/interface';
+import {useAppContext} from "../AppContext";
 
 const {Text} = Typography;
 
@@ -17,6 +25,7 @@ type ParamValuesWindowProps = {
 export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamValuesWindowProps): JSX.Element => {
   const [viewMode, setViewMode] = useState<string>('table')
   const [descriptionVisible, setDescriptionVisible] = useState<boolean>(true)
+  const {expandedParamInfoModel, setExpandedParamInfoModel} = useAppContext()
 
   function menuItemSelected(info: MenuInfo) {
     switch (info.key) {
@@ -30,8 +39,10 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
         setViewMode('barChart')
         break
       case 'expand':
+        setExpandedParamInfoModel(paramInfoModel)
         break
       case 'collapse':
+        setExpandedParamInfoModel(undefined)
         break
     }
   }
@@ -66,12 +77,21 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
         >
           {makeTitle()}
         </Menu.Item>
-        <Menu.Item
-          key="expand"
-          icon={<ExpandOutlined />}
-          title={'Expand this window'}
-          style={{float: 'right'}}
-        />
+        {expandedParamInfoModel ?
+          <Menu.Item
+            key="collapse"
+            icon={<ShrinkOutlined/>}
+            title={'Collapse this window'}
+            style={{float: 'right'}}
+          />
+          :
+          <Menu.Item
+            key="expand"
+            icon={<ExpandOutlined/>}
+            title={'Expand this window'}
+            style={{float: 'right'}}
+          />
+        }
         <Menu.Item
           key="barChart"
           icon={<BarChartOutlined/>}
@@ -93,8 +113,6 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
       </Menu>
     )
   }
-
-  // <ShrinkOutlined />
 
   function makeTable(): JSX.Element {
     return (

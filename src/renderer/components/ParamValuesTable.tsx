@@ -1,8 +1,8 @@
 import React from 'react'
-import {Table, Typography} from "antd"
+import {Table} from "antd"
 import {ColumnsType} from "antd/es/table"
-import {ParamInfoModel} from "../data/EventTreeData";
 import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import {useAppContext} from "../AppContext";
 
 interface ParamValue {
   time: string,
@@ -15,6 +15,8 @@ type ParamValuesTableProps = {
 }
 
 export const ParamValuesTable = ({cswParamKey, events}: ParamValuesTableProps): JSX.Element => {
+
+  const {expandedParamInfoModel} = useAppContext()
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<ParamValue> = [
@@ -49,7 +51,7 @@ export const ParamValuesTable = ({cswParamKey, events}: ParamValuesTableProps): 
         dataSource={dataSource}
         columns={columns}
         pagination={false}
-        scroll={{y: 200}}
+        scroll={{y: expandedParamInfoModel ? 500 : 200}}
       />
     )
   }

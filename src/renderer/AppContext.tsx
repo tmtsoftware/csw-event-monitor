@@ -17,6 +17,8 @@ export type AppContextState = {
   setSystemEvents: (_: Map<string, Array<SystemEvent>>) => void,
   paramInfoModels: Array<ParamInfoModel>,
   setParamInfoModels: (_: Array<ParamInfoModel>) => void
+  expandedParamInfoModel: ParamInfoModel | undefined,
+  setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => void
 }
 
 const appContextDefaultValue: AppContextState = {
@@ -30,7 +32,9 @@ const appContextDefaultValue: AppContextState = {
   systemEvents: new Map(),
   setSystemEvents: (_: Map<string, Array<SystemEvent>>) => {},
   paramInfoModels: [],
-  setParamInfoModels: (_: Array<ParamInfoModel>) => {}
+  setParamInfoModels: (_: Array<ParamInfoModel>) => {},
+  expandedParamInfoModel: undefined,
+  setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => {}
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)

@@ -25,6 +25,7 @@ const App = (): JSX.Element => {
   const [eventInfoModels, setEventInfoModels] = useState<Array<EventInfoModel>>([])
   const [systemEvents, setSystemEvents] = useState<Map<string, Array<SystemEvent>>>(new Map())
   const [paramInfoModels, setParamInfoModels] = useState<Array<ParamInfoModel>>([])
+  const [expandedParamInfoModel, setExpandedParamInfoModel] = useState<ParamInfoModel | undefined>(undefined)
 
   async function findEventService() {
     try {
@@ -90,7 +91,9 @@ const App = (): JSX.Element => {
     systemEvents,
     setSystemEvents,
     paramInfoModels,
-    setParamInfoModels
+    setParamInfoModels,
+    expandedParamInfoModel,
+    setExpandedParamInfoModel
   }
 
   return (

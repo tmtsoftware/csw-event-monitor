@@ -27,12 +27,14 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
       {
         title: 'Name',
         dataIndex: 'name',
-        key: 'name'
+        key: 'name',
+        width: 300
       },
       {
         title: 'Type',
         dataIndex: 'typeStr',
         key: 'typeStr',
+        width: 150
       },
       {
         title: 'Units',
@@ -41,6 +43,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
         render: units => (
           <div dangerouslySetInnerHTML={{__html: units}}/>
         ),
+        width: 150
       },
       {
         title: 'Description',

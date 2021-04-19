@@ -7,14 +7,16 @@ import {ParameterUtil} from "../data/ParameterUtil";
 import {EventUtil} from "../data/EventTreeData";
 
 export const MainWindow = (): JSX.Element => {
+  const {expandedParamInfoModel} = useAppContext()
   const {paramInfoModels, systemEvents} = useAppContext()
   const paramCount = paramInfoModels.length
-  const numRows = Math.trunc(Math.sqrt(paramCount))
-  const numCols = paramCount == 0 ? 0 : Math.round(paramCount / numRows)
+  const numRows = expandedParamInfoModel ? 1 : Math.trunc(Math.sqrt(paramCount))
+  const numCols = expandedParamInfoModel ? 1 : (paramCount == 0 ? 0 : Math.round(paramCount / numRows))
   const colIndexes = [...Array.from(Array(numRows * numCols).keys())]
 
   const cols = colIndexes.map(paramIndex => {
-    const paramInfoModel = (paramInfoModels.length > paramIndex) ? paramInfoModels[paramIndex] : undefined
+    const paramInfoModel = expandedParamInfoModel ? expandedParamInfoModel :
+      ((paramInfoModels.length > paramIndex) ? paramInfoModels[paramIndex] : undefined)
     const cswParamKey = paramInfoModel ? ParameterUtil.getCswKey(paramInfoModel) : undefined
     const eventInfoModel = paramInfoModel?.eventInfoModel
     const eventKey = eventInfoModel ? EventUtil.getEventKey(eventInfoModel) : undefined
@@ -22,7 +24,6 @@ export const MainWindow = (): JSX.Element => {
     return (
         <Col span={24 / numCols} key={paramIndex}>
           <div style={{
-            // background: '#0092ff',
             height: '100%',
             padding: '1vh 0',
             border: 'thick double #32a1ce'
@@ -44,7 +45,7 @@ export const MainWindow = (): JSX.Element => {
           <div style={{
             padding: '1vh 0',
             margin: '20px 0 0 0',
-            border: 'solid'
+            border: 'solid',
           }}>
             <EventModelTabs/>
           </div>
