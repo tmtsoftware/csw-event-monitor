@@ -13,7 +13,8 @@ export const EventModelTabs = (): JSX.Element => {
     subscriptions,
     setSubscriptions,
     paramInfoModels,
-    setParamInfoModels
+    setParamInfoModels,
+    setEventTreeDrawerOpen
   } = useAppContext()
   const [selectedEventName, setSelectedEventName] = useState<string | undefined>(undefined)
 
@@ -33,7 +34,11 @@ export const EventModelTabs = (): JSX.Element => {
         )
         if (eventSubscription) {
           eventSubscription.subscription.cancel()
-          setSubscriptions(subscriptions.filter(s => s != eventSubscription))
+          const remainingSubscriptions = subscriptions.filter(s => s != eventSubscription)
+          setSubscriptions(remainingSubscriptions)
+          console.log(`XXX remainingSubscriptions = ${remainingSubscriptions.length}`)
+          if (remainingSubscriptions.length == 0)
+            setEventTreeDrawerOpen(true)
         }
         setParamInfoModels(paramInfoModels.filter(p => p.eventInfoModel != removed))
       }

@@ -1,14 +1,16 @@
 import React from 'react'
-import {Row, Col} from 'antd';
+import {Row, Col, Typography} from 'antd';
 import {useAppContext} from "../AppContext";
 import {EventModelTabs} from "./EventModelTabs";
 import {ParamValuesWindow} from "./ParamValuesWindow";
 import {ParameterUtil} from "../data/ParameterUtil";
 import {EventUtil} from "../data/EventTreeData";
+import {ArrowRightOutlined} from "@ant-design/icons";
+
+const {Title} = Typography;
 
 export const MainWindow = (): JSX.Element => {
-  const {expandedParamInfoModel} = useAppContext()
-  const {paramInfoModels, systemEvents} = useAppContext()
+  const {expandedParamInfoModel, paramInfoModels, systemEvents, subscriptions} = useAppContext()
   const paramCount = paramInfoModels.length
   const numRows = expandedParamInfoModel ? 1 : Math.trunc(Math.sqrt(paramCount))
   const numCols = expandedParamInfoModel ? 1 : (paramCount == 0 ? 0 : Math.round(paramCount / numRows))
@@ -22,21 +24,22 @@ export const MainWindow = (): JSX.Element => {
     const eventKey = eventInfoModel ? EventUtil.getEventKey(eventInfoModel) : undefined
     const events = eventKey ? systemEvents.get(eventKey) : []
     return (
-        <Col span={24 / numCols} key={paramIndex}>
-          <div style={{
-            height: '100%',
-            padding: '1vh 0',
-            border: 'thick double #32a1ce'
-          }}>
-            <ParamValuesWindow
-              paramInfoModel={paramInfoModel}
-              cswParamKey={cswParamKey}
-              events={events}
-            />
-          </div>
-        </Col>
+      <Col span={24 / numCols} key={paramIndex}>
+        <div style={{
+          height: '100%',
+          padding: '1vh 0',
+          border: 'thick double #32a1ce'
+        }}>
+          <ParamValuesWindow
+            paramInfoModel={paramInfoModel}
+            cswParamKey={cswParamKey}
+            events={events}
+          />
+        </div>
+      </Col>
     )
   })
+
 
   return (
     <div style={{margin: '20px'}}>
@@ -47,6 +50,13 @@ export const MainWindow = (): JSX.Element => {
             margin: '20px 0 0 0',
             border: 'solid',
           }}>
+            {
+              (subscriptions.length == 0) ?
+                <div style={{margin: '100px'}}>
+                  <Title level={3}>Select events to monitor from the tree at right <ArrowRightOutlined/></Title>
+                </div>
+                : <div/>
+            }
             <EventModelTabs/>
           </div>
         </Col>
