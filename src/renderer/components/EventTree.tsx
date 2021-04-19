@@ -25,7 +25,10 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
   const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
   const [expandedKeys, setExpandedKeys] = useState<Array<string>>([])
   const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter + '*' : '*.*.*')
-  const {eventService, subscriptions, setSubscriptions, eventInfoModels, setEventInfoModels, systemEvents, setSystemEvents} = useAppContext()
+  const {eventService, subscriptions, setSubscriptions, eventInfoModels, setEventInfoModels, setSystemEvents} = useAppContext()
+
+  // Temp: Max events to keep for a single key
+  const maxEvents = 300
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEventTreeFilter(e.currentTarget.value)
@@ -67,37 +70,18 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
       })
   }
 
-  // XXX TODO: Limit size of received event array
-  // const onEventCallback = (event: Event) => {
-  //   const systemEvent = event as SystemEvent
-  //   const key = `${systemEvent.source.subsystem.toString()}.${systemEvent.source.componentName}.${systemEvent.eventName.name}`
-  //   const map = new Map(systemEvents)
-  //   console.log("XXX before map = ", map)
-  //   if (map.has(key)) {
-  //     const ar = map.get(key)
-  //     console.log(`XXX hasKey(${key}: length = ${ar?.length}`)
-  //     map.set(key, ar ? [systemEvent].concat(ar) : [systemEvent])
-  //   } else {
-  //     console.log(`XXX noHasKey(${key})`)
-  //     map.set(key, [systemEvent])
-  //   }
-  //   console.log("XXX after map = ", map)
-  //   setSystemEvents(map)
-  // }
   const onEventCallback = (event: Event) => {
     const systemEvent = event as SystemEvent
     const key = `${systemEvent.source.subsystem.toString()}.${systemEvent.source.componentName}.${systemEvent.eventName.name}`
     const map = new Map(receivedSystemEvents)
-    console.log("XXX before map = ", map)
     if (map.has(key)) {
       const ar = map.get(key)
-      console.log(`XXX hasKey(${key}: length = ${ar?.length}`)
+      if (ar && ar.length > maxEvents)
+        ar.pop()
       map.set(key, ar ? [systemEvent].concat(ar) : [systemEvent])
     } else {
-      console.log(`XXX noHasKey(${key})`)
       map.set(key, [systemEvent])
     }
-    console.log("XXX after map = ", map)
     receivedSystemEvents = map
     setSystemEvents(map)
   }

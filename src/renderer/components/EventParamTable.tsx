@@ -76,7 +76,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
       }
     }
 
-    const title = <Text strong>{EventUtil.getEventKey(eventInfoModel)}</Text>
+    const title = <Text strong>Event: {EventUtil.getEventKey(eventInfoModel)}</Text>
 
     return (
       <Table<EventParameter>

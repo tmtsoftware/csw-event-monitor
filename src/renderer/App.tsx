@@ -18,7 +18,7 @@ const {Text} = Typography;
 const App = (): JSX.Element => {
 
   const [eventTreeData, setEventTreeData] = useState<Array<DataNode>>([])
-  const [eventTreeDrawerOpen, setEventTreeDrawerOpen] = useState<boolean>(false)
+  const [eventTreeDrawerOpen, setEventTreeDrawerOpen] = useState<boolean>(true)
   const [eventService, setEventService] = useState<EventService | undefined>(undefined)
   const [hasError, setHasError] = useState<String>("")
   const [subscriptions, setSubscriptions] = useState<Array<EventSubscription>>([])

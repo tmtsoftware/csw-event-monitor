@@ -9,8 +9,8 @@ import {EventUtil} from "../data/EventTreeData";
 export const MainWindow = (): JSX.Element => {
   const {paramInfoModels, systemEvents} = useAppContext()
   const paramCount = paramInfoModels.length
-  const numRows = paramCount == 0 ? 1 : Math.trunc(Math.sqrt(paramCount))
-  const numCols = paramCount == 0 ? 1 : Math.round(paramCount / numRows)
+  const numRows = Math.trunc(Math.sqrt(paramCount))
+  const numCols = paramCount == 0 ? 0 : Math.round(paramCount / numRows)
   const colIndexes = [...Array.from(Array(numRows * numCols).keys())]
 
   const cols = colIndexes.map(paramIndex => {
@@ -25,7 +25,7 @@ export const MainWindow = (): JSX.Element => {
             // background: '#0092ff',
             height: '100%',
             padding: '1vh 0',
-            border: 'solid'
+            border: 'thick double #32a1ce'
           }}>
             <ParamValuesWindow
               paramInfoModel={paramInfoModel}
@@ -40,9 +40,6 @@ export const MainWindow = (): JSX.Element => {
   return (
     <div style={{margin: '20px'}}>
       <Row gutter={[16, 24]}>
-        {cols}
-      </Row>
-      <Row gutter={[16, 24]}>
         <Col span={24}>
           <div style={{
             padding: '1vh 0',
@@ -52,6 +49,9 @@ export const MainWindow = (): JSX.Element => {
             <EventModelTabs/>
           </div>
         </Col>
+      </Row>
+      <Row gutter={[16, 24]}>
+        {cols}
       </Row>
     </div>
   )
