@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import {MenuInfo} from 'rc-menu/lib/interface';
 import {useAppContext} from "../AppContext";
+import {ParamValuesLineChart} from "./ParamValuesLineChart";
 
 const {Text} = Typography;
 
@@ -124,7 +125,12 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   }
 
   function makeLineChart(): JSX.Element {
-    return (<div>LineChart</div>)
+    return (
+      <ParamValuesLineChart
+        cswParamKey={cswParamKey!}
+        events={events}
+      />
+    )
   }
 
   function makeBarChart(): JSX.Element {
