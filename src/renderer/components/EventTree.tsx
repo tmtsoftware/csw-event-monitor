@@ -28,7 +28,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
   const {eventService, subscriptions, setSubscriptions, eventInfoModels, setEventInfoModels, setSystemEvents} = useAppContext()
 
   // Temp: Max events to keep for a single key
-  const maxEvents = 300
+  const maxEvents = 100
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEventTreeFilter(e.currentTarget.value)
@@ -78,7 +78,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
       const ar = map.get(key)
       if (ar && ar.length > maxEvents)
         ar.pop()
-      map.set(key, ar ? [systemEvent].concat(ar) : [systemEvent])
+      map.set(key, ar ? ar.concat([systemEvent]) : [systemEvent])
     } else {
       map.set(key, [systemEvent])
     }

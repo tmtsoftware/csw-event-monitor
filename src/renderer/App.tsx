@@ -26,6 +26,7 @@ const App = (): JSX.Element => {
   const [systemEvents, setSystemEvents] = useState<Map<string, Array<SystemEvent>>>(new Map())
   const [paramInfoModels, setParamInfoModels] = useState<Array<ParamInfoModel>>([])
   const [expandedParamInfoModel, setExpandedParamInfoModel] = useState<ParamInfoModel | undefined>(undefined)
+  const [viewMode, setViewMode] = useState<Map<ParamInfoModel, string>>(new Map())
 
   async function findEventService() {
     try {
@@ -93,7 +94,9 @@ const App = (): JSX.Element => {
     paramInfoModels,
     setParamInfoModels,
     expandedParamInfoModel,
-    setExpandedParamInfoModel
+    setExpandedParamInfoModel,
+    viewMode,
+    setViewMode
   }
 
   return (

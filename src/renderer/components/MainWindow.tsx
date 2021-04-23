@@ -40,7 +40,6 @@ export const MainWindow = (): JSX.Element => {
     )
   })
 
-
   return (
     <div style={{margin: '20px'}}>
       <Row gutter={[16, 24]}>

@@ -14,6 +14,7 @@ import {
 import {MenuInfo} from 'rc-menu/lib/interface';
 import {useAppContext} from "../AppContext";
 import {ParamValuesLineChart} from "./ParamValuesLineChart";
+import {ParamValuesBarChart} from "./ParamValuesBarChart";
 
 const {Text} = Typography;
 
@@ -24,20 +25,26 @@ type ParamValuesWindowProps = {
 }
 
 export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamValuesWindowProps): JSX.Element => {
-  const [viewMode, setViewMode] = useState<string>('table')
   const [descriptionVisible, setDescriptionVisible] = useState<boolean>(true)
-  const {expandedParamInfoModel, setExpandedParamInfoModel} = useAppContext()
+  const {expandedParamInfoModel, setExpandedParamInfoModel, viewMode, setViewMode} = useAppContext()
+
+  function setThisViewMode(mode: string) {
+    const map = new Map(viewMode)
+    if (paramInfoModel)
+      map.set(paramInfoModel, mode)
+    setViewMode(map)
+  }
 
   function menuItemSelected(info: MenuInfo) {
     switch (info.key) {
       case 'table':
-        setViewMode('table')
+        setThisViewMode('table')
         break
       case 'lineChart':
-        setViewMode('lineChart')
+        setThisViewMode('lineChart')
         break
       case 'barChart':
-        setViewMode('barChart')
+        setThisViewMode('barChart')
         break
       case 'expand':
         setExpandedParamInfoModel(paramInfoModel)
@@ -63,12 +70,13 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   }
 
   function makeMenu(): JSX.Element {
+    const selectedKey = paramInfoModel ? viewMode.get(paramInfoModel) : undefined
+    const selectedKeys = selectedKey ? [selectedKey] : []
     return (
       <Menu
-        defaultSelectedKeys={['1']}
         mode="horizontal"
         theme="dark"
-        selectedKeys={[viewMode]}
+        selectedKeys={selectedKeys}
         onClick={menuItemSelected}
       >
         <Menu.Item
@@ -134,11 +142,16 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   }
 
   function makeBarChart(): JSX.Element {
-    return (<div>BarChart</div>)
+    return (
+      <ParamValuesBarChart
+        cswParamKey={cswParamKey!}
+        events={events}
+      />
+    )
   }
 
   function makeParamsValueDisplay(): JSX.Element {
-    switch (viewMode) {
+    switch (paramInfoModel ? viewMode.get(paramInfoModel) : '') {
       case 'lineChart':
         return makeLineChart()
       case 'barChart':

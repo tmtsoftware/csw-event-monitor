@@ -18,7 +18,9 @@ export type AppContextState = {
   paramInfoModels: Array<ParamInfoModel>,
   setParamInfoModels: (_: Array<ParamInfoModel>) => void
   expandedParamInfoModel: ParamInfoModel | undefined,
-  setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => void
+  setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => void,
+  viewMode: Map<ParamInfoModel, string>,
+  setViewMode: (_: Map<ParamInfoModel, string>) => void
 }
 
 const appContextDefaultValue: AppContextState = {
@@ -34,7 +36,9 @@ const appContextDefaultValue: AppContextState = {
   paramInfoModels: [],
   setParamInfoModels: (_: Array<ParamInfoModel>) => {},
   expandedParamInfoModel: undefined,
-  setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => {}
+  setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => {},
+  viewMode: new Map(),
+  setViewMode: (_: Map<ParamInfoModel, string>) => {}
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)

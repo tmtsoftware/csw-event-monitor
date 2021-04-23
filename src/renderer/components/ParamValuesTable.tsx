@@ -34,7 +34,7 @@ export const ParamValuesTable = ({cswParamKey, events}: ParamValuesTableProps): 
 
     //2021-04-19T14:19:23.584906572Z
 
-    const dataSource: Array<ParamValue> = events ? events.map((systemEvent) => {
+    const dataSource: Array<ParamValue> = events ? events.slice().reverse().map((systemEvent) => {
       const values = systemEvent.get(cswParamKey)?.values
       // XXX TODO: Handle multiple values
       const value = (values && values.length > 0) ? values[0] : "undefined"
