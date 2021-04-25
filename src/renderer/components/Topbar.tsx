@@ -1,15 +1,21 @@
 import React from 'react'
 import {PageHeader} from "antd"
 import {Button} from 'antd';
-import {FileAddOutlined} from "@ant-design/icons";
+import {FileAddOutlined, SettingOutlined} from "@ant-design/icons";
 import {useAppContext} from "../AppContext"
 
 export const Topbar = (): JSX.Element => {
-  const {eventTreeDrawerOpen, setEventTreeDrawerOpen} = useAppContext()
+  const {eventTreeDrawerOpen, setEventTreeDrawerOpen, settingsDrawerOpen, setSettingsDrawerOpen} = useAppContext()
 
   function addEvent() {
     if (!eventTreeDrawerOpen)
       setEventTreeDrawerOpen(true)
+  }
+
+  function showSettings() {
+    console.log(`XXX showSettings ${settingsDrawerOpen}`)
+    if (!settingsDrawerOpen)
+      setSettingsDrawerOpen(true)
   }
 
   return (
@@ -28,6 +34,13 @@ export const Topbar = (): JSX.Element => {
           onClick={addEvent}>
           Add Event
         </Button>,
+        <Button
+          key='settings'
+          type='ghost'
+          icon={<SettingOutlined />}
+          size={"middle"}
+          title={'Show the settings dialog'}
+          onClick={showSettings}/>
       ]}
     >
     </PageHeader>

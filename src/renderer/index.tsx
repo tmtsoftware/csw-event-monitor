@@ -4,14 +4,12 @@ import './index.css'
 import {AuthContextProvider} from "@tmtsoftware/esw-ts";
 import {setAppConfigPath} from '@tmtsoftware/esw-ts'
 import {AppConfig} from "./AppConfig";
-import LightApp from "./LightApp";
-import DarkApp from "./DarkApp";
+import AppWrapper from "./AppWrapper";
 
 setAppConfigPath('/dist/AppConfig.js')
 
 render(
   <AuthContextProvider config={AppConfig}>
-    <LightApp/>
-    {/*<DarkApp/>*/}
+    <AppWrapper/>
   </AuthContextProvider>,
   document.getElementById('root'))

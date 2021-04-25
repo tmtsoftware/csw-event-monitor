@@ -6,8 +6,10 @@ import {EventInfoModel, ParamInfoModel} from "./data/EventTreeData";
 // Application context: Holds values and functions that are shared by different components in the app
 export type AppContextState = {
   // Signals to update the display after a change in the database
-  setEventTreeDrawerOpen: (_: boolean) => void,
   eventTreeDrawerOpen: boolean,
+  setEventTreeDrawerOpen: (_: boolean) => void,
+  settingsDrawerOpen: boolean,
+  setSettingsDrawerOpen: (_: boolean) => void,
   eventService: EventService | undefined,
   subscriptions: Array<EventSubscription>,
   setSubscriptions: (_: Array<EventSubscription>) => void,
@@ -20,12 +22,16 @@ export type AppContextState = {
   expandedParamInfoModel: ParamInfoModel | undefined,
   setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => void,
   viewMode: Map<ParamInfoModel, string>,
-  setViewMode: (_: Map<ParamInfoModel, string>) => void
+  setViewMode: (_: Map<ParamInfoModel, string>) => void,
+  darkMode: boolean,
+  setDarkMode: (_: boolean) => void
 }
 
 const appContextDefaultValue: AppContextState = {
-  setEventTreeDrawerOpen: (_: boolean) => {},
+  settingsDrawerOpen: false,
+  setSettingsDrawerOpen: (_: boolean) => {},
   eventTreeDrawerOpen: false,
+  setEventTreeDrawerOpen: (_: boolean) => {},
   eventService: undefined,
   subscriptions: [],
   setSubscriptions: (_: Array<EventSubscription>) => [],
@@ -38,7 +44,9 @@ const appContextDefaultValue: AppContextState = {
   expandedParamInfoModel: undefined,
   setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => {},
   viewMode: new Map(),
-  setViewMode: (_: Map<ParamInfoModel, string>) => {}
+  setViewMode: (_: Map<ParamInfoModel, string>) => {},
+  darkMode: true,
+  setDarkMode: (_: boolean) => {}
 }
 
 export const appContext = createContext<AppContextState>(appContextDefaultValue)

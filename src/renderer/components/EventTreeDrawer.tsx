@@ -18,9 +18,9 @@ export const EventTreeDrawer = ({eventTreeData}: EventTreeDrawerProps): JSX.Elem
       // title="Subsystem Events"
       placement="right"
       closable={true}
-      destroyOnClose
-      visible={eventTreeDrawerOpen}
+      // destroyOnClose
       width={500}
+      visible={eventTreeDrawerOpen}
       onClose={(_: EventType) => setEventTreeDrawerOpen(false)}
     >
       <EventTree eventTreeData={eventTreeData}/>

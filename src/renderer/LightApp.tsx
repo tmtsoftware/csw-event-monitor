@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 
 import 'antd/dist/antd.css';
 import App from "./App";
-import DarkApp from "./DarkApp";
 
+// Sets light mode for App
 const LightApp = (): JSX.Element => {
   return (
     <App/>
