@@ -1,10 +1,19 @@
 import React from 'react'
 import {useAppContext} from "../AppContext"
-import {Drawer, Form, Switch} from "antd";
+import {Drawer, Form, Switch} from "antd"
+import {useThemeSwitcher} from "react-css-theme-switcher";
+
 declare type EventType = React.KeyboardEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement | HTMLButtonElement>;
 
 export const Settings = (): JSX.Element => {
   const {darkMode, setDarkMode, settingsDrawerOpen, setSettingsDrawerOpen} = useAppContext()
+  // const { switcher, currentTheme, status, themes } = useThemeSwitcher()
+  const { switcher, themes } = useThemeSwitcher()
+
+  function toggleTheme(isChecked: boolean) {
+    setDarkMode(isChecked);
+    switcher({ theme: isChecked ? themes.dark : themes.light });
+  }
 
   const [form] = Form.useForm()
   const layout = {
@@ -19,7 +28,7 @@ export const Settings = (): JSX.Element => {
           <Switch
             checkedChildren="On"
             unCheckedChildren="Off"
-            onChange={setDarkMode}
+            onChange={toggleTheme}
             checked={darkMode}/>
         </Form.Item>
       </>
