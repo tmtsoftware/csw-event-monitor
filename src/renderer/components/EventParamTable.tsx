@@ -1,8 +1,8 @@
 import React from 'react'
-import {Table, Typography} from "antd"
+import {Space, Table, Typography} from "antd"
 import {ColumnsType} from "antd/es/table"
 import {Key} from "antd/lib/table/interface";
-import {EventInfoModel, EventUtil, ParamInfoModel} from "../data/EventTreeData";
+import {EventInfoModel, ParamInfoModel} from "../data/EventTreeData";
 import {useAppContext} from "../AppContext";
 
 const {Text} = Typography;
@@ -79,20 +79,31 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
       }
     }
 
-    const title = <Text strong>Event: {EventUtil.getEventKey(eventInfoModel)}</Text>
+    const title = <div>
+      <Space direction={"vertical"} size={"small"}>
+        <Space direction={'horizontal'} size={'large'}>
+          <Text>Subsystem: {eventInfoModel.subsystem}</Text>
+          <Text>Component: {eventInfoModel.component}</Text>
+          <Text>Event: {eventInfoModel.eventModel.name}</Text>
+        </Space>
+        <Text strong>Parameters</Text>
+      </Space>
+    </div>
 
     return (
       <Table<EventParameter>
         rowSelection={{
           type: 'checkbox',
           ...rowSelection,
+          hideSelectAll: true,
+          selectedRowKeys: paramInfoModels.map(p => p.parameterName)
         }}
         title={() => title}
         size={'small'}
         dataSource={dataSource}
         columns={columns}
         pagination={false}
-        scroll={{ y: 200 }}
+        scroll={{y: 200}}
       />
     )
   }

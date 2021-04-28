@@ -74,7 +74,9 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
       .then((data) => {
         const eventModel: EventModel = data
         const eventInfoModel: EventInfoModel = {subsystem, component, eventModel}
-        setEventInfoModels(eventInfoModels.filter((x) => x.eventModel.name != eventModel.name).concat([eventInfoModel]))
+        setEventInfoModels(eventInfoModels.filter((x) =>
+          !(x.eventModel.name == eventModel.name && x.component == component && x.subsystem == subsystem)
+        ).concat([eventInfoModel]))
       })
   }
 

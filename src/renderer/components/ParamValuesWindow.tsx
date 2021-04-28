@@ -2,10 +2,9 @@ import React, {useState} from 'react'
 import {ParamValuesTable} from "./ParamValuesTable";
 import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
 import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
-import {Button, Menu, Typography} from "antd";
+import {Menu, Typography} from "antd";
 import {
-  BarChartOutlined,
-  CloseOutlined,
+  BarChartOutlined, CloseOutlined,
   ExpandOutlined,
   LineChartOutlined,
   ShrinkOutlined,
@@ -26,7 +25,7 @@ type ParamValuesWindowProps = {
 
 export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamValuesWindowProps): JSX.Element => {
   const [descriptionVisible, setDescriptionVisible] = useState<boolean>(true)
-  const {expandedParamInfoModel, setExpandedParamInfoModel, viewMode, setViewMode, darkMode} = useAppContext()
+  const {expandedParamInfoModel, setExpandedParamInfoModel, viewMode, setViewMode, darkMode, paramInfoModels, setParamInfoModels} = useAppContext()
 
   function setThisViewMode(mode: string) {
     const map = new Map(viewMode)
@@ -51,6 +50,10 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
         break
       case 'collapse':
         setExpandedParamInfoModel(undefined)
+        break
+      case 'close':
+        if (paramInfoModel)
+          setParamInfoModels(paramInfoModels.filter(p => EventUtil.getParamKey(paramInfoModel) != EventUtil.getParamKey(p)))
         break
     }
   }
@@ -87,6 +90,12 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
         >
           {makeTitle()}
         </Menu.Item>
+        <Menu.Item
+          key="close"
+          icon={<CloseOutlined/>}
+          title={'Close this subwindow'}
+          style={{float: 'right'}}
+        />
         {expandedParamInfoModel ?
           <Menu.Item
             key="collapse"
@@ -170,15 +179,7 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
     if (descriptionVisible) {
       return (
         <div style={{position: 'relative', paddingLeft: '20px', paddingTop: '5px'}}>
-          <div dangerouslySetInnerHTML={{__html: paramInfoModel!.description}}/>
-          <Button
-            style={{position: 'absolute', right: '5px', top: '5px'}}
-            key='hideDescription'
-            type='ghost'
-            size={"small"}
-            icon={<CloseOutlined/>}
-            onClick={hideDescription}
-          />
+          <div style={{height: '20px'}} dangerouslySetInnerHTML={{__html: paramInfoModel!.description}}/>
         </div>
       )
     } else return <div/>
