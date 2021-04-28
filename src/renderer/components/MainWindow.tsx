@@ -10,7 +10,7 @@ import {ArrowRightOutlined} from "@ant-design/icons";
 const {Title} = Typography;
 
 export const MainWindow = (): JSX.Element => {
-  const {expandedParamInfoModel, paramInfoModels, systemEvents, subscriptions} = useAppContext()
+  const {expandedParamInfoModel, paramInfoModels, systemEvents, subscriptions, eventTreeDrawerOpen} = useAppContext()
   const paramCount = paramInfoModels.length
   const numRows = expandedParamInfoModel ? 1 : Math.trunc(Math.sqrt(paramCount))
   const numCols = expandedParamInfoModel ? 1 : (paramCount == 0 ? 0 : Math.round(paramCount / numRows))
@@ -50,7 +50,7 @@ export const MainWindow = (): JSX.Element => {
             border: 'solid',
           }}>
             {
-              (subscriptions.length == 0) ?
+              (subscriptions.length == 0 && eventTreeDrawerOpen) ?
                 <div style={{margin: '100px'}}>
                   <Title level={3}>Select events to monitor from the tree at right <ArrowRightOutlined/></Title>
                 </div>

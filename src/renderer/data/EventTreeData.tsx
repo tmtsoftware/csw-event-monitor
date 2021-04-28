@@ -113,7 +113,10 @@ export class IcdServerInfo {
 }
 
 export class EventUtil {
+  // Used to separate subsystem, component, event in keys for tree
+  static eventKeySeparator = '::'
+
   static getEventKey(e: EventInfoModel): string {
-    return `${e.subsystem}.${e.component}.${e.eventModel.name}`
+    return `${e.subsystem}${EventUtil.eventKeySeparator}${e.component}${EventUtil.eventKeySeparator}${e.eventModel.name}`
   }
 }

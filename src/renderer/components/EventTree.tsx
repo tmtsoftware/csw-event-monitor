@@ -7,7 +7,7 @@ import {EventDataNode} from "rc-tree/lib/interface";
 import {useAppContext} from "../AppContext";
 import {Event, EventKey, EventName, Prefix, Subscription, Subsystem, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "../data/EventSubscription";
-import {EventInfoModel, EventModel, IcdServerInfo} from "../data/EventTreeData";
+import {EventInfoModel, EventModel, EventUtil, IcdServerInfo} from "../data/EventTreeData";
 
 const {DirectoryTree} = Tree;
 const {Search} = Input;
@@ -22,10 +22,18 @@ let receivedSystemEvents: Map<string, Array<SystemEvent>> = new Map()
 
 export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
-  const [eventTreeFilter, setEventTreeFilter] = useState<string>('*.*.*')
+  const wildcardMatchAll = `*${EventUtil.eventKeySeparator}*${EventUtil.eventKeySeparator}*`
+  const [eventTreeFilter, setEventTreeFilter] = useState<string>(wildcardMatchAll)
   const [expandedKeys, setExpandedKeys] = useState<Array<string>>([])
-  const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter + '*' : '*.*.*')
-  const {eventService, subscriptions, setSubscriptions, eventInfoModels, setEventInfoModels, setSystemEvents} = useAppContext()
+  const isMatch = wcmatch(eventTreeFilter && eventTreeFilter.length != 0 ? eventTreeFilter + '*' : wildcardMatchAll)
+  const {
+    eventService,
+    subscriptions,
+    setSubscriptions,
+    eventInfoModels,
+    setEventInfoModels,
+    setSystemEvents
+  } = useAppContext()
 
   // Temp: Max events to keep for a single key
   const maxEvents = 100
@@ -48,7 +56,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
   }
 
   function filterTreeData(ar: Array<DataNode>): Array<DataNode> {
-    if (eventTreeFilter.length == 0 || eventTreeFilter == '*.*.*')
+    if (eventTreeFilter.length == 0 || eventTreeFilter == wildcardMatchAll)
       return ar
     return ar.filter(filterTreeNode).map(node => {
       return {
@@ -70,15 +78,19 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
       })
   }
 
+  // Called when a SystemEvent is received from the event service
   const onEventCallback = (event: Event) => {
     const systemEvent = event as SystemEvent
-    const key = `${systemEvent.source.subsystem.toString()}.${systemEvent.source.componentName}.${systemEvent.eventName.name}`
+    const sep = EventUtil.eventKeySeparator
+    const key = `${systemEvent.source.subsystem.toString()}${sep}${systemEvent.source.componentName}${sep}${systemEvent.eventName.name}`
     const map = new Map(receivedSystemEvents)
     if (map.has(key)) {
       const ar = map.get(key)
-      if (ar && ar.length > maxEvents)
-        ar.pop()
-      map.set(key, ar ? ar.concat([systemEvent]) : [systemEvent])
+      if (ar) {
+        if (ar.length >= maxEvents)
+          ar.shift()
+        ar.push(systemEvent)
+      }
     } else {
       map.set(key, [systemEvent])
     }
@@ -86,9 +98,10 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
     setSystemEvents(map)
   }
 
+  // Double-click on an event name in the tree: Subscribe to the event and display the received values
   function onDoubleClick(_: React.MouseEvent, node: EventDataNode) {
     console.log(`double-click ${node.key}`)
-    const ar = node.key.toString().split('.')
+    const ar = node.key.toString().split(EventUtil.eventKeySeparator)
     if (ar.length == 3) {
       if (eventService) {
         const [subsystemName, componentName, eventName] = ar

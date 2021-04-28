@@ -26,7 +26,7 @@ type ParamValuesWindowProps = {
 
 export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamValuesWindowProps): JSX.Element => {
   const [descriptionVisible, setDescriptionVisible] = useState<boolean>(true)
-  const {expandedParamInfoModel, setExpandedParamInfoModel, viewMode, setViewMode} = useAppContext()
+  const {expandedParamInfoModel, setExpandedParamInfoModel, viewMode, setViewMode, darkMode} = useAppContext()
 
   function setThisViewMode(mode: string) {
     const map = new Map(viewMode)
@@ -72,10 +72,11 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   function makeMenu(): JSX.Element {
     const selectedKey = paramInfoModel ? viewMode.get(paramInfoModel) : undefined
     const selectedKeys = selectedKey ? [selectedKey] : []
+    const theme = darkMode ? "dark" : "light"
     return (
       <Menu
         mode="horizontal"
-        theme="dark"
+        theme={theme}
         selectedKeys={selectedKeys}
         onClick={menuItemSelected}
       >

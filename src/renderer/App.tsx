@@ -6,7 +6,7 @@ import {Layout, Typography} from "antd"
 import {EventTreeDrawer} from "./components/EventTreeDrawer";
 import {MainWindow} from "./components/MainWindow";
 import {DataNode} from "antd/lib/tree";
-import {EventInfoModel, EventsForSubsystem, IcdServerInfo, ParamInfoModel} from "./data/EventTreeData";
+import {EventInfoModel, EventsForSubsystem, EventUtil, IcdServerInfo, ParamInfoModel} from "./data/EventTreeData";
 import {Settings} from "./components/Settings";
 import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
@@ -66,7 +66,8 @@ const App = (): JSX.Element => {
   }
 
   useEffect(() => {
-    // Gets the event tree data and puts it in the correct format
+    // Gets the event tree data and puts it in the correct format.
+    // Do it here instead of EventTree, so that it is only done once.
     function getData() {
       console.log("XXX Getting event tree data! ")
       fetch(`${IcdServerInfo.baseUri}/eventList`)
@@ -79,11 +80,11 @@ const App = (): JSX.Element => {
                 title: a.subsystem,
                 children: a.components.map(c => {
                     const child: DataNode = {
-                      key: `${a.subsystem}.${c.component}`,
+                      key: `${a.subsystem}${EventUtil.eventKeySeparator}${c.component}`,
                       title: c.component,
                       children: c.events.map(e => {
                           const leaf: DataNode = {
-                            key: `${a.subsystem}.${c.component}.${e.event}`,
+                            key: `${a.subsystem}${EventUtil.eventKeySeparator}${c.component}${EventUtil.eventKeySeparator}${e.event}`,
                             title: e.event,
                             isLeaf: true
                           }

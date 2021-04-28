@@ -5,7 +5,8 @@ import {FileAddOutlined, SettingOutlined} from "@ant-design/icons";
 import {useAppContext} from "../AppContext"
 
 export const Topbar = (): JSX.Element => {
-  const {eventTreeDrawerOpen, setEventTreeDrawerOpen, settingsDrawerOpen, setSettingsDrawerOpen} = useAppContext()
+  const {eventTreeDrawerOpen, setEventTreeDrawerOpen, settingsDrawerOpen, setSettingsDrawerOpen, darkMode} = useAppContext()
+  const background = darkMode ? '#0c7499' : '#a7c3e5'
 
   function addEvent() {
     if (!eventTreeDrawerOpen)
@@ -20,8 +21,8 @@ export const Topbar = (): JSX.Element => {
 
   return (
     <PageHeader
-      style={{backgroundColor: '#0c7499', height: '45px', paddingTop: '5px'}}
-      // style={{backgroundColor: '#b5cddb', height: '45px', paddingTop: '5px'}}
+      // style={{backgroundColor: background, height: '50px', paddingTop: '5px'}}
+      style={{height: '50px', paddingTop: '5px'}}
       ghost={true}
       title="CSW Event Monitor"
       extra={[

@@ -34,6 +34,7 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
     height: 400,
     xField: 'time',
     yField: 'value',
+    legend: false,
     seriesField: 'category',
     point: {
       size: 5,

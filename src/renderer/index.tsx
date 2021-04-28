@@ -10,8 +10,10 @@ import App from "./App";
 setAppConfigPath('/dist/AppConfig.js')
 
 const themes = {
-  dark: `${import.meta.env.PUBLIC_URL}/dark-theme.css`,
-  light: `${import.meta.env.PUBLIC_URL}/light-theme.css`,
+  // dark: `${import.meta.env.PUBLIC_URL}/dark-theme.css`,
+  // light: `${import.meta.env.PUBLIC_URL}/light-theme.css`,
+  dark: `/dark-theme.css`,
+  light: `/light-theme.css`,
 };
 
 render(
@@ -19,7 +21,6 @@ render(
     <ThemeSwitcherProvider
       themeMap={themes}
       defaultTheme="dark"
-      insertionPoint="styles-insertion-point"
     >
       <App/>
     </ThemeSwitcherProvider>
