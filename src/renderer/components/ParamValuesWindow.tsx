@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {ParamValuesTable} from "./ParamValuesTable";
-import {ParamInfoModel} from "../data/EventTreeData";
+import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
 import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {Button, Menu, Typography} from "antd";
 import {
@@ -31,7 +31,7 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   function setThisViewMode(mode: string) {
     const map = new Map(viewMode)
     if (paramInfoModel)
-      map.set(paramInfoModel, mode)
+      map.set(EventUtil.getParamKey(paramInfoModel), mode)
     setViewMode(map)
   }
 
@@ -70,7 +70,7 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   }
 
   function makeMenu(): JSX.Element {
-    const selectedKey = paramInfoModel ? viewMode.get(paramInfoModel) : undefined
+    const selectedKey = paramInfoModel ? viewMode.get(EventUtil.getParamKey(paramInfoModel)) : undefined
     const selectedKeys = selectedKey ? [selectedKey] : []
     const theme = darkMode ? "dark" : "light"
     return (
@@ -152,7 +152,7 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   }
 
   function makeParamsValueDisplay(): JSX.Element {
-    switch (paramInfoModel ? viewMode.get(paramInfoModel) : '') {
+    switch (paramInfoModel ? viewMode.get(EventUtil.getParamKey(paramInfoModel)) : '') {
       case 'lineChart':
         return makeLineChart()
       case 'barChart':

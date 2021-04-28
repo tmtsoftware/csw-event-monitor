@@ -27,7 +27,7 @@ const App = (): JSX.Element => {
   const [paramInfoModels, setParamInfoModels] = useState<Array<ParamInfoModel>>([])
   const [expandedParamInfoModel, setExpandedParamInfoModel] = useState<ParamInfoModel | undefined>(undefined)
   const [darkMode, setDarkMode] = useState<boolean>(true)
-  const [viewMode, setViewMode] = useState<Map<ParamInfoModel, string>>(new Map())
+  const [viewMode, setViewMode] = useState<Map<string, string>>(new Map())
   const [hasError, setHasError] = useState<string>("")
 
   async function findEventService() {

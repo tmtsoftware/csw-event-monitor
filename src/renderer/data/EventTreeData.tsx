@@ -119,4 +119,8 @@ export class EventUtil {
   static getEventKey(e: EventInfoModel): string {
     return `${e.subsystem}${EventUtil.eventKeySeparator}${e.component}${EventUtil.eventKeySeparator}${e.eventModel.name}`
   }
+
+  static getParamKey(m: ParamInfoModel): string {
+    return `${EventUtil.getEventKey(m.eventInfoModel)}${EventUtil.eventKeySeparator}${m.parameterName}`
+  }
 }
