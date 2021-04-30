@@ -2,6 +2,7 @@ import React, {createContext, useContext} from "react"
 import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
 import {EventSubscription} from "./data/EventSubscription";
 import {EventInfoModel, ParamInfoModel} from "./data/EventTreeData";
+import {EventMonitorSettings} from "./data/EventMonitorSettings";
 
 // Application context: Holds values and functions that are shared by different components in the app
 export type AppContextState = {
@@ -21,6 +22,7 @@ export type AppContextState = {
   setParamInfoModels: (_: Array<ParamInfoModel>) => void
   expandedParamInfoModel: ParamInfoModel | undefined,
   setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => void,
+  appSettings: EventMonitorSettings,
   viewMode: Map<string, string>,
   setViewMode: (_: Map<string, string>) => void,
   darkMode: boolean,
@@ -43,6 +45,7 @@ const appContextDefaultValue: AppContextState = {
   setParamInfoModels: (_: Array<ParamInfoModel>) => {},
   expandedParamInfoModel: undefined,
   setExpandedParamInfoModel: (_: ParamInfoModel | undefined) => {},
+  appSettings: new EventMonitorSettings(),
   viewMode: new Map(),
   setViewMode: (_: Map<string, string>) => {},
   darkMode: true,

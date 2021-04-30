@@ -6,12 +6,12 @@ import {useThemeSwitcher} from "react-css-theme-switcher";
 declare type EventType = React.KeyboardEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement | HTMLButtonElement>;
 
 export const Settings = (): JSX.Element => {
-  const {darkMode, setDarkMode, settingsDrawerOpen, setSettingsDrawerOpen} = useAppContext()
-  // const { switcher, currentTheme, status, themes } = useThemeSwitcher()
+  const {darkMode, setDarkMode, settingsDrawerOpen, setSettingsDrawerOpen, appSettings} = useAppContext()
   const { switcher, themes } = useThemeSwitcher()
 
   function toggleTheme(isChecked: boolean) {
     setDarkMode(isChecked);
+    appSettings.setDarkMode(isChecked)
     switcher({ theme: isChecked ? themes.dark : themes.light });
   }
 
@@ -35,7 +35,6 @@ export const Settings = (): JSX.Element => {
     )
   }
 
-  console.log(`XXX settingsDrawerOpen ${settingsDrawerOpen}, darkMode: ${darkMode}`)
   return (
     <Drawer
       title={'Settings'}

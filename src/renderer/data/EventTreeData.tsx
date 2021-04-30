@@ -1,3 +1,5 @@
+import {DataNode} from "antd/lib/tree";
+
 /**
  * An event name
  */
@@ -122,5 +124,33 @@ export class EventUtil {
 
   static getParamKey(m: ParamInfoModel): string {
     return `${EventUtil.getEventKey(m.eventInfoModel)}${EventUtil.eventKeySeparator}${m.parameterName}`
+  }
+
+  static makeTreeData(allEvents: Array<EventsForSubsystem>): Array<DataNode> {
+    return allEvents.map(a => {
+        const node: DataNode = {
+          key: a.subsystem,
+          title: a.subsystem,
+          children: a.components.map(c => {
+              const child: DataNode = {
+                key: `${a.subsystem}${EventUtil.eventKeySeparator}${c.component}`,
+                title: c.component,
+                children: c.events.map(e => {
+                    const leaf: DataNode = {
+                      key: `${a.subsystem}${EventUtil.eventKeySeparator}${c.component}${EventUtil.eventKeySeparator}${e.event}`,
+                      title: e.event,
+                      isLeaf: true
+                    }
+                    return leaf
+                  }
+                )
+              }
+              return child
+            }
+          )
+        }
+        return node
+      }
+    )
   }
 }
