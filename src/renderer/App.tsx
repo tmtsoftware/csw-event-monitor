@@ -31,8 +31,7 @@ const App = (): JSX.Element => {
   const [systemEvents, setSystemEvents] = useState<Map<string, Array<SystemEvent>>>(new Map())
   const [paramInfoModels, setParamInfoModels] = useState<Array<ParamInfoModel>>([])
   const [expandedParamInfoModel, setExpandedParamInfoModel] = useState<ParamInfoModel | undefined>(undefined)
-  const [appSettings] = useState<EventMonitorSettings>(new EventMonitorSettings())
-  const [darkMode, setDarkMode] = useState<boolean>(true)
+  const [darkMode, setDarkMode] = useState<boolean>(EventMonitorSettings.getDarkMode())
   const [viewMode, setViewMode] = useState<Map<string, string>>(new Map())
   const [hasError, setHasError] = useState<string>("")
 
@@ -65,7 +64,6 @@ const App = (): JSX.Element => {
     setParamInfoModels,
     expandedParamInfoModel,
     setExpandedParamInfoModel,
-    appSettings,
     viewMode,
     setViewMode,
     darkMode,

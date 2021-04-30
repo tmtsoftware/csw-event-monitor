@@ -1,28 +1,40 @@
-import ElectronStore from "electron-store";
+import Cookies from 'universal-cookie';
 
 interface EventMonitorSettingsType {
   darkMode: boolean
 }
 
 export class EventMonitorSettings {
-  private store: ElectronStore<EventMonitorSettingsType>;
-  private defaultSettings: EventMonitorSettingsType = {
+  static cookies = new Cookies()
+  static key = "EventMonitorSettings"
+
+  static defaultSettings: EventMonitorSettingsType = {
     darkMode: true
   }
 
-  constructor() {
-    this.store = new ElectronStore<EventMonitorSettingsType>({defaults: this.defaultSettings})
+  static getSettings(): EventMonitorSettingsType {
+    const value = this.cookies.get(this.key)
+      console.log('XXX getSettings(): ', value)
+    return value ? value : this.defaultSettings
   }
 
-  setDarkMode(b: boolean) {
+  static setSettings(settings: EventMonitorSettingsType) {
+    this.cookies.set(this.key, settings)
+  }
+
+  static setDarkMode(b: boolean) {
     console.log(`XXX setDarkMode ${b}`)
-    this.store.set('darkMode', b)
+    const settings = this.getSettings()
+    settings.darkMode = b
+    this.setSettings(settings)
   }
 
-  getDarkMode(): boolean {
-    console.log(`XXX getDarkMode`)
-    if (this.store.has('darkMode'))
-      return this.store.get('darkMode')
-    return true
+  static getDarkMode(): boolean {
+    console.log(`XXX getDarkMode`, this.getSettings().darkMode)
+    return this.getSettings().darkMode
+  }
+
+  static revert() {
+    this.setSettings(this.defaultSettings)
   }
 }
