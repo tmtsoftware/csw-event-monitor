@@ -136,6 +136,7 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   function makeTable(): JSX.Element {
     return (
       <ParamValuesTable
+        paramInfoModel={paramInfoModel}
         cswParamKey={cswParamKey!}
         events={events}
       />

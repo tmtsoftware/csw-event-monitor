@@ -107,6 +107,7 @@ export interface EventInfoModel {
 export interface ParamInfoModel {
   eventInfoModel: EventInfoModel,
   parameterName: string,
+  units: string,
   description: string,
 }
 
@@ -152,5 +153,9 @@ export class EventUtil {
         return node
       }
     )
+  }
+
+  static stripHtml(s: string): string {
+    return s.replace(/(<([^>]+)>)/gi, "")
   }
 }

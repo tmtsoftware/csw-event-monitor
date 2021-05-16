@@ -3,6 +3,8 @@ import {Table} from "antd"
 import {ColumnsType} from "antd/es/table"
 import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {useAppContext} from "../AppContext";
+import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
+import {ParameterUtil} from "../data/ParameterUtil";
 
 interface ParamValue {
   time: string,
@@ -10,13 +12,15 @@ interface ParamValue {
 }
 
 type ParamValuesTableProps = {
+  paramInfoModel: ParamInfoModel | undefined
   cswParamKey: BaseKey<Key>
   events: Array<SystemEvent> | undefined
 }
 
-export const ParamValuesTable = ({cswParamKey, events}: ParamValuesTableProps): JSX.Element => {
+export const ParamValuesTable = ({paramInfoModel, cswParamKey, events}: ParamValuesTableProps): JSX.Element => {
 
   const {expandedParamInfoModel} = useAppContext()
+  const unitsStr = paramInfoModel?.units ? ` (${EventUtil.stripHtml(paramInfoModel.units)})` : ""
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<ParamValue> = [
@@ -26,22 +30,17 @@ export const ParamValuesTable = ({cswParamKey, events}: ParamValuesTableProps): 
         key: 'time'
       },
       {
-        title: 'Value',
+        title: `Value${unitsStr}`,
         dataIndex: 'value',
         key: 'value',
       },
     ];
 
-    //2021-04-19T14:19:23.584906572Z
-
     const dataSource: Array<ParamValue> = events ? events.slice().reverse().map((systemEvent) => {
-      const values = systemEvent.get(cswParamKey)?.values
-      // XXX TODO: Handle multiple values
-      const value = (values && values.length > 0) ? values[0] : "undefined"
       return {
         key: systemEvent.eventId,
         time: systemEvent.eventTime.substring(11, 23),
-        value: value,
+        value: ParameterUtil.formatValues(systemEvent, cswParamKey),
       };
     }) : []
 

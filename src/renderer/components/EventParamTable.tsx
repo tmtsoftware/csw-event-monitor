@@ -71,6 +71,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
           return {
             eventInfoModel: eventInfoModel,
             parameterName: p.name,
+            units: p.units,
             description: p.description
           }
         })

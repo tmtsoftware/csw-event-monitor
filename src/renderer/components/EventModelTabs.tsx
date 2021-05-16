@@ -36,7 +36,6 @@ export const EventModelTabs = (): JSX.Element => {
           eventSubscription.subscription.cancel()
           const remainingSubscriptions = subscriptions.filter(s => s != eventSubscription)
           setSubscriptions(remainingSubscriptions)
-          console.log(`XXX remainingSubscriptions = ${remainingSubscriptions.length}`)
           if (remainingSubscriptions.length == 0)
             setEventTreeDrawerOpen(true)
         }

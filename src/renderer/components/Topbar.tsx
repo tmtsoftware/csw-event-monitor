@@ -14,7 +14,6 @@ export const Topbar = (): JSX.Element => {
   }
 
   function showSettings() {
-    console.log(`XXX showSettings ${settingsDrawerOpen}`)
     if (!settingsDrawerOpen)
       setSettingsDrawerOpen(true)
   }

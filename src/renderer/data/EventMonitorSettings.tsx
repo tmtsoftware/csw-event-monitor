@@ -23,14 +23,12 @@ export class EventMonitorSettings {
   }
 
   static setDarkMode(b: boolean) {
-    console.log(`XXX setDarkMode ${b}`)
     const settings = this.getSettings()
     settings.darkMode = b
     this.setSettings(settings)
   }
 
   static getDarkMode(): boolean {
-    console.log(`XXX getDarkMode`, this.getSettings().darkMode)
     return this.getSettings().darkMode
   }
 
