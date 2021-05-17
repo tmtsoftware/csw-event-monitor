@@ -87,7 +87,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
           <Text>Subsystem: {eventInfoModel.subsystem}</Text>
           <Text>Component: {eventInfoModel.component}</Text>
           <Text>Event: {eventInfoModel.eventModel.name}</Text>
-          <Text>{eventInfoModel.eventModel.maybeMaxRate ? `Max Rate: ${eventInfoModel.eventModel.maybeMaxRate}` : ""}</Text>
+          <Text>{eventInfoModel.eventModel.maybeMaxRate ? `Max Rate: ${eventInfoModel.eventModel.maybeMaxRate} Hz` : ""}</Text>
         </Space>
         <Text strong>Parameters</Text>
       </Space>
