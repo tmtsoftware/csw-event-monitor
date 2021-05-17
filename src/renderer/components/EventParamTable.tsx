@@ -4,6 +4,7 @@ import {ColumnsType} from "antd/es/table"
 import {Key} from "antd/lib/table/interface";
 import {EventInfoModel, ParamInfoModel} from "../data/EventTreeData";
 import {useAppContext} from "../AppContext";
+import {ParameterUtil} from "../data/ParameterUtil";
 
 const {Text} = Typography;
 
@@ -57,8 +58,8 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
 
     const dataSource: Array<EventParameter> = eventInfoModel ? eventInfoModel.eventModel.parameterList.map((param) => {
       return {
-        key: param.name,
-        name: param.name,
+        key: ParameterUtil.fixParamName(param.name),
+        name: ParameterUtil.fixParamName(param.name),
         typeStr: param.typeStr,
         units: param.units,
         description: param.description,
@@ -86,6 +87,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
           <Text>Subsystem: {eventInfoModel.subsystem}</Text>
           <Text>Component: {eventInfoModel.component}</Text>
           <Text>Event: {eventInfoModel.eventModel.name}</Text>
+          <Text>{eventInfoModel.eventModel.maybeMaxRate ? `Max Rate: ${eventInfoModel.eventModel.maybeMaxRate}` : ""}</Text>
         </Space>
         <Text strong>Parameters</Text>
       </Space>

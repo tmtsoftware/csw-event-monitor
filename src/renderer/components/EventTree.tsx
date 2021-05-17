@@ -69,7 +69,8 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
   }
 
   function getEventModel(subsystem: string, component: string, event: string) {
-    fetch(`${IcdServerInfo.baseUri}/eventInfo/${subsystem}/${component}/${event}`)
+    const encodedEvent = encodeURIComponent(event)
+    fetch(`${IcdServerInfo.baseUri}/eventInfo/${subsystem}/${component}/${encodedEvent}`)
       .then((response) => response.json())
       .then((data) => {
         const eventModel: EventModel = data

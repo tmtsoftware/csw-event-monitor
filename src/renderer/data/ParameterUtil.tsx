@@ -17,7 +17,7 @@ export class ParameterUtil {
   // Get the CSW Key
   static getCswArrayKey(parameterModel: ParameterModel, isMatrix: boolean): BaseKey<Key> | undefined {
     const maybeName = parameterModel?.name
-    const name: string = maybeName ? maybeName : "undefined"
+    const name: string = maybeName ? ParameterUtil.fixParamName(maybeName) : "undefined"
     const maybeType = parameterModel?.maybeArrayType
 
     if (maybeType) {
@@ -42,12 +42,13 @@ export class ParameterUtil {
 
   // Get the CSW Key
   static getCswKey(paramInfoModel: ParamInfoModel): BaseKey<Key> | undefined {
+    const parameterName = ParameterUtil.fixParamName(paramInfoModel.parameterName)
     const parameterModels = paramInfoModel?.eventInfoModel.eventModel.parameterList
-      .filter((p) => p.name == paramInfoModel.parameterName)
+      .filter((p) => ParameterUtil.fixParamName(p.name) == parameterName)
     const parameterModel = (parameterModels && parameterModels.length > 0) ?
       parameterModels[0] : undefined
     const maybeName = parameterModel?.name
-    const name: string = maybeName ? maybeName : "undefined"
+    const name: string = maybeName ? ParameterUtil.fixParamName(maybeName) : "undefined"
     const maybeType = parameterModel?.maybeType
     const maybeEnum = parameterModel?.maybeEnum
 
@@ -174,4 +175,11 @@ export class ParameterUtil {
     return 'undefined'
   }
 
+  // XXX Replace illegal chars in param names (see also ParamsetGenerator.scala in csw-generator)
+  static fixParamName(paramName: string): string {
+    return paramName
+      .replace('/', '|')
+      .replace('[', '(')
+      .replace(']', ')')
+  }
 }
