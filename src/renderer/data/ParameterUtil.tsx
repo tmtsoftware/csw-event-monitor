@@ -9,8 +9,9 @@ import {
   Key, longArrayKey,
   longKey, longMatrixKey, shortArrayKey,
   shortKey, shortMatrixKey,
-  stringKey, SystemEvent
+  stringKey, SystemEvent, utcTimeKey
 } from "@tmtsoftware/esw-ts";
+import {choiceKey, taiTimeKey} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/Key";
 
 export class ParameterUtil {
 
@@ -92,6 +93,10 @@ export class ParameterUtil {
           return floatKey(name)
         case 'double':
           return doubleKey(name)
+        case 'taiDate':
+          return taiTimeKey(name)
+        case 'utcDate':
+          return utcTimeKey(name)
         case 'array': {
           if (parameterModel?.maybeDimensions) {
             switch (parameterModel.maybeDimensions.length) {
@@ -105,7 +110,8 @@ export class ParameterUtil {
         // XXX TODO add other types
       }
     } else if (maybeEnum) {
-      // XXX TODO add enums
+      // TODO FIXME: esw-ts returns ChoiceKeyFactory here
+      // return choiceKey(name, maybeEnum)
     }
     return undefined
   }
@@ -159,8 +165,8 @@ export class ParameterUtil {
         case 'FloatArrayKey': return this.formatFloatArrays(values)
         case 'DoubleArrayKey': return this.formatFloatArrays(values)
         case 'BooleanKey': return values.join(', ')
-        case 'UTCTimeKey':
-        case 'TAITimeKey':
+        case 'UTCTimeKey': return values.join(', ')
+        case 'TAITimeKey': return values.join(', ')
         case 'RaDecKey':
         case 'EqCoordKey':
         case 'SolarSystemCoordKey':
