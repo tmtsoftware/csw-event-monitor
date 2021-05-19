@@ -1,6 +1,5 @@
 import {ParameterModel, ParamInfoModel} from "./EventTreeData";
 import {
-  BaseKey,
   booleanKey, byteArrayKey,
   byteKey, byteMatrixKey, doubleArrayKey,
   doubleKey, doubleMatrixKey, floatArrayKey,
@@ -12,11 +11,12 @@ import {
   stringKey, SystemEvent, utcTimeKey
 } from "@tmtsoftware/esw-ts";
 import {choiceKey, taiTimeKey} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/Key";
+import {KeyType} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/ParameterSetType";
 
 export class ParameterUtil {
 
   // Get the CSW Key
-  static getCswArrayKey(parameterModel: ParameterModel, isMatrix: boolean): BaseKey<Key> | undefined {
+  static getCswArrayKey(parameterModel: ParameterModel, isMatrix: boolean): KeyType<Key> | undefined {
     const maybeName = parameterModel?.name
     const name: string = maybeName ? ParameterUtil.fixParamName(maybeName) : "undefined"
     const maybeType = parameterModel?.maybeArrayType
@@ -42,7 +42,7 @@ export class ParameterUtil {
   }
 
   // Get the CSW Key
-  static getCswKey(paramInfoModel: ParamInfoModel): BaseKey<Key> | undefined {
+  static getCswKey(paramInfoModel: ParamInfoModel): KeyType<Key> | undefined {
     const parameterName = ParameterUtil.fixParamName(paramInfoModel.parameterName)
     const parameterModels = paramInfoModel?.eventInfoModel.eventModel.parameterList
       .filter((p) => ParameterUtil.fixParamName(p.name) == parameterName)
@@ -110,8 +110,7 @@ export class ParameterUtil {
         // XXX TODO add other types
       }
     } else if (maybeEnum) {
-      // TODO FIXME: esw-ts returns ChoiceKeyFactory here
-      // return choiceKey(name, maybeEnum)
+      return choiceKey(name, maybeEnum)
     }
     return undefined
   }
@@ -137,9 +136,9 @@ export class ParameterUtil {
   }
 
   // Format the parameter values for the given key for display
-  static formatValues(systemEvent: SystemEvent, cswParamKey: BaseKey<Key>): string {
-    console.log(`XXX keyTag = ${cswParamKey.keyTag}, keyName = ${cswParamKey.keyName}`)
+  static formatValues(systemEvent: SystemEvent, cswParamKey: KeyType<Key>): string {
     const values = systemEvent.get(cswParamKey)?.values
+
     if (values && values.length > 0) {
       switch (cswParamKey.keyTag) {
         case 'IntKey': return values.join(', ')
@@ -151,7 +150,7 @@ export class ParameterUtil {
         case 'StringKey': return values.join(', ')
         case 'CharKey': return values.join(', ')
         case 'StructKey':
-        case 'ChoiceKey': return values.join(', ') // ???
+        case 'ChoiceKey': return values.join(', ')
         case 'IntMatrixKey': return this.formatMatrixes(values)
         case 'ByteMatrixKey': return this.formatMatrixes(values)
         case 'LongMatrixKey': return this.formatMatrixes(values)

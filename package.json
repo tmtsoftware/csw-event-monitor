@@ -20,7 +20,7 @@
   "dependencies": {
     "@ant-design/charts": "^1.1.2",
     "@ant-design/icons": "^4.6.2",
-    "@tmtsoftware/esw-ts": "git+https://github.com/tmtsoftware/esw-ts#2434d6913ec7e1c0bb5657edf4dc768701f992ad",
+    "@tmtsoftware/esw-ts": "git+https://github.com/tmtsoftware/esw-ts#5d078a222ebdac405ded360444d78c79afa49ed2",
     "@types/node": "^14.14.41",
     "antd": "^4.13.1",
     "electron-snowpack": "^0.10.0",

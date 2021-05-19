@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import {ParamValuesTable} from "./ParamValuesTable";
 import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
-import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import {Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import {KeyType} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/ParameterSetType";
 import {Menu, Typography} from "antd";
 import {
   BarChartOutlined, CloseOutlined,
@@ -19,7 +20,7 @@ const {Text} = Typography;
 
 type ParamValuesWindowProps = {
   paramInfoModel: ParamInfoModel | undefined
-  cswParamKey: BaseKey<Key> | undefined
+  cswParamKey: KeyType<Key> | undefined
   events: Array<SystemEvent> | undefined
 }
 

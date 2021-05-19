@@ -1,10 +1,11 @@
 import React from 'react'
-import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
-import {useAppContext} from "../AppContext";
+import {Key, SystemEvent} from "@tmtsoftware/esw-ts";
+// import {useAppContext} from "../AppContext";
 import {Column} from "@ant-design/charts";
+import {KeyType} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/ParameterSetType";
 
 type ParamValuesBarChartProps = {
-  cswParamKey: BaseKey<Key>
+  cswParamKey: KeyType<Key>
   events: Array<SystemEvent> | undefined
 }
 
