@@ -1,8 +1,7 @@
 import React from 'react'
 import {Table} from "antd"
 import {ColumnsType} from "antd/es/table"
-import {Key, SystemEvent} from "@tmtsoftware/esw-ts";
-import {KeyType} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/ParameterSetType";
+import {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {useAppContext} from "../AppContext";
 import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
 import {ParameterUtil} from "../data/ParameterUtil";
@@ -14,7 +13,7 @@ interface ParamValue {
 
 type ParamValuesTableProps = {
   paramInfoModel: ParamInfoModel | undefined
-  cswParamKey: KeyType<Key>
+  cswParamKey: BaseKeyType<Key>
   events: Array<SystemEvent> | undefined
 }
 

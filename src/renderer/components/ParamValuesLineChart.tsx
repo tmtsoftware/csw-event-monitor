@@ -1,11 +1,10 @@
 import React from 'react'
-import {Key, SystemEvent} from "@tmtsoftware/esw-ts";
-import {KeyType} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/ParameterSetType";
+import {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {useAppContext} from "../AppContext";
 import {Line} from "@ant-design/charts";
 
 type ParamValuesLineChartProps = {
-  cswParamKey: KeyType<Key>
+  cswParamKey: BaseKeyType<Key>
   events: Array<SystemEvent> | undefined
 }
 

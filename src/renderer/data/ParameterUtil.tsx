@@ -1,22 +1,21 @@
 import {ParameterModel, ParamInfoModel} from "./EventTreeData";
 import {
+  BaseKeyType,
   booleanKey, byteArrayKey,
-  byteKey, byteMatrixKey, doubleArrayKey,
+  byteKey, byteMatrixKey, choiceKey, doubleArrayKey,
   doubleKey, doubleMatrixKey, floatArrayKey,
   floatKey, floatMatrixKey, intArrayKey,
   intKey, intMatrixKey,
   Key, longArrayKey,
   longKey, longMatrixKey, shortArrayKey,
   shortKey, shortMatrixKey,
-  stringKey, SystemEvent, utcTimeKey
+  stringKey, SystemEvent, taiTimeKey, utcTimeKey
 } from "@tmtsoftware/esw-ts";
-import {choiceKey, taiTimeKey} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/Key";
-import {KeyType} from "@tmtsoftware/esw-ts/lib/dist/src/models/params/ParameterSetType";
 
 export class ParameterUtil {
 
   // Get the CSW Key
-  static getCswArrayKey(parameterModel: ParameterModel, isMatrix: boolean): KeyType<Key> | undefined {
+  static getCswArrayKey(parameterModel: ParameterModel, isMatrix: boolean): BaseKeyType<Key> | undefined {
     const maybeName = parameterModel?.name
     const name: string = maybeName ? ParameterUtil.fixParamName(maybeName) : "undefined"
     const maybeType = parameterModel?.maybeArrayType
@@ -42,7 +41,7 @@ export class ParameterUtil {
   }
 
   // Get the CSW Key
-  static getCswKey(paramInfoModel: ParamInfoModel): KeyType<Key> | undefined {
+  static getCswKey(paramInfoModel: ParamInfoModel): BaseKeyType<Key> | undefined {
     const parameterName = ParameterUtil.fixParamName(paramInfoModel.parameterName)
     const parameterModels = paramInfoModel?.eventInfoModel.eventModel.parameterList
       .filter((p) => ParameterUtil.fixParamName(p.name) == parameterName)
@@ -136,7 +135,7 @@ export class ParameterUtil {
   }
 
   // Format the parameter values for the given key for display
-  static formatValues(systemEvent: SystemEvent, cswParamKey: KeyType<Key>): string {
+  static formatValues(systemEvent: SystemEvent, cswParamKey: BaseKeyType<Key>): string {
     const values = systemEvent.get(cswParamKey)?.values
 
     if (values && values.length > 0) {
