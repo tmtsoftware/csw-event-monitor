@@ -8,7 +8,7 @@ This version runs outside the browser as an [Electron app](https://www.electronj
 * The latest version of [Node.js](https://nodejs.org/en/download/package-manager/) must be installed.
 * Run `csw-services start` (from [csw](https://github.com/tmtsoftware/csw))
 * Run `esw-services start` (from [esw](https://github.com/tmtsoftware/esw))
-* icdwebserver (from [icd](https://github.com/tmtsoftware/icd) , branch: 'add-http-event-api' )
+* Run `icdwebserver` (from [icd](https://github.com/tmtsoftware/icd))
 
 ## Run the App in Local Environment
 
