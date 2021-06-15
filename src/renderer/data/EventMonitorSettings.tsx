@@ -9,7 +9,7 @@ export class EventMonitorSettings {
   static key = "EventMonitorSettings"
 
   static defaultSettings: EventMonitorSettingsType = {
-    darkMode: true
+    darkMode: false
   }
 
   static getSettings(): EventMonitorSettingsType {
