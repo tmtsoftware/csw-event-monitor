@@ -14,7 +14,6 @@ export class EventMonitorSettings {
 
   static getSettings(): EventMonitorSettingsType {
     const value = this.cookies.get(this.key)
-      console.log('XXX getSettings(): ', value)
     return value ? value : this.defaultSettings
   }
 

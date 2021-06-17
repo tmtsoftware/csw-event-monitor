@@ -84,7 +84,6 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
   // Called when a SystemEvent is received from the event service
   const onEventCallback = (event: Event) => {
     const systemEvent = event as SystemEvent
-    console.log('XXX received event: ', systemEvent)
     const sep = EventUtil.eventKeySeparator
     const key = `${systemEvent.source.subsystem.toString()}${sep}${systemEvent.source.componentName}${sep}${systemEvent.eventName.name}`
     const map = new Map(receivedSystemEvents)
