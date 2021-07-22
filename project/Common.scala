@@ -39,7 +39,6 @@ object Common extends AutoPlugin {
       Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
     ),
     resolvers += "jitpack" at "https://jitpack.io",
-//    resolvers += "bintray" at "https://jcenter.bintray.com",
     version := "0.0.1",
     parallelExecution in Test := false,
     autoCompilerPlugins := true,
