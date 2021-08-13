@@ -3,7 +3,7 @@
 import {expect} from 'chai'
 import {Angle} from "../../src/renderer/data/Angle"
 
-describe("Basic parsing of radec as strings", () => {
+describe("Basic parsing of ra,dec as strings", () => {
 
   it("should allow basic parsing using Angle ", () => {
     expect([Angle.parseRaFromString("20 54 05.689"), Angle.parseDeFromString("+37 01 17.38")])

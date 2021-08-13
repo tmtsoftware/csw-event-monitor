@@ -9,7 +9,7 @@ import {
   floatKey, floatMatrixKey, intArrayKey,
   intKey, intMatrixKey,
   Key, longArrayKey,
-  longKey, longMatrixKey, MinorPlanetCoord, minorPlanetCoordKey, RaDec, raDecKey, shortArrayKey,
+  longKey, longMatrixKey, MinorPlanetCoord, minorPlanetCoordKey, shortArrayKey,
   shortKey, shortMatrixKey, SolarSystemCoord, solarSystemCoordKey,
   stringKey, SystemEvent, taiTimeKey, utcTimeKey
 } from "@tmtsoftware/esw-ts";
@@ -83,8 +83,6 @@ export class ParameterUtil {
             return this.getCswArrayKey(parameterModel, true)
           return this.getCswArrayKey(parameterModel, false)
         }
-        case 'raDec':
-          return raDecKey(name)
         case 'eqCoord':
           return eqCoordKey(name)
         case 'solarSystemCoord':
@@ -139,6 +137,7 @@ export class ParameterUtil {
 
   // alt: Angle, az: Angle
   static formatAltAzCoord(coord: AltAzCoord): string {
+    console.log(`XXX formatAltAzCoord `, coord)
     const alt = new Angle(coord.alt).toDegree().toFixed(3)
     const az = new Angle(coord.az).toDegree().toFixed(3)
     return `tag: ${coord.tag}, alt: ${alt}${Angle.DEGREE_SIGN}, az: ${az}${Angle.DEGREE_SIGN}`
@@ -198,14 +197,6 @@ export class ParameterUtil {
         default: return `[unknown Coord type ${a._type}]`
       }
     }).join(', ')
-  }
-
-  static formatRaDec(raDec: RaDec): string {
-    return `RA: ${raDec.ra.toFixed(3)}, dec: ${raDec.dec.toFixed(3)}`
-  }
-
-  static formatRaDecs(ar: Array<any>): string {
-    return ar.map(a => `[${this.formatRaDec(a)}]`).join(', ')
   }
 
   // Format the parameter values for the given key for display
@@ -275,8 +266,6 @@ export class ParameterUtil {
           return this.formatAltAzCoords(values)
         case 'CoordKey':
           return this.formatCoords(values)
-        case 'RaDecKey':
-          return this.formatRaDecs(values)
       }
       return 'unsupported'
     }
