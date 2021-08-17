@@ -1,4 +1,4 @@
-import {ParameterModel, ParamInfoModel} from "./EventTreeData";
+import type {ParameterModel, ParamInfoModel} from "./EventTreeData";
 import {
   Angle,
   AltAzCoord,

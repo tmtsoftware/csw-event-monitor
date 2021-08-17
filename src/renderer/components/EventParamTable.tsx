@@ -1,8 +1,8 @@
 import React from 'react'
 import {Space, Table, Typography} from "antd"
-import {ColumnsType} from "antd/es/table"
-import {Key} from "antd/lib/table/interface";
-import {EventInfoModel, ParamInfoModel} from "../data/EventTreeData";
+import type {ColumnsType} from "antd/es/table"
+import type {Key} from "antd/lib/table/interface";
+import type {EventInfoModel, ParamInfoModel} from "../data/EventTreeData";
 import {useAppContext} from "../AppContext";
 import {ParameterUtil} from "../data/ParameterUtil";
 

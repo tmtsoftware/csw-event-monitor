@@ -1,5 +1,5 @@
 import React from 'react'
-import {AltAzCoord, BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import type {AltAzCoord, BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {Line} from "@ant-design/charts";
 
 type ParamValuesLineChartProps = {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Table} from "antd"
-import {ColumnsType} from "antd/es/table"
-import {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import type {ColumnsType} from "antd/es/table"
+import type {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {useAppContext} from "../AppContext";
 import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
 import {ParameterUtil} from "../data/ParameterUtil";

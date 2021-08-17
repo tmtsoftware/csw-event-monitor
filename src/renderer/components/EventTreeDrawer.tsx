@@ -2,7 +2,7 @@ import React from 'react'
 import {useAppContext} from "../AppContext"
 import {EventTree} from "./EventTree";
 import {Drawer} from "antd"
-import {DataNode} from "antd/lib/tree";
+import type {DataNode} from "antd/lib/tree";
 
 declare type EventType = React.KeyboardEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement | HTMLButtonElement>;
 

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {ParamValuesTable} from "./ParamValuesTable";
 import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
-import {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import type {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {Menu, Typography} from "antd";
 import {
   BarChartOutlined, CloseOutlined,
@@ -10,7 +10,7 @@ import {
   ShrinkOutlined,
   TableOutlined
 } from "@ant-design/icons";
-import {MenuInfo} from 'rc-menu/lib/interface';
+import type {MenuInfo} from 'rc-menu/lib/interface';
 import {useAppContext} from "../AppContext";
 import {ParamValuesLineChart} from "./ParamValuesLineChart";
 import {ParamValuesBarChart} from "./ParamValuesBarChart";

@@ -1,5 +1,5 @@
 import React from 'react'
-import {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import type {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 // import {useAppContext} from "../AppContext";
 import {Column} from "@ant-design/charts";
 

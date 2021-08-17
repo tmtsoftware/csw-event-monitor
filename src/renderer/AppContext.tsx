@@ -1,7 +1,7 @@
 import React, {createContext, useContext} from "react"
-import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
-import {EventSubscription} from "./data/EventSubscription";
-import {EventInfoModel, ParamInfoModel} from "./data/EventTreeData";
+import type {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
+import type {EventSubscription} from "./data/EventSubscription";
+import type {EventInfoModel, ParamInfoModel} from "./data/EventTreeData";
 
 // Application context: Holds values and functions that are shared by different components in the app
 export type AppContextState = {
