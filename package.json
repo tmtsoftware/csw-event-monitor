@@ -19,9 +19,10 @@
     "release": "run-s clean build dist"
   },
   "dependencies": {
-    "@ant-design/charts": "^1.2.7",
+    "@ant-design/charts": "^1.2.8",
     "@ant-design/icons": "^4.6.3",
-    "@tmtsoftware/esw-ts": "git+https://github.com/tmtsoftware/esw-ts#48302c8728235eff46f79cb0989672cededa8a4d",
+    "@tmtsoftware/esw-ts": "git+https://github.com/tmtsoftware/esw-ts#0527f7e7233431ac2bb9a0b5f4bef63d4848d9ea",
+    "@types/node": "^16.6.1",
     "antd": "^4.16.12",
     "electron-snowpack": "^0.12.0",
     "react": "^17.0.2",
@@ -34,7 +35,6 @@
     "@snowpack/plugin-react-refresh": "^2.5.0",
     "@snowpack/web-test-runner-plugin": "^0.2.2",
     "@testing-library/react": "^12.0.0",
-    "@types/node": "^16.6.1",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
     "@types/react": "^17.0.18",

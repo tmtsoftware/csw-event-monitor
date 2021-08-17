@@ -18,7 +18,8 @@
     "isolatedModules": true,
     "jsx": "react",
     "importsNotUsedAsValues": "error",
-    "noEmit": true
+    "noEmit": true,
+    "isolatedModules": true
   },
   "extends": "electron-snowpack/config/tsconfig.json",
   "include": ["src", "types"],
