@@ -1,4 +1,4 @@
-import {DataNode} from "antd/lib/tree";
+import type {DataNode} from "antd/lib/tree";
 
 /**
  * An event name

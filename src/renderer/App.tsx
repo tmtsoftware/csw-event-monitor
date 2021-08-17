@@ -6,11 +6,11 @@ import {Topbar} from './components/Topbar'
 import {Layout, Typography} from "antd"
 import {EventTreeDrawer} from "./components/EventTreeDrawer";
 import {MainWindow} from "./components/MainWindow";
-import {DataNode} from "antd/lib/tree";
+import type {DataNode} from "antd/lib/tree";
 import {EventInfoModel, EventsForSubsystem, EventUtil, IcdServerInfo, ParamInfoModel} from "./data/EventTreeData";
 import {Settings} from "./components/Settings";
 import {EventService, SystemEvent} from "@tmtsoftware/esw-ts";
-import {EventSubscription} from "./data/EventSubscription";
+import type {EventSubscription} from "./data/EventSubscription";
 import {appContext, AppContextState} from "./AppContext";
 import {EventMonitorSettings} from "./data/EventMonitorSettings";
 
