@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
-import {ParamValuesTable} from "./ParamValuesTable";
-import {ParamInfoModel} from "../data/EventTreeData";
-import {BaseKey, Key, SystemEvent} from "@tmtsoftware/esw-ts";
-import {Button, Menu, Typography} from "antd";
+import React, { useState } from 'react'
+import { ParamValuesTable } from './ParamValuesTable'
+import { ParamInfoModel } from '../data/EventTreeData'
+import { BaseKey, Key, SystemEvent } from '@tmtsoftware/esw-ts'
+import { Button, Menu, Typography } from 'antd'
 import {
   BarChartOutlined,
   CloseOutlined,
@@ -10,12 +10,12 @@ import {
   LineChartOutlined,
   ShrinkOutlined,
   TableOutlined
-} from "@ant-design/icons";
-import {MenuInfo} from 'rc-menu/lib/interface';
-import {useAppContext} from "../AppContext";
-import {ParamValuesLineChart} from "./ParamValuesLineChart";
+} from '@ant-design/icons'
+import { MenuInfo } from 'rc-menu/lib/interface'
+import { useAppContext } from '../AppContext'
+import { ParamValuesLineChart } from './ParamValuesLineChart'
 
-const {Text} = Typography;
+const { Text } = Typography
 
 type ParamValuesWindowProps = {
   paramInfoModel: ParamInfoModel | undefined
@@ -23,10 +23,14 @@ type ParamValuesWindowProps = {
   events: Array<SystemEvent> | undefined
 }
 
-export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamValuesWindowProps): JSX.Element => {
+export const ParamValuesWindow = ({
+  paramInfoModel,
+  cswParamKey,
+  events
+}: ParamValuesWindowProps): JSX.Element => {
   const [viewMode, setViewMode] = useState<string>('table')
   const [descriptionVisible, setDescriptionVisible] = useState<boolean>(true)
-  const {expandedParamInfoModel, setExpandedParamInfoModel} = useAppContext()
+  const { expandedParamInfoModel, setExpandedParamInfoModel } = useAppContext()
 
   function menuItemSelected(info: MenuInfo) {
     switch (info.key) {
@@ -49,92 +53,75 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   }
 
   function makeTitle(): JSX.Element {
-    return (
-      <Text strong>
-        {paramInfoModel!.parameterName}
-      </Text>
-    )
+    return <Text strong>{paramInfoModel!.parameterName}</Text>
   }
 
   function makeTooltip() {
-    return `Subsystem: ${paramInfoModel!.eventInfoModel.subsystem}\n`
-      + `Component: ${paramInfoModel!.eventInfoModel.component}\n`
-      + `Event: ${paramInfoModel!.parameterName}`
+    return (
+      `Subsystem: ${paramInfoModel!.eventInfoModel.subsystem}\n` +
+      `Component: ${paramInfoModel!.eventInfoModel.component}\n` +
+      `Event: ${paramInfoModel!.parameterName}`
+    )
   }
 
   function makeMenu(): JSX.Element {
     return (
       <Menu
         defaultSelectedKeys={['1']}
-        mode="horizontal"
-        theme="dark"
+        mode='horizontal'
+        theme='dark'
         selectedKeys={[viewMode]}
-        onClick={menuItemSelected}
-      >
-        <Menu.Item
-          key="title"
-          disabled={true}
-          title={makeTooltip()}
-        >
+        onClick={menuItemSelected}>
+        <Menu.Item key='title' disabled={true} title={makeTooltip()}>
           {makeTitle()}
         </Menu.Item>
-        {expandedParamInfoModel ?
+        {expandedParamInfoModel ? (
           <Menu.Item
-            key="collapse"
-            icon={<ShrinkOutlined/>}
+            key='collapse'
+            icon={<ShrinkOutlined />}
             title={'Collapse this window'}
-            style={{float: 'right'}}
+            style={{ float: 'right' }}
           />
-          :
+        ) : (
           <Menu.Item
-            key="expand"
-            icon={<ExpandOutlined/>}
+            key='expand'
+            icon={<ExpandOutlined />}
             title={'Expand this window'}
-            style={{float: 'right'}}
+            style={{ float: 'right' }}
           />
-        }
+        )}
         <Menu.Item
-          key="barChart"
-          icon={<BarChartOutlined/>}
+          key='barChart'
+          icon={<BarChartOutlined />}
           title={'Display data in a bar chart'}
-          style={{float: 'right'}}
+          style={{ float: 'right' }}
         />
         <Menu.Item
-          key="lineChart"
-          icon={<LineChartOutlined/>}
+          key='lineChart'
+          icon={<LineChartOutlined />}
           title={'Display data in a line chart'}
-          style={{float: 'right'}}
+          style={{ float: 'right' }}
         />
         <Menu.Item
-          key="table"
-          icon={<TableOutlined/>}
+          key='table'
+          icon={<TableOutlined />}
           title={'Display data in a table'}
-          style={{float: 'right'}}
+          style={{ float: 'right' }}
         />
       </Menu>
     )
   }
 
   function makeTable(): JSX.Element {
-    return (
-      <ParamValuesTable
-        cswParamKey={cswParamKey!}
-        events={events}
-      />
-    )
+    return <ParamValuesTable cswParamKey={cswParamKey!} events={events} />
   }
 
   function makeLineChart(): JSX.Element {
-    return (
-      <ParamValuesLineChart
-        cswParamKey={cswParamKey!}
-        events={events}
-      />
-    )
+    return <ParamValuesLineChart cswParamKey={cswParamKey!} events={events} />
   }
 
   function makeBarChart(): JSX.Element {
-    return (<div>BarChart</div>)
+    return <div>BarChart</div>
   }
 
   function makeParamsValueDisplay(): JSX.Element {
@@ -155,30 +142,39 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   function makeDescription(): JSX.Element {
     if (descriptionVisible) {
       return (
-        <div style={{position: 'relative', paddingLeft: '20px', paddingTop: '5px'}}>
-          <div dangerouslySetInnerHTML={{__html: paramInfoModel!.description}}/>
+        <div
+          style={{
+            position: 'relative',
+            paddingLeft: '20px',
+            paddingTop: '5px'
+          }}>
+          <div
+            dangerouslySetInnerHTML={{ __html: paramInfoModel!.description }}
+          />
           <Button
-            style={{position: 'absolute', right: '5px', top: '5px'}}
+            style={{ position: 'absolute', right: '5px', top: '5px' }}
             key='hideDescription'
             type='ghost'
-            size={"small"}
-            icon={<CloseOutlined/>}
+            size={'small'}
+            icon={<CloseOutlined />}
             onClick={hideDescription}
           />
         </div>
       )
-    } else return <div/>
+    } else return <div />
   }
 
   return (
     <div>
-      {(paramInfoModel && cswParamKey) ?
+      {paramInfoModel && cswParamKey ? (
         <div>
           {makeMenu()}
           {makeDescription()}
           {makeParamsValueDisplay()}
         </div>
-        : <div/>}
+      ) : (
+        <div />
+      )}
     </div>
   )
 }

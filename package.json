@@ -1,44 +1,48 @@
 {
   "name": "csw-event-monitor",
   "author": "TMT",
-  "version": "0.1.0",
-  "private": false,
-  "license": "Apache-2.0",
-  "scripts": {
-    "build": "electron-snowpack build",
-    "clean": "electron-snowpack clean",
-    "dev": "electron-snowpack dev",
-    "dist": "electron-builder",
-    "dist:dir": "npm run dist --dir -c.compression=store -c.mac.identity=null",
-    "openMac": "open dist/mac/${npm_package_name}.app",
-    "openLinux": "dist/linux-unpacked/${npm_package_name}",
-    "tryMac": "run-s clean build dist:dir openMac",
-    "tryLinux": "run-s clean build dist:dir openLinux",
-    "postinstall": "electron-builder install-app-deps",
-    "release": "run-s clean build dist"
-  },
+  "version": "0.1.0-M1",
+  "license": "Apache License, Version 2.0",
+  "private": true,
   "dependencies": {
-    "@ant-design/icons": "^4.6.2",
-    "@tmtsoftware/esw-ts": "^0.1.0",
-    "antd": "4.14.0",
-    "electron-snowpack": "*",
+    "@tmtsoftware/esw-ts": "git+https://github.com/tmtsoftware/esw-ts#2a03d094a7439b4f21bd262c10f13d9f2ef76033",
+    "antd": "4.13.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "wildcard-match": "^5.1.0"
   },
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build",
+    "clean": "rm -rf dist && mkdir dist",
+    "prebuild": "npm-run-all --parallel clean fix",
+    "test": "jest",
+    "test:coverage": "jest --coverage ",
+    "fix": "npm-run-all --parallel clean fix:eslint fix:prettier",
+    "fix:eslint": "eslint --fix --config .eslintrc.js './**/*.{ts,tsx}'",
+    "fix:prettier": "prettier --write --config ./.prettierrc './**/*.{ts,tsx}' "
+  },
+  "browserslist": [
+    "last 1 chrome version"
+  ],
   "devDependencies": {
-    "@snowpack/plugin-react-refresh": "^2.4.1",
+    "@snowpack/plugin-typescript": "^1.2.1",
     "@testing-library/react": "^11.2.5",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2",
-    "@types/snowpack-env": "^2.3.3",
-    "electron": "^12.0.1",
-    "electron-builder": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^3.10.1",
     "npm-run-all": "^4.1.5",
-    "snowpack": "^3.0.13",
+    "prettier": "^2.2.1",
+    "snowpack": "3.0.13",
     "typescript": "^4.2.3"
-  },
-  "build": {
-    "extends": "electron-snowpack/config/electron-builder.js"
   }
 }

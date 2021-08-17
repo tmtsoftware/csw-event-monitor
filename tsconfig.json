@@ -5,9 +5,12 @@
     "module": "ESNEXT",
     "allowJs": true,
     "checkJs": true,
+    "outDir": "./dist",
+    "rootDir": ".",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
+    "baseUrl": "./",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "noUnusedParameters": true,
@@ -19,7 +22,6 @@
     "jsx": "react",
     "noEmit": true
   },
-  "extends": "electron-snowpack/config/tsconfig.json",
   "include": ["src", "types"],
   "exclude": ["node_modules", "dist"]
 }

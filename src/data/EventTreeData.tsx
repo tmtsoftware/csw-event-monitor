@@ -21,7 +21,6 @@ export interface EventsForSubsystem {
   components: Array<EventsForComponent>
 }
 
-
 /**
  * Defines the properties of a parameter
  *
@@ -46,29 +45,28 @@ export interface EventsForSubsystem {
  * @param parameterList   If type or array type is "struct", this should be a list of parameters in the struct
  */
 export interface ParameterModel {
-  name: string,
-  ref: string,
-  refError: string,
-  description: string,
-  maybeType?: string,
-  maybeEnum?: Array<string>,
-  maybeArrayType?: string,
-  maybeDimensions?: Array<number>,
-  units: string,
-  maxItems?: number,
-  minItems?: number,
-  maxLength?: number,
-  minLength?: number,
-  minimum?: string,
-  maximum?: string,
-  exclusiveMinimum: boolean,
-  exclusiveMaximum: boolean,
-  allowNaN: boolean,
-  defaultValue: string,
-  typeStr: string,
+  name: string
+  ref: string
+  refError: string
+  description: string
+  maybeType?: string
+  maybeEnum?: Array<string>
+  maybeArrayType?: string
+  maybeDimensions?: Array<number>
+  units: string
+  maxItems?: number
+  minItems?: number
+  maxLength?: number
+  minLength?: number
+  minimum?: string
+  maximum?: string
+  exclusiveMinimum: boolean
+  exclusiveMaximum: boolean
+  allowNaN: boolean
+  defaultValue: string
+  typeStr: string
   parameterList: Array<ParameterModel>
 }
-
 
 /**
  * Models the event published by a component
@@ -85,27 +83,27 @@ export interface ParameterModel {
  * @param parameterList parameters for the event
  */
 export interface EventModel {
-  name: string,
-  ref: string,
-  refError: string,
-  description: string,
-  requirements: Array<string>,
-  maybeMaxRate?: number,
-  archive: boolean,
-  archiveDuration: string,
+  name: string
+  ref: string
+  refError: string
+  description: string
+  requirements: Array<string>
+  maybeMaxRate?: number
+  archive: boolean
+  archiveDuration: string
   parameterList: Array<ParameterModel>
 }
 
 export interface EventInfoModel {
-  subsystem: string,
-  component: string,
+  subsystem: string
+  component: string
   eventModel: EventModel
 }
 
 export interface ParamInfoModel {
-  eventInfoModel: EventInfoModel,
-  parameterName: string,
-  description: string,
+  eventInfoModel: EventInfoModel
+  parameterName: string
+  description: string
 }
 
 export class IcdServerInfo {
