@@ -1,24 +1,26 @@
 import React from 'react'
-import { Table } from 'antd'
-import { ColumnsType } from 'antd/es/table'
-import { BaseKey, Key, SystemEvent } from '@tmtsoftware/esw-ts'
-import { useAppContext } from '../AppContext'
+import {Table} from "antd"
+import type {ColumnsType} from "antd/es/table"
+import type {BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import {useAppContext} from "../AppContext";
+import {EventUtil, ParamInfoModel} from "../data/EventTreeData";
+import {ParameterUtil} from "../data/ParameterUtil";
 
 interface ParamValue {
-  time: string
-  value: any
+  time: string,
+  value: any,
 }
 
 type ParamValuesTableProps = {
-  cswParamKey: BaseKey<Key>
+  paramInfoModel: ParamInfoModel | undefined
+  cswParamKey: BaseKeyType<Key>
   events: Array<SystemEvent> | undefined
 }
 
-export const ParamValuesTable = ({
-  cswParamKey,
-  events
-}: ParamValuesTableProps): JSX.Element => {
-  const { expandedParamInfoModel } = useAppContext()
+export const ParamValuesTable = ({paramInfoModel, cswParamKey, events}: ParamValuesTableProps): JSX.Element => {
+
+  const {expandedParamInfoModel} = useAppContext()
+  const unitsStr = paramInfoModel?.units ? ` (${EventUtil.stripHtml(paramInfoModel.units)})` : ""
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<ParamValue> = [
@@ -28,26 +30,19 @@ export const ParamValuesTable = ({
         key: 'time'
       },
       {
-        title: 'Value',
+        title: `Value${unitsStr}`,
         dataIndex: 'value',
-        key: 'value'
-      }
-    ]
+        key: 'value',
+      },
+    ];
 
-    //2021-04-19T14:19:23.584906572Z
-
-    const dataSource: Array<ParamValue> = events
-      ? events.map((systemEvent) => {
-          const values = systemEvent.get(cswParamKey)?.values
-          // XXX TODO: Handle multiple values
-          const value = values && values.length > 0 ? values[0] : 'undefined'
-          return {
-            key: systemEvent.eventId,
-            time: systemEvent.eventTime.substring(11, 23),
-            value: value
-          }
-        })
-      : []
+    const dataSource: Array<ParamValue> = events ? events.slice().reverse().map((systemEvent) => {
+      return {
+        key: systemEvent.eventId,
+        time: systemEvent.eventTime.substring(11, 23),
+        value: ParameterUtil.formatValues(systemEvent, cswParamKey),
+      };
+    }) : []
 
     return (
       <Table<ParamValue>
@@ -55,7 +50,7 @@ export const ParamValuesTable = ({
         dataSource={dataSource}
         columns={columns}
         pagination={false}
-        scroll={{ y: expandedParamInfoModel ? 500 : 200 }}
+        scroll={{y: expandedParamInfoModel ? 500 : 200}}
       />
     )
   }

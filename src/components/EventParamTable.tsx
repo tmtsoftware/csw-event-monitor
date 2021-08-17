@@ -1,31 +1,27 @@
 import React from 'react'
-import { Table, Typography } from 'antd'
-import { ColumnsType } from 'antd/es/table'
-import { Key } from 'antd/lib/table/interface'
-import {
-  EventInfoModel,
-  EventUtil,
-  ParamInfoModel
-} from '../data/EventTreeData'
-import { useAppContext } from '../AppContext'
+import {Space, Table, Typography} from "antd"
+import type {ColumnsType} from "antd/es/table"
+import type {Key} from "antd/lib/table/interface";
+import type {EventInfoModel, ParamInfoModel} from "../data/EventTreeData";
+import {useAppContext} from "../AppContext";
+import {ParameterUtil} from "../data/ParameterUtil";
 
-const { Text } = Typography
+const {Text} = Typography;
 
 interface EventParameter {
-  name: string
-  typeStr: string
-  units: string
-  description: string
+  name: string,
+  typeStr: string,
+  units: string,
+  description: string,
 }
 
 type EventParamTableProps = {
   eventInfoModel: EventInfoModel
 }
 
-export const EventParamTable = ({
-  eventInfoModel
-}: EventParamTableProps): JSX.Element => {
-  const { paramInfoModels, setParamInfoModels } = useAppContext()
+export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Element => {
+
+  const {paramInfoModels, setParamInfoModels} = useAppContext()
 
   function makeTable(): JSX.Element {
     const columns: ColumnsType<EventParameter> = [
@@ -45,66 +41,79 @@ export const EventParamTable = ({
         title: 'Units',
         dataIndex: 'units',
         key: 'units',
-        render: (units) => <div dangerouslySetInnerHTML={{ __html: units }} />,
+        render: units => (
+          <div dangerouslySetInnerHTML={{__html: units}}/>
+        ),
         width: 150
       },
       {
         title: 'Description',
         dataIndex: 'description',
         key: 'description',
-        render: (description) => (
-          <div dangerouslySetInnerHTML={{ __html: description }} />
-        )
+        render: description => (
+          <div dangerouslySetInnerHTML={{__html: description}}/>
+        ),
       }
-    ]
+    ];
 
-    const dataSource: Array<EventParameter> = eventInfoModel
-      ? eventInfoModel.eventModel.parameterList.map((param) => {
-          return {
-            key: param.name,
-            name: param.name,
-            typeStr: param.typeStr,
-            units: param.units,
-            description: param.description
-          }
-        })
-      : []
+    const dataSource: Array<EventParameter> = eventInfoModel ? eventInfoModel.eventModel.parameterList.map((param) => {
+      return {
+        key: ParameterUtil.fixParamName(param.name),
+        name: ParameterUtil.fixParamName(param.name),
+        typeStr: param.typeStr,
+        units: param.units,
+        description: param.description,
+      };
+    }) : []
 
     const rowSelection = {
       onChange: (_: Key[], selectedRows: EventParameter[]) => {
-        const a: Array<ParamInfoModel> = selectedRows.map((p) => {
+        const a: Array<ParamInfoModel> = selectedRows.map(p => {
           return {
             eventInfoModel: eventInfoModel,
             parameterName: p.name,
+            units: p.units,
             description: p.description
           }
         })
-        const otherEventParams = paramInfoModels.filter(
-          (p) => p.eventInfoModel != eventInfoModel
-        )
+        const otherEventParams = paramInfoModels.filter((p) => p.eventInfoModel != eventInfoModel)
         setParamInfoModels(otherEventParams.concat(a))
       }
     }
 
-    const title = (
-      <Text strong>Event: {EventUtil.getEventKey(eventInfoModel)}</Text>
-    )
+    const title = <div>
+      <Space direction={"vertical"} size={"small"}>
+        <Space direction={'horizontal'} size={'large'}>
+          <Text>Subsystem: {eventInfoModel.subsystem}</Text>
+          <Text>Component: {eventInfoModel.component}</Text>
+          <Text>Event: {eventInfoModel.eventModel.name}</Text>
+          <Text>{eventInfoModel.eventModel.maybeMaxRate ? `Max Rate: ${eventInfoModel.eventModel.maybeMaxRate} Hz` : ""}</Text>
+        </Space>
+        <Text strong>Parameters</Text>
+      </Space>
+    </div>
 
     return (
       <Table<EventParameter>
         rowSelection={{
           type: 'checkbox',
-          ...rowSelection
+          ...rowSelection,
+          hideSelectAll: true,
+          selectedRowKeys: paramInfoModels.map(p => p.parameterName)
         }}
         title={() => title}
         size={'small'}
         dataSource={dataSource}
         columns={columns}
         pagination={false}
-        scroll={{ y: 200 }}
+        scroll={{y: 200}}
       />
     )
   }
 
-  return <div>{makeTable()}</div>
+  return (
+    <div>
+      {makeTable()}
+    </div>
+  )
 }

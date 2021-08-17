@@ -20,8 +20,17 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react",
-    "noEmit": true
+    "noEmit": true,
+    "importsNotUsedAsValues": "error",
+    "strictNullChecks": true
   },
-  "include": ["src", "types"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "types",
+    "test"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

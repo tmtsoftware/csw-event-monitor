@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { Tabs } from 'antd'
-import { useAppContext } from '../AppContext'
-import { EventParamTable } from './EventParamTable'
-import { EventUtil } from '../data/EventTreeData'
+import React, {useState} from 'react'
+import {Tabs} from 'antd';
+import {useAppContext} from "../AppContext";
+import {EventParamTable} from "./EventParamTable";
+import {EventUtil} from "../data/EventTreeData";
 
-const { TabPane } = Tabs
+const {TabPane} = Tabs;
 
 export const EventModelTabs = (): JSX.Element => {
   const {
@@ -16,41 +16,30 @@ export const EventModelTabs = (): JSX.Element => {
     setParamInfoModels,
     setEventTreeDrawerOpen
   } = useAppContext()
-  const [selectedEventName, setSelectedEventName] = useState<
-    string | undefined
-  >(undefined)
+  const [selectedEventName, setSelectedEventName] = useState<string | undefined>(undefined)
 
   function onChange(activeKey: string) {
     setSelectedEventName(activeKey)
   }
 
   function onEdit(targetKey: any, action: string) {
-    if (action == 'remove') {
-      const removed = eventInfoModels.find(
-        (eventInfoModel) => EventUtil.getEventKey(eventInfoModel) == targetKey
-      )
+    if (action == "remove") {
+      const removed = eventInfoModels.find(eventInfoModel => EventUtil.getEventKey(eventInfoModel) == targetKey)
       if (removed) {
-        setEventInfoModels(eventInfoModels.filter((m) => m != removed))
-        const eventSubscription = subscriptions.find(
-          (s) =>
-            s.event == removed.eventModel.name &&
-            s.component == removed.component &&
-            s.subsystem == removed.subsystem
+        setEventInfoModels(eventInfoModels.filter(m => m != removed))
+        const eventSubscription = subscriptions.find(s =>
+          s.event == removed.eventModel.name &&
+          s.component == removed.component &&
+          s.subsystem == removed.subsystem
         )
         if (eventSubscription) {
           eventSubscription.subscription.cancel()
-          const remainingSubscriptions = subscriptions.filter(
-            (s) => s != eventSubscription
-          )
+          const remainingSubscriptions = subscriptions.filter(s => s != eventSubscription)
           setSubscriptions(remainingSubscriptions)
-          console.log(
-            `XXX remainingSubscriptions = ${remainingSubscriptions.length}`
-          )
-          if (remainingSubscriptions.length == 0) setEventTreeDrawerOpen(true)
+          if (remainingSubscriptions.length == 0)
+            setEventTreeDrawerOpen(true)
         }
-        setParamInfoModels(
-          paramInfoModels.filter((p) => p.eventInfoModel != removed)
-        )
+        setParamInfoModels(paramInfoModels.filter(p => p.eventInfoModel != removed))
       }
     }
   }
@@ -58,18 +47,16 @@ export const EventModelTabs = (): JSX.Element => {
   return (
     <Tabs
       hideAdd
-      type='editable-card'
+      type="editable-card"
       onChange={onChange}
       activeKey={selectedEventName}
-      onEdit={onEdit}>
-      {eventInfoModels.map((eventInfoModel) => {
+      onEdit={onEdit}
+    >
+      {eventInfoModels.map(eventInfoModel => {
         const eventKey = EventUtil.getEventKey(eventInfoModel)
         return (
-          <TabPane
-            tab={eventInfoModel.eventModel.name}
-            key={eventKey}
-            closable={true}>
-            {<EventParamTable eventInfoModel={eventInfoModel} />}
+          <TabPane tab={eventInfoModel.eventModel.name} key={eventKey} closable={true}>
+            {<EventParamTable eventInfoModel={eventInfoModel}/>}
           </TabPane>
         )
       })}

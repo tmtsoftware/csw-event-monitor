@@ -1,3 +1,5 @@
+import type {DataNode} from "antd/lib/tree";
+
 /**
  * An event name
  */
@@ -20,6 +22,7 @@ export interface EventsForSubsystem {
   subsystem: string
   components: Array<EventsForComponent>
 }
+
 
 /**
  * Defines the properties of a parameter
@@ -45,28 +48,29 @@ export interface EventsForSubsystem {
  * @param parameterList   If type or array type is "struct", this should be a list of parameters in the struct
  */
 export interface ParameterModel {
-  name: string
-  ref: string
-  refError: string
-  description: string
-  maybeType?: string
-  maybeEnum?: Array<string>
-  maybeArrayType?: string
-  maybeDimensions?: Array<number>
-  units: string
-  maxItems?: number
-  minItems?: number
-  maxLength?: number
-  minLength?: number
-  minimum?: string
-  maximum?: string
-  exclusiveMinimum: boolean
-  exclusiveMaximum: boolean
-  allowNaN: boolean
-  defaultValue: string
-  typeStr: string
+  name: string,
+  ref: string,
+  refError: string,
+  description: string,
+  maybeType?: string,
+  maybeEnum?: Array<string>,
+  maybeArrayType?: string,
+  maybeDimensions?: Array<number>,
+  units: string,
+  maxItems?: number,
+  minItems?: number,
+  maxLength?: number,
+  minLength?: number,
+  minimum?: string,
+  maximum?: string,
+  exclusiveMinimum: boolean,
+  exclusiveMaximum: boolean,
+  allowNaN: boolean,
+  defaultValue: string,
+  typeStr: string,
   parameterList: Array<ParameterModel>
 }
+
 
 /**
  * Models the event published by a component
@@ -83,27 +87,28 @@ export interface ParameterModel {
  * @param parameterList parameters for the event
  */
 export interface EventModel {
-  name: string
-  ref: string
-  refError: string
-  description: string
-  requirements: Array<string>
-  maybeMaxRate?: number
-  archive: boolean
-  archiveDuration: string
+  name: string,
+  ref: string,
+  refError: string,
+  description: string,
+  requirements: Array<string>,
+  maybeMaxRate?: number,
+  archive: boolean,
+  archiveDuration: string,
   parameterList: Array<ParameterModel>
 }
 
 export interface EventInfoModel {
-  subsystem: string
-  component: string
+  subsystem: string,
+  component: string,
   eventModel: EventModel
 }
 
 export interface ParamInfoModel {
-  eventInfoModel: EventInfoModel
-  parameterName: string
-  description: string
+  eventInfoModel: EventInfoModel,
+  parameterName: string,
+  units: string,
+  description: string,
 }
 
 export class IcdServerInfo {
@@ -111,7 +116,46 @@ export class IcdServerInfo {
 }
 
 export class EventUtil {
+  // Used to separate subsystem, component, event in keys for tree
+  static eventKeySeparator = '::'
+
   static getEventKey(e: EventInfoModel): string {
-    return `${e.subsystem}.${e.component}.${e.eventModel.name}`
+    return `${e.subsystem}${EventUtil.eventKeySeparator}${e.component}${EventUtil.eventKeySeparator}${e.eventModel.name}`
+  }
+
+  static getParamKey(m: ParamInfoModel): string {
+    return `${EventUtil.getEventKey(m.eventInfoModel)}${EventUtil.eventKeySeparator}${m.parameterName}`
+  }
+
+  static makeTreeData(allEvents: Array<EventsForSubsystem>): Array<DataNode> {
+    return allEvents.map(a => {
+        const node: DataNode = {
+          key: a.subsystem,
+          title: a.subsystem,
+          children: a.components.map(c => {
+              const child: DataNode = {
+                key: `${a.subsystem}${EventUtil.eventKeySeparator}${c.component}`,
+                title: c.component,
+                children: c.events.map(e => {
+                    const leaf: DataNode = {
+                      key: `${a.subsystem}${EventUtil.eventKeySeparator}${c.component}${EventUtil.eventKeySeparator}${e.event}`,
+                      title: e.event,
+                      isLeaf: true
+                    }
+                    return leaf
+                  }
+                )
+              }
+              return child
+            }
+          )
+        }
+        return node
+      }
+    )
+  }
+
+  static stripHtml(s: string): string {
+    return s.replace(/(<([^>]+)>)/gi, "")
   }
 }
