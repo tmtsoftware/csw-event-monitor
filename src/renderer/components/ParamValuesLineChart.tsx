@@ -80,10 +80,15 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
     yField: 'value',
     legend: false,
     seriesField: 'category',
-    point: {
-      size: 5,
-      shape: 'diamond',
-    },
+    // point: {
+    //   size: 5,
+    //   shape: 'diamond',
+    //   style: {
+    //     fill: 'white',
+    //     stroke: '#2593fc',
+    //     lineWidth: 2,
+    //   },
+    // },
     label: {
       style: {
         fill: '#aaa',
