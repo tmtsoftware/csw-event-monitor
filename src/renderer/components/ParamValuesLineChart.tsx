@@ -1,5 +1,5 @@
 import React from 'react'
-import type {AltAzCoord, BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
+import type {AltAzCoord, EqCoord, BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {Line} from "@ant-design/charts";
 import {Angle} from "../data/Angle";
 
@@ -42,15 +42,27 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
           }]
 
       case 'AltAzCoordKey':
-        const c: AltAzCoord = value as AltAzCoord
+        const altAzCoord: AltAzCoord = value as AltAzCoord
         return [{
           time: time,
-          value: new Angle(c.alt).toDegree(),
-          category: 'alt'
+          value: round(new Angle(altAzCoord.alt).toDegree()),
+          category: 'Alt'
         },{
           time: time,
-          value:  new Angle(c.az).toDegree(),
-          category: 'az'
+          value:  round(new Angle(altAzCoord.az).toDegree()),
+          category: 'Az'
+        }]
+
+      case 'EqCoordKey':
+        const eqCoord: EqCoord = value as EqCoord
+        return [{
+          time: time,
+          value: new Angle(eqCoord.ra).toDegree(),
+          category: 'RA'
+        },{
+          time: time,
+          value:  new Angle(eqCoord.dec).toDegree(),
+          category: 'Dec'
         }]
 
       default:
@@ -61,7 +73,6 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
       // case 'BooleanKey':
       // case 'UTCTimeKey':
       // case 'TAITimeKey':
-      // case 'EqCoordKey':
       // case 'SolarSystemCoordKey':
       // case 'MinorPlanetCoordKey':
       // case 'CometCoordKey':
@@ -71,7 +82,6 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
 
   // const data = events ? events.flatMap(systemEvent => getData(systemEvent)) : []
   const data = events ? events.flatMap(getData) : []
-  console.log('XXX data = ', data)
 
   const config = {
     data,
