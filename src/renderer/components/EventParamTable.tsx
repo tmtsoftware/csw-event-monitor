@@ -56,9 +56,17 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
       }
     ];
 
+    function makeKey(eventInfoModel: EventInfoModel, paramName: string): string {
+      const subsystem = eventInfoModel.subsystem
+      const component = eventInfoModel.component
+      const eventName = eventInfoModel.eventModel.name
+      const parameterName = ParameterUtil.fixParamName(paramName)
+      return `${subsystem}::${component}::${eventName}::${parameterName}`
+    }
+
     const dataSource: Array<EventParameter> = eventInfoModel ? eventInfoModel.eventModel.parameterList.map((param) => {
       return {
-        key: ParameterUtil.fixParamName(param.name),
+        key:  makeKey(eventInfoModel, param.name),
         name: ParameterUtil.fixParamName(param.name),
         typeStr: param.typeStr,
         units: param.units,
@@ -99,7 +107,7 @@ export const EventParamTable = ({eventInfoModel}: EventParamTableProps): JSX.Ele
           type: 'checkbox',
           ...rowSelection,
           hideSelectAll: true,
-          selectedRowKeys: paramInfoModels.map(p => p.parameterName)
+          selectedRowKeys: paramInfoModels.map(p => makeKey(p.eventInfoModel, p.parameterName))
         }}
         title={() => title}
         size={'small'}
