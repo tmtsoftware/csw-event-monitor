@@ -61,7 +61,10 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   function makeTitle(): JSX.Element {
     return (
       <Text strong>
-        {paramInfoModel!.parameterName}
+        {`${paramInfoModel!.eventInfoModel.subsystem}.`
+        + `${paramInfoModel!.eventInfoModel.component}:`
+        + `${paramInfoModel!.eventInfoModel.eventModel.name}.`
+        + `${paramInfoModel!.parameterName}`}
       </Text>
     )
   }
@@ -69,7 +72,8 @@ export const ParamValuesWindow = ({paramInfoModel, cswParamKey, events}: ParamVa
   function makeTooltip() {
     return `Subsystem: ${paramInfoModel!.eventInfoModel.subsystem}\n`
       + `Component: ${paramInfoModel!.eventInfoModel.component}\n`
-      + `Event: ${paramInfoModel!.parameterName}`
+      + `Event: ${paramInfoModel!.eventInfoModel.eventModel.name}\n`
+      + `Parameter: ${paramInfoModel!.parameterName}\n`
   }
 
   function makeMenu(): JSX.Element {
