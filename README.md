@@ -5,14 +5,12 @@ This version runs outside the browser as an [Electron app](https://www.electronj
 
 ## Prerequisites Required for Running App
 
-* The latest version of [Node.js](https://nodejs.org/en/download/package-manager/) must be installed.
-* Run `csw-services start` (from [csw](https://github.com/tmtsoftware/csw))
-* Run `esw-services start` (from [esw](https://github.com/tmtsoftware/esw))
+* A recent version of [Node.js](https://nodejs.org/en/download/package-manager/) must be installed (tested with node: 6.8.0, npm: 7.21.0).
+* Run `csw-services start` (from [csw](https://github.com/tmtsoftware/csw), version 4.0.0-RC2 or newer)
+* Run `esw-services start` (from [esw](https://github.com/tmtsoftware/esw), version 0.3.0-RC2 or newer)
 * Run `icdwebserver` (from [icd](https://github.com/tmtsoftware/icd))
 
 ## Run the App in Local Environment
-
-(Note: `npm` or `yarn` can be used in the following commands, but should not be mixed.)
 
 Run following commands in the terminal.
 ```
@@ -20,7 +18,9 @@ npm install
 npm run dev
 ```
 
-This should open the application in a dedicated window.
+This should open the application in a dedicated window where you can select a subsystem and event to subscribe to.
+Once the subwindows for the subscribed events are displayed, you can click the checkboxes for parameter values to display.
+Parameter values are displayed in tables by default. Numerical values can also be plotted in a graph or bar chart.
 
 ## Build the App for Production
 
