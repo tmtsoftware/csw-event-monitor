@@ -3,6 +3,14 @@
 This project contains the React/Typescript based CSW Event Monitor web application.
 This version runs outside the browser as an [Electron app](https://www.electronjs.org/).
 
+###### Light mode
+![light mode](screenshots/2021-09-21_21-03.png)
+
+###### Dark mode
+![dark mode](screenshots/2021-09-21_21-03_1.png)
+
+You can dynamically switch between light and dark mode in the settings window.
+
 ## Prerequisites Required for Running App
 
 * A recent version of [Node.js](https://nodejs.org/en/download/package-manager/) must be installed (tested with node: 6.8.0, npm: 7.21.0).
