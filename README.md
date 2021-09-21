@@ -1,6 +1,6 @@
 # CSW Event Monitor
 
-This subproject contains the React/Typescript based CSW Event Monitor web application.
+This project contains the React/Typescript based CSW Event Monitor web application.
 This version runs outside the browser as an [Electron app](https://www.electronjs.org/).
 
 ## Prerequisites Required for Running App
