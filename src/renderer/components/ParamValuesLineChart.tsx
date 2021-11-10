@@ -1,7 +1,6 @@
 import React from 'react'
 import type {AltAzCoord, EqCoord, BaseKeyType, Key, SystemEvent} from "@tmtsoftware/esw-ts";
 import {Line} from "@ant-design/charts";
-import {Angle} from "../data/Angle";
 
 type ParamValuesLineChartProps = {
   cswParamKey: BaseKeyType<Key>
@@ -45,11 +44,11 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
         const altAzCoord: AltAzCoord = value as AltAzCoord
         return [{
           time: time,
-          value: round(new Angle(altAzCoord.alt).toDegree()),
+          value: round(altAzCoord.alt.toDegree()),
           category: 'Alt'
         },{
           time: time,
-          value:  round(new Angle(altAzCoord.az).toDegree()),
+          value:  round(altAzCoord.az.toDegree()),
           category: 'Az'
         }]
 
@@ -57,11 +56,11 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
         const eqCoord: EqCoord = value as EqCoord
         return [{
           time: time,
-          value: new Angle(eqCoord.ra).toDegree(),
+          value: eqCoord.ra.toDegree(),
           category: 'RA'
         },{
           time: time,
-          value:  new Angle(eqCoord.dec).toDegree(),
+          value:  eqCoord.dec.toDegree(),
           category: 'Dec'
         }]
 
@@ -88,7 +87,6 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
     height: 400,
     xField: 'time',
     yField: 'value',
-    legend: false,
     seriesField: 'category',
     // point: {
     //   size: 5,

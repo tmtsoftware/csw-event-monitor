@@ -1,7 +1,7 @@
 import type {ParameterModel, ParamInfoModel} from "./EventTreeData";
 import {
   AltAzCoord,
-  altAzCoordKey,
+  altAzCoordKey, Angle,
   BaseKeyType,
   booleanKey, byteArrayKey,
   byteKey, byteMatrixKey, choiceKey, CometCoord, cometCoordKey, coordKey, doubleArrayKey,
@@ -13,7 +13,6 @@ import {
   shortKey, shortMatrixKey, SolarSystemCoord, solarSystemCoordKey,
   stringKey, SystemEvent, taiTimeKey, utcTimeKey
 } from "@tmtsoftware/esw-ts";
-import {Angle} from "./Angle";
 
 export class ParameterUtil {
 
@@ -123,8 +122,8 @@ export class ParameterUtil {
   }
 
   static formatEqCoord(coord: EqCoord): string {
-    const ra = Angle.raToString(new Angle(coord.ra).toRadian())
-    const dec = Angle.deToString(new Angle(coord.dec).toRadian())
+    const ra = Angle.raToString(coord.ra.toRadian())
+    const dec = Angle.deToString(coord.dec.toRadian())
     const f = coord.frame.toString()
     const c = coord.catalogName
     const pm = `${coord.pm.pmx.toFixed(3)}, ${coord.pm.pmy.toFixed(3)}`
@@ -138,8 +137,8 @@ export class ParameterUtil {
   // alt: Angle, az: Angle
   static formatAltAzCoord(coord: AltAzCoord): string {
     console.log(`XXX formatAltAzCoord `, coord)
-    const alt = new Angle(coord.alt).toDegree().toFixed(3)
-    const az = new Angle(coord.az).toDegree().toFixed(3)
+    const alt = coord.alt.toDegree().toFixed(3)
+    const az = coord.az.toDegree().toFixed(3)
     return `tag: ${coord.tag}, alt: ${alt}${Angle.DEGREE_SIGN}, az: ${az}${Angle.DEGREE_SIGN}`
   }
 
@@ -157,12 +156,12 @@ export class ParameterUtil {
 
   static formatMinorPlanetCoord(coord: MinorPlanetCoord): string {
     const epoch = coord.epoch.toFixed(1)
-    const inclination = new Angle(coord.inclination).toDegree().toFixed(3)
-    const longAscendingNode = new Angle(coord.longAscendingNode).toDegree().toFixed(3)
-    const argOfPerihelion = new Angle(coord.argOfPerihelion).toDegree().toFixed(3)
+    const inclination = coord.inclination.toDegree().toFixed(3)
+    const longAscendingNode = coord.longAscendingNode.toDegree().toFixed(3)
+    const argOfPerihelion = coord.argOfPerihelion.toDegree().toFixed(3)
     const meanDistance = coord.meanDistance.toFixed(3)
     const eccentricity = coord.eccentricity.toFixed(3)
-    const meanAnomaly = new Angle(coord.meanAnomaly).toDegree().toFixed(3)
+    const meanAnomaly = coord.meanAnomaly.toDegree().toFixed(3)
     return `tag: ${coord.tag}, epoch: ${epoch}, inclination: ${inclination}${Angle.DEGREE_SIGN}, longAscendingNode: ${longAscendingNode}${Angle.DEGREE_SIGN}, argOfPerihelion: ${argOfPerihelion}${Angle.DEGREE_SIGN}, meanDistance: ${meanDistance} AU, eccentricity: ${eccentricity}, meanAnomaly: ${meanAnomaly}${Angle.DEGREE_SIGN}`
   }
 
@@ -172,9 +171,9 @@ export class ParameterUtil {
 
   static formatCometCoord(coord: CometCoord): string {
     const epochOfPerihelion = coord.epochOfPerihelion.toFixed(1)
-    const inclination = new Angle(coord.inclination).toDegree().toFixed(3)
-    const longAscendingNode = new Angle(coord.longAscendingNode).toDegree().toFixed(3)
-    const argOfPerihelion = new Angle(coord.argOfPerihelion).toDegree().toFixed(3)
+    const inclination = coord.inclination.toDegree().toFixed(3)
+    const longAscendingNode = coord.longAscendingNode.toDegree().toFixed(3)
+    const argOfPerihelion = coord.argOfPerihelion.toDegree().toFixed(3)
     const perihelionDistance = coord.perihelionDistance.toFixed(3)
     const eccentricity = coord.eccentricity.toFixed(3)
     return `tag: ${coord.tag}, epochOfPerihelion: ${epochOfPerihelion}, inclination: ${inclination}${Angle.DEGREE_SIGN}, longAscendingNode: ${longAscendingNode}${Angle.DEGREE_SIGN}, argOfPerihelion: ${argOfPerihelion}${Angle.DEGREE_SIGN}, perihelionDistance: ${perihelionDistance} AU, eccentricity: ${eccentricity}`
@@ -221,7 +220,6 @@ export class ParameterUtil {
           return values.join(', ')
         case 'CharKey':
           return values.join(', ')
-        case 'StructKey':
         case 'ChoiceKey':
           return values.join(', ')
         case 'IntMatrixKey':
