@@ -21,7 +21,7 @@
   "dependencies": {
     "@ant-design/charts": "1.1.2",
     "@ant-design/icons": "4.6.2",
-    "@tmtsoftware/esw-ts": "0.2.0",
+    "@tmtsoftware/esw-ts": "0.3.0",
     "antd": "4.13.1",
     "big.js": "6.1.1",
     "electron-snowpack": "0.10.0",

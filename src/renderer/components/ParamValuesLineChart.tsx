@@ -11,7 +11,7 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
 
   function round(num: any): number | undefined {
     if (typeof num == "number")
-      return Math.round(num * 1000)/1000
+      return Math.round(num * 1000) / 1000
     return num
   }
 
@@ -23,59 +23,64 @@ export const ParamValuesLineChart = ({cswParamKey, events}: ParamValuesLineChart
   }
 
   function getData(systemEvent: SystemEvent): Array<DataType> {
-    const values = systemEvent.get(cswParamKey)?.values
-    // XXX TODO: Handle multiple values
-    const value = (values && values.length > 0) ? values[0] : undefined
-    const time = systemEvent.eventTime.substring(11, 23)
-    switch (cswParamKey.keyTag) {
-      case 'IntKey':
-      case 'LongKey':
-      case 'ShortKey':
-      case 'FloatKey':
-      case 'DoubleKey':
-      case 'ByteKey':
-        return [{
+    try {
+      const values = systemEvent.get(cswParamKey)?.values
+      // XXX TODO: Handle multiple values
+      const value = (values && values.length > 0) ? values[0] : undefined
+      const time = systemEvent.eventTime.substring(11, 23)
+      switch (cswParamKey.keyTag) {
+        case 'IntKey':
+        case 'LongKey':
+        case 'ShortKey':
+        case 'FloatKey':
+        case 'DoubleKey':
+        case 'ByteKey':
+          return [{
             time: time,
             value: round(value),
-      category: 'value'
+            category: 'value'
           }]
 
-      case 'AltAzCoordKey':
-        const altAzCoord: AltAzCoord = value as AltAzCoord
-        return [{
-          time: time,
-          value: round(altAzCoord.alt.toDegree()),
-          category: 'Alt'
-        },{
-          time: time,
-          value:  round(altAzCoord.az.toDegree()),
-          category: 'Az'
-        }]
+        case 'AltAzCoordKey':
+          const altAzCoord: AltAzCoord = value as AltAzCoord
+          return [{
+            time: time,
+            value: round(altAzCoord.alt.toDegree()),
+            category: 'Alt'
+          }, {
+            time: time,
+            value: round(altAzCoord.az.toDegree()),
+            category: 'Az'
+          }]
 
-      case 'EqCoordKey':
-        const eqCoord: EqCoord = value as EqCoord
-        return [{
-          time: time,
-          value: eqCoord.ra.toDegree(),
-          category: 'RA'
-        },{
-          time: time,
-          value:  eqCoord.dec.toDegree(),
-          category: 'Dec'
-        }]
+        case 'EqCoordKey':
+          const eqCoord: EqCoord = value as EqCoord
+          return [{
+            time: time,
+            value: eqCoord.ra.toDegree(),
+            category: 'RA'
+          }, {
+            time: time,
+            value: eqCoord.dec.toDegree(),
+            category: 'Dec'
+          }]
 
-      default:
-        return []
+        default:
+          return []
 
-      // XXX TODO FIXME
+        // XXX TODO FIXME
 
-      // case 'BooleanKey':
-      // case 'UTCTimeKey':
-      // case 'TAITimeKey':
-      // case 'SolarSystemCoordKey':
-      // case 'MinorPlanetCoordKey':
-      // case 'CometCoordKey':
-      // case 'CoordKey':
+        // case 'BooleanKey':
+        // case 'UTCTimeKey':
+        // case 'TAITimeKey':
+        // case 'SolarSystemCoordKey':
+        // case 'MinorPlanetCoordKey':
+        // case 'CometCoordKey':
+        // case 'CoordKey':
+      }
+    } catch (error) {
+      console.log(error)
+      return []
     }
   }
 

@@ -102,7 +102,7 @@ export class ParameterUtil {
   }
 
   static formatFloats(ar: Array<any>): string {
-    return ar.map(d => d.toFixed(3)).join(', ')
+    return ar.map(d => d.toFixed(6)).join(', ')
   }
 
   static formatArrays(ar: Array<any>): string {
