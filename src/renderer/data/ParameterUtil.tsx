@@ -11,7 +11,7 @@ import {
   Key, longArrayKey,
   longKey, longMatrixKey, MinorPlanetCoord, minorPlanetCoordKey, shortArrayKey,
   shortKey, shortMatrixKey, SolarSystemCoord, solarSystemCoordKey,
-  stringKey, SystemEvent, taiTimeKey, utcTimeKey
+  stringKey, SystemEvent, taiTimeKey, Units, utcTimeKey
 } from "@tmtsoftware/esw-ts";
 
 export class ParameterUtil {
@@ -101,24 +101,29 @@ export class ParameterUtil {
     return undefined
   }
 
-  static formatFloats(ar: Array<any>): string {
-    return ar.map(d => d.toFixed(6)).join(', ')
+  static formatFloats(ar: Array<any>, units: Units | undefined): string {
+    if (units == Units.hour)
+      return ar.map(d => Angle.raToString(d * Angle.H2R, true)).join(', ')
+    else if (units == Units.degree)
+      return ar.map(d => Angle.deToString(d * Angle.D2R, true)).join(', ')
+    else
+      return ar.map(d => d.toFixed(6)).join(', ')
   }
 
   static formatArrays(ar: Array<any>): string {
     return ar.map(a => `[${a}]`).join(', ')
   }
 
-  static formatFloatArrays(ar: Array<any>): string {
-    return ar.map(a => `[${this.formatFloats(a)}]`).join(', ')
+  static formatFloatArrays(ar: Array<any>, units: Units | undefined): string {
+    return ar.map(a => `[${this.formatFloats(a, units)}]`).join(', ')
   }
 
   static formatMatrixes(ar: Array<any>): string {
     return ar.map(a => `[${this.formatArrays(a)}]`).join(', ')
   }
 
-  static formatFloatMatrices(ar: Array<any>): string {
-    return ar.map(a => `[${this.formatFloatArrays(a)}]`).join(', ')
+  static formatFloatMatrices(ar: Array<any>, units: Units | undefined): string {
+    return ar.map(a => `[${this.formatFloatArrays(a, units)}]`).join(', ')
   }
 
   static formatEqCoord(coord: EqCoord): string {
@@ -187,20 +192,28 @@ export class ParameterUtil {
   // See https://tmt-project.atlassian.net/browse/CSW-145
   static formatCoords(ar: Array<any>): string {
     return ar.map(a => {
-      switch(a._type) {
-        case 'EqCoord': return `[${this.formatEqCoord(a)}]`
-        case 'SolarSystemCoord': return `[${this.formatSolarSystemCoord(a)}]`
-        case 'MinorPlanetCoord': return `[${this.formatMinorPlanetCoord(a)}]`
-        case 'CometCoord': return `[${this.formatCometCoord(a)}]`
-        case 'AltAzCoord': return `[${this.formatAltAzCoord(a)}]`
-        default: return `[unknown Coord type ${a._type}]`
+      switch (a._type) {
+        case 'EqCoord':
+          return `[${this.formatEqCoord(a)}]`
+        case 'SolarSystemCoord':
+          return `[${this.formatSolarSystemCoord(a)}]`
+        case 'MinorPlanetCoord':
+          return `[${this.formatMinorPlanetCoord(a)}]`
+        case 'CometCoord':
+          return `[${this.formatCometCoord(a)}]`
+        case 'AltAzCoord':
+          return `[${this.formatAltAzCoord(a)}]`
+        default:
+          return `[unknown Coord type ${a._type}]`
       }
     }).join(', ')
   }
 
   // Format the parameter values for the given key for display
   static formatValues(systemEvent: SystemEvent, cswParamKey: BaseKeyType<Key>): string {
-    const values = systemEvent.get(cswParamKey)?.values
+    const param = systemEvent.get(cswParamKey)
+    const units = param?.units
+    const values = param?.values
 
     if (values && values.length > 0) {
       switch (cswParamKey.keyTag) {
@@ -211,9 +224,9 @@ export class ParameterUtil {
         case 'ShortKey':
           return values.join(', ')
         case 'FloatKey':
-          return this.formatFloats(values)
+          return this.formatFloats(values, units)
         case 'DoubleKey':
-          return this.formatFloats(values)
+          return this.formatFloats(values, units)
         case 'ByteKey':
           return values.join(', ')
         case 'StringKey':
@@ -231,9 +244,9 @@ export class ParameterUtil {
         case 'ShortMatrixKey':
           return this.formatMatrixes(values)
         case 'FloatMatrixKey':
-          return this.formatFloatMatrices(values)
+          return this.formatFloatMatrices(values, units)
         case 'DoubleMatrixKey':
-          return this.formatFloatMatrices(values)
+          return this.formatFloatMatrices(values, units)
         case 'IntArrayKey':
           return this.formatArrays(values)
         case 'ByteArrayKey':
@@ -243,9 +256,9 @@ export class ParameterUtil {
         case 'ShortArrayKey':
           return this.formatArrays(values)
         case 'FloatArrayKey':
-          return this.formatFloatArrays(values)
+          return this.formatFloatArrays(values, units)
         case 'DoubleArrayKey':
-          return this.formatFloatArrays(values)
+          return this.formatFloatArrays(values, units)
         case 'BooleanKey':
           return values.join(', ')
         case 'UTCTimeKey':
