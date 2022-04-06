@@ -30,6 +30,7 @@
     "gulp-postcss": "^9.0.1",
     "less-plugin-npm-import": "^2.1.0",
     "typescript": "^4.5.5",
-    "vite": "^2.9.1"
+    "vite": "^2.9.1",
+    "vite-plugin-pwa": "^0.11.13"
   }
 }

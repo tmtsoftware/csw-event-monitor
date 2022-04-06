@@ -27,7 +27,6 @@ ReactDOM.render(
               <App/>
           </ThemeSwitcherProvider>
       </AuthContextProvider>,
-      document.getElementById('root')
   </React.StrictMode>,
   document.getElementById('root')
 )
