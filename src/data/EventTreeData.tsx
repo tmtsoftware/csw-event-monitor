@@ -112,7 +112,9 @@ export interface ParamInfoModel {
 }
 
 export class IcdServerInfo {
-  static baseUri = import.meta.env.SNOWPACK_PUBLIC_API_URL
+  // static baseUri = import.meta.env.SNOWPACK_PUBLIC_API_URL
+  // XXX TODO FIXME for vite
+  static baseUri = 'http://localhost:9000'
 }
 
 export class EventUtil {

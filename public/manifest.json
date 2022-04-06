@@ -1,6 +1,0 @@
-{
-  "short_name": "csw-event-monitor",
-  "name": "CSW Event Monitor",
-  "start_url": "./index.html",
-  "display": "standalone"
-}
