@@ -141,7 +141,6 @@ export class ParameterUtil {
 
   // alt: Angle, az: Angle
   static formatAltAzCoord(coord: AltAzCoord): string {
-    console.log(`XXX formatAltAzCoord `, coord)
     const alt = coord.alt.toDegree().toFixed(3)
     const az = coord.az.toDegree().toFixed(3)
     return `tag: ${coord.tag}, alt: ${alt}${Angle.DEGREE_SIGN}, az: ${az}${Angle.DEGREE_SIGN}`

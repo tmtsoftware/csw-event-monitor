@@ -74,7 +74,6 @@ const App = (): JSX.Element => {
     // Gets the event tree data and puts it in the correct format.
     // Do it here instead of EventTree, so that it is only done once.
     function getData() {
-      console.log("XXX Getting event tree data! ")
       fetch(`${IcdServerInfo.baseUri}/eventList`)
         .then((response) => response.json())
         .then((result) => {
