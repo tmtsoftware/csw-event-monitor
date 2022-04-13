@@ -103,7 +103,7 @@ export const EventTree = ({eventTreeData}: EventTreeProps): JSX.Element => {
 
   // Double-click on an event name in the tree: Subscribe to the event and display the received values
   function onDoubleClick(_: React.MouseEvent, node: EventDataNode) {
-    console.log(`double-click ${node.key}`)
+    // console.log(`double-click ${node.key}`)
     const ar = node.key.toString().split(EventUtil.eventKeySeparator)
     if (ar.length == 3) {
       if (eventService) {
